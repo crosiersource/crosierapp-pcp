@@ -1,2 +1,2 @@
-# crosierapp-pcp
-CrosierApp para PCP
+# crosierapp-helloworld
+Projeto de exemplo para um CrosierApp
