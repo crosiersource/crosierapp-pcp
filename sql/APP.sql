@@ -25,7 +25,7 @@ VALUES ('5875756c-d16d-4906-b4d0-fd60db47ba21','Dashboard - PCP', '/', 'bfacf76d
 
 -- Entrada de menu para o MainMenu do Crosier com apontamento para o Dashboard deste CrosierApp (É EXIBIDO NO MENU DO CROSIER-CORE)
 INSERT INTO cfg_entmenu(uuid,label,icon,tipo,program_uuid,pai_uuid,ordem,css_style,inserted,updated,estabelecimento_id,user_inserted_id,user_updated_id)
-VALUES ('0cfdd630-4382-4a6a-beed-a0e5ec73f8df','PCP','fas fa-columns','ENT','5875756c-d16d-4906-b4d0-fd60db47ba21',null,0,null,now(),now(),1,1,1);
+VALUES ('0cfdd630-4382-4a6a-beed-a0e5ec73f8df','PCP','fas fa-columns','CROSIERCORE_APPENT','5875756c-d16d-4906-b4d0-fd60db47ba21',null,0,null,now(),now(),1,1,1);
 
 -- Entrada de menu raíz para este CrosierApp (NÃO É EXIBIDO)
 INSERT INTO cfg_entmenu(uuid,label,icon,tipo,program_uuid,pai_uuid,ordem,css_style,inserted,updated,estabelecimento_id,user_inserted_id,user_updated_id)
