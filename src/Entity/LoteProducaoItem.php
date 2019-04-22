@@ -5,6 +5,7 @@ namespace App\Entity;
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityId;
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityIdTrait;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * LoteProducaoItem
@@ -24,6 +25,7 @@ class LoteProducaoItem implements EntityId
      * @var string
      *
      * @ORM\Column(name="obs", type="string", length=5000, nullable=false)
+     * @Groups("entity")
      */
     private $obs;
 
@@ -31,6 +33,7 @@ class LoteProducaoItem implements EntityId
      * @var int
      *
      * @ORM\Column(name="ordem", type="integer", nullable=false)
+     * @Groups("entity")
      */
     private $ordem;
 
@@ -41,8 +44,9 @@ class LoteProducaoItem implements EntityId
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="confeccao_id", referencedColumnName="id")
      * })
+     * @Groups("entity")
      */
-    private $confeccao;
+    private $fichaTecnica;
 
     /**
      * @var LoteProducao
@@ -51,8 +55,10 @@ class LoteProducaoItem implements EntityId
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="lote_confeccao_id", referencedColumnName="id")
      * })
+     * @Groups("entity")
      */
     private $loteConfeccao;
+
 
     /**
      * @return string
@@ -93,18 +99,18 @@ class LoteProducaoItem implements EntityId
     /**
      * @return FichaTecnica
      */
-    public function getConfeccao(): FichaTecnica
+    public function getFichaTecnica(): FichaTecnica
     {
-        return $this->confeccao;
+        return $this->fichaTecnica;
     }
 
     /**
-     * @param FichaTecnica $confeccao
+     * @param FichaTecnica $fichaTecnica
      * @return LoteProducaoItem
      */
-    public function setConfeccao(FichaTecnica $confeccao): LoteProducaoItem
+    public function setFichaTecnica(FichaTecnica $fichaTecnica): LoteProducaoItem
     {
-        $this->confeccao = $confeccao;
+        $this->fichaTecnica = $fichaTecnica;
         return $this;
     }
 

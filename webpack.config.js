@@ -5,7 +5,7 @@ const webpack = require('webpack');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 Encore
-    // directory where compiled assets will be stored
+// directory where compiled assets will be stored
     .setOutputPath('public/build/')
     // public path used by the web server to access the output path
     .setPublicPath('/build')
@@ -16,7 +16,7 @@ Encore
     .autoProvidejQuery()
     .addPlugin(new CopyWebpackPlugin([
         // copies to {output}/static
-        { from: './assets/static', to: 'static' }
+        {from: './assets/static', to: 'static'}
     ]))
     .enableSassLoader()
     /*
@@ -29,10 +29,7 @@ Encore
      * and one CSS file (e.g. app.css) if you JavaScript imports CSS.
      */
     // .createSharedEntry('bse_layout', './assets/js/bse/layout.js')
-    .addEntry('coisaList', './assets/js/coisaList.js')
-
-
-
+    .addEntry('tipoInsumoList', './assets/js/tipoInsumoList.js')
 
     /*
      * FEATURE CONFIG
@@ -48,14 +45,14 @@ Encore
     .enableVersioning(Encore.isProduction())
     .enableSingleRuntimeChunk()
 
-    // enables Sass/SCSS support
-    //.enableSassLoader()
+// enables Sass/SCSS support
+//.enableSassLoader()
 
-    // uncomment if you use TypeScript
-    //.enableTypeScriptLoader()
+// uncomment if you use TypeScript
+//.enableTypeScriptLoader()
 
-    // uncomment if you're having problems with a jQuery plugin
-    //.autoProvidejQuery()
+// uncomment if you're having problems with a jQuery plugin
+//.autoProvidejQuery()
 ;
 
 module.exports = Encore.getWebpackConfig();

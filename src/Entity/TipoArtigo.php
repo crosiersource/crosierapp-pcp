@@ -5,6 +5,7 @@ namespace App\Entity;
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityId;
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityIdTrait;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * TipoArtigo
@@ -24,6 +25,7 @@ class TipoArtigo implements EntityId
      * @var int
      *
      * @ORM\Column(name="codigo", type="integer", nullable=false)
+     * @Groups("entity")
      */
     private $codigo;
 
@@ -31,6 +33,7 @@ class TipoArtigo implements EntityId
      * @var string
      *
      * @ORM\Column(name="descricao", type="string", length=100, nullable=false)
+     * @Groups("entity")
      */
     private $descricao;
 
@@ -38,6 +41,7 @@ class TipoArtigo implements EntityId
      * @var string
      *
      * @ORM\Column(name="modo_calculo", type="string", length=15, nullable=false)
+     * @Groups("entity")
      */
     private $modoCalculo;
 
@@ -45,8 +49,11 @@ class TipoArtigo implements EntityId
      * @var int
      *
      * @ORM\Column(name="subdepto_id", type="bigint", nullable=false)
+     * @Groups("entity")
      */
     private $subdeptoId;
+
+
 
     /**
      * @return int

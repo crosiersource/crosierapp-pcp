@@ -5,6 +5,7 @@ namespace App\Entity;
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityId;
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityIdTrait;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * FichaTecnica
@@ -23,6 +24,7 @@ class FichaTecnica implements EntityId
      * @var bool
      *
      * @ORM\Column(name="bloqueada", type="boolean", nullable=false)
+     * @Groups("entity")
      */
     private $bloqueada;
 
@@ -30,6 +32,7 @@ class FichaTecnica implements EntityId
      * @var float
      *
      * @ORM\Column(name="custo_operacional_padrao", type="float", precision=10, scale=3, nullable=false)
+     * @Groups("entity")
      */
     private $custoOperacionalPadrao;
 
@@ -37,6 +40,7 @@ class FichaTecnica implements EntityId
      * @var string
      *
      * @ORM\Column(name="descricao", type="string", length=200, nullable=false)
+     * @Groups("entity")
      */
     private $descricao;
 
@@ -44,6 +48,7 @@ class FichaTecnica implements EntityId
      * @var float
      *
      * @ORM\Column(name="margem_padrao", type="float", precision=10, scale=3, nullable=false)
+     * @Groups("entity")
      */
     private $margemPadrao;
 
@@ -51,6 +56,7 @@ class FichaTecnica implements EntityId
      * @var string|null
      *
      * @ORM\Column(name="obs", type="string", length=5000, nullable=true)
+     * @Groups("entity")
      */
     private $obs;
 
@@ -58,6 +64,7 @@ class FichaTecnica implements EntityId
      * @var int
      *
      * @ORM\Column(name="prazo_padrao", type="integer", nullable=false)
+     * @Groups("entity")
      */
     private $prazoPadrao;
 
@@ -65,6 +72,7 @@ class FichaTecnica implements EntityId
      * @var string
      *
      * @ORM\Column(name="custo_financeiro_padrao", type="decimal", precision=19, scale=2, nullable=false)
+     * @Groups("entity")
      */
     private $custoFinanceiroPadrao;
 
@@ -72,6 +80,7 @@ class FichaTecnica implements EntityId
      * @var string
      *
      * @ORM\Column(name="modo_calculo", type="string", length=15, nullable=false)
+     * @Groups("entity")
      */
     private $modoCalculo;
 
@@ -79,6 +88,7 @@ class FichaTecnica implements EntityId
      * @var int
      *
      * @ORM\Column(name="grade_id", type="bigint", nullable=false)
+     * @Groups("entity")
      */
     private $gradeId;
 
@@ -86,11 +96,13 @@ class FichaTecnica implements EntityId
      * @var bool
      *
      * @ORM\Column(name="oculta", type="boolean", nullable=false)
+     * @Groups("entity")
      */
     private $oculta;
 
     /**
      * @var integer|null
+     * @Groups("entity")
      *
      */
     private $instituicao;
@@ -102,6 +114,7 @@ class FichaTecnica implements EntityId
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="tipo_artigo_id", referencedColumnName="id")
      * })
+     * @Groups("entity")
      */
     private $tipoArtigo;
 

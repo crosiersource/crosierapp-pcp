@@ -5,6 +5,7 @@ namespace App\Entity;
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityId;
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityIdTrait;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * LoteProducao
@@ -23,6 +24,7 @@ class LoteProducao implements EntityId
      * @var int
      *
      * @ORM\Column(name="codigo", type="integer", nullable=false)
+     * @Groups("entity")
      */
     private $codigo;
 
@@ -30,6 +32,7 @@ class LoteProducao implements EntityId
      * @var string
      *
      * @ORM\Column(name="descricao", type="string", length=200, nullable=false)
+     * @Groups("entity")
      */
     private $descricao;
 
@@ -37,8 +40,10 @@ class LoteProducao implements EntityId
      * @var \DateTime|null
      *
      * @ORM\Column(name="dt_lote", type="date", nullable=true)
+     * @Groups("entity")
      */
     private $dtLote;
+
 
     /**
      * @return int

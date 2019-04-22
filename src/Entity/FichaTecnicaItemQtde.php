@@ -5,6 +5,7 @@ namespace App\Entity;
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityId;
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityIdTrait;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * FichaTecnicaItemQtde
@@ -24,6 +25,7 @@ class FichaTecnicaItemQtde implements EntityId
      * @var string|null
      *
      * @ORM\Column(name="qtde", type="decimal", precision=15, scale=3, nullable=true)
+     * @Groups("entity")
      */
     private $qtde;
 
@@ -31,6 +33,7 @@ class FichaTecnicaItemQtde implements EntityId
      * @var int
      *
      * @ORM\Column(name="grade_tamanho_id", type="bigint", nullable=false)
+     * @Groups("entity")
      */
     private $gradeTamanhoId;
 
@@ -41,8 +44,9 @@ class FichaTecnicaItemQtde implements EntityId
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="confeccao_item_id", referencedColumnName="id")
      * })
+     * @Groups("entity")
      */
-    private $confeccaoItem;
+    private $fichaTecnicaItem;
 
     /**
      * @return null|string
@@ -83,18 +87,18 @@ class FichaTecnicaItemQtde implements EntityId
     /**
      * @return FichaTecnicaItem
      */
-    public function getConfeccaoItem(): FichaTecnicaItem
+    public function getFichaTecnicaItem(): FichaTecnicaItem
     {
-        return $this->confeccaoItem;
+        return $this->fichaTecnicaItem;
     }
 
     /**
-     * @param FichaTecnicaItem $confeccaoItem
+     * @param FichaTecnicaItem $fichaTecnicaItem
      * @return FichaTecnicaItemQtde
      */
-    public function setConfeccaoItem(FichaTecnicaItem $confeccaoItem): FichaTecnicaItemQtde
+    public function setFichaTecnicaItem(FichaTecnicaItem $fichaTecnicaItem): FichaTecnicaItemQtde
     {
-        $this->confeccaoItem = $confeccaoItem;
+        $this->fichaTecnicaItem = $fichaTecnicaItem;
         return $this;
     }
 

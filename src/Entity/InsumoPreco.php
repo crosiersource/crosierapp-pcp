@@ -5,6 +5,7 @@ namespace App\Entity;
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityId;
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityIdTrait;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * InsumoPreco
@@ -23,6 +24,7 @@ class InsumoPreco implements EntityId
      * @var float
      *
      * @ORM\Column(name="coeficiente", type="float", precision=10, scale=0, nullable=false)
+     * @Groups("entity")
      */
     private $coeficiente;
 
@@ -30,6 +32,7 @@ class InsumoPreco implements EntityId
      * @var float
      *
      * @ORM\Column(name="custo_operacional", type="float", precision=10, scale=0, nullable=false)
+     * @Groups("entity")
      */
     private $custoOperacional;
 
@@ -37,6 +40,7 @@ class InsumoPreco implements EntityId
      * @var \DateTime
      *
      * @ORM\Column(name="dt_custo", type="date", nullable=false)
+     * @Groups("entity")
      */
     private $dtCusto;
 
@@ -44,6 +48,7 @@ class InsumoPreco implements EntityId
      * @var float
      *
      * @ORM\Column(name="margem", type="float", precision=10, scale=0, nullable=false)
+     * @Groups("entity")
      */
     private $margem;
 
@@ -51,6 +56,7 @@ class InsumoPreco implements EntityId
      * @var int
      *
      * @ORM\Column(name="prazo", type="integer", nullable=false)
+     * @Groups("entity")
      */
     private $prazo;
 
@@ -58,6 +64,7 @@ class InsumoPreco implements EntityId
      * @var float
      *
      * @ORM\Column(name="preco_custo", type="float", precision=10, scale=0, nullable=false)
+     * @Groups("entity")
      */
     private $precoCusto;
 
@@ -65,6 +72,7 @@ class InsumoPreco implements EntityId
      * @var float
      *
      * @ORM\Column(name="preco_prazo", type="float", precision=10, scale=0, nullable=false)
+     * @Groups("entity")
      */
     private $precoPrazo;
 
@@ -72,6 +80,7 @@ class InsumoPreco implements EntityId
      * @var float
      *
      * @ORM\Column(name="preco_vista", type="float", precision=10, scale=0, nullable=false)
+     * @Groups("entity")
      */
     private $precoVista;
 
@@ -79,6 +88,7 @@ class InsumoPreco implements EntityId
      * @var int|null
      *
      * @ORM\Column(name="fornecedor_id", type="bigint", nullable=true)
+     * @Groups("entity")
      */
     private $fornecedorId;
 
@@ -86,6 +96,7 @@ class InsumoPreco implements EntityId
      * @var int
      *
      * @ORM\Column(name="insumo_id", type="bigint", nullable=false)
+     * @Groups("entity")
      */
     private $insumoId;
 
@@ -93,6 +104,7 @@ class InsumoPreco implements EntityId
      * @var string
      *
      * @ORM\Column(name="custo_financeiro", type="decimal", precision=19, scale=2, nullable=false)
+     * @Groups("entity")
      */
     private $custoFinanceiro;
 
@@ -100,8 +112,10 @@ class InsumoPreco implements EntityId
      * @var bool
      *
      * @ORM\Column(name="atual", type="boolean", nullable=false)
+     * @Groups("entity")
      */
     private $atual;
+
 
     /**
      * @return float

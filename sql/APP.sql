@@ -16,7 +16,7 @@ DELETE FROM cfg_entmenu WHERE uuid = 'f9e6121f-d696-49dc-90c4-110b5d15b891';
 
 
 INSERT INTO cfg_app(uuid,nome,obs,default_entmenu_uuid,inserted,updated,estabelecimento_id,user_inserted_id,user_updated_id) 
-VALUES ('bfacf76d-2ff2-42c2-854c-bb5b10d78c92','PCP','CrosierApp para Controle de Produção','92f4e43c-cdd9-45fd-9077-cba05cbcfbf3',now(),now(),1,1,1);
+VALUES ('bfacf76d-2ff2-42c2-854c-bb5b10d78c92','PCP','CrosierApp para Controle de Produção','90a155bf-0d77-499c-8465-330bc4ce1dd9',now(),now(),1,1,1);
 
 INSERT INTO cfg_program(uuid, descricao, url, app_uuid, entmenu_uuid ,inserted, updated, estabelecimento_id, user_inserted_id, user_updated_id)
 VALUES ('5875756c-d16d-4906-b4d0-fd60db47ba21','Dashboard - PCP', '/', 'bfacf76d-2ff2-42c2-854c-bb5b10d78c92', null, now(), now(), 1, 1, 1);

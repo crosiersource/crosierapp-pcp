@@ -27,8 +27,9 @@ class FichaTecnicaItem implements EntityId
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="confeccao_id", referencedColumnName="id")
      * })
+     * @Groups("entity")
      */
-    private $confeccao;
+    private $fichaTecnica;
 
     /**
      * @var Insumo
@@ -37,24 +38,25 @@ class FichaTecnicaItem implements EntityId
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="insumo_id", referencedColumnName="id")
      * })
+     * @Groups("entity")
      */
     private $insumo;
 
     /**
      * @return FichaTecnica
      */
-    public function getConfeccao(): FichaTecnica
+    public function getFichaTecnica(): FichaTecnica
     {
-        return $this->confeccao;
+        return $this->fichaTecnica;
     }
 
     /**
-     * @param FichaTecnica $confeccao
+     * @param FichaTecnica $fichaTecnica
      * @return FichaTecnicaItem
      */
-    public function setConfeccao(FichaTecnica $confeccao): FichaTecnicaItem
+    public function setFichaTecnica(FichaTecnica $fichaTecnica): FichaTecnicaItem
     {
-        $this->confeccao = $confeccao;
+        $this->fichaTecnica = $fichaTecnica;
         return $this;
     }
 

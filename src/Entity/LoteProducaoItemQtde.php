@@ -5,6 +5,7 @@ namespace App\Entity;
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityId;
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityIdTrait;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * LoteProducaoItemQtde
@@ -23,6 +24,7 @@ class LoteProducaoItemQtde implements EntityId
      * @var int
      *
      * @ORM\Column(name="qtde", type="integer", nullable=false)
+     * @Groups("entity")
      */
     private $qtde;
 
@@ -30,6 +32,7 @@ class LoteProducaoItemQtde implements EntityId
      * @var int
      *
      * @ORM\Column(name="grade_tamanho_id", type="bigint", nullable=false)
+     * @Groups("entity")
      */
     private $gradeTamanhoId;
 
@@ -40,8 +43,10 @@ class LoteProducaoItemQtde implements EntityId
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="lote_confeccao_item_id", referencedColumnName="id")
      * })
+     * @Groups("entity")
      */
-    private $loteConfeccaoItem;
+    private $loteProducaoItem;
+
 
     /**
      * @return int
@@ -82,18 +87,18 @@ class LoteProducaoItemQtde implements EntityId
     /**
      * @return LoteProducaoItem
      */
-    public function getLoteConfeccaoItem(): LoteProducaoItem
+    public function getLoteProducaoItem(): LoteProducaoItem
     {
-        return $this->loteConfeccaoItem;
+        return $this->loteProducaoItem;
     }
 
     /**
-     * @param LoteProducaoItem $loteConfeccaoItem
+     * @param LoteProducaoItem $loteProducaoItem
      * @return LoteProducaoItemQtde
      */
-    public function setLoteConfeccaoItem(LoteProducaoItem $loteConfeccaoItem): LoteProducaoItemQtde
+    public function setLoteProducaoItem(LoteProducaoItem $loteProducaoItem): LoteProducaoItemQtde
     {
-        $this->loteConfeccaoItem = $loteConfeccaoItem;
+        $this->loteProducaoItem = $loteProducaoItem;
         return $this;
     }
 

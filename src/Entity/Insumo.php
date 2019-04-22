@@ -5,6 +5,7 @@ namespace App\Entity;
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityId;
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityIdTrait;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * Insumo
@@ -23,6 +24,7 @@ class Insumo implements EntityId
      * @var int
      *
      * @ORM\Column(name="codigo", type="integer", nullable=false)
+     * @Groups("entity")
      */
     private $codigo;
 
@@ -30,6 +32,7 @@ class Insumo implements EntityId
      * @var string
      *
      * @ORM\Column(name="descricao", type="string", length=200, nullable=false)
+     * @Groups("entity")
      */
     private $descricao;
 
@@ -37,6 +40,7 @@ class Insumo implements EntityId
      * @var int
      *
      * @ORM\Column(name="unidade_produto_id", type="bigint", nullable=false)
+     * @Groups("entity")
      */
     private $unidadeProdutoId;
 
@@ -47,8 +51,10 @@ class Insumo implements EntityId
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="tipo_insumo_id", referencedColumnName="id")
      * })
+     * @Groups("entity")
      */
     private $tipoInsumo;
+
 
     /**
      * @return int
