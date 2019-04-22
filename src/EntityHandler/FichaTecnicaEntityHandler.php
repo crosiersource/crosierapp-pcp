@@ -2,20 +2,20 @@
 
 namespace App\EntityHandler;
 
-use App\Entity\Coisa;
+use App\Entity\FichaTecnica;
 use CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler;
 
 /**
- * EntityHandler para a entidade Coisa.
+ * EntityHandler para a entidade FichaTecnica.
  *
  * @package App\EntityHandler
  * @author Carlos Eduardo Pauluk
  */
-class CoisaEntityHandler extends EntityHandler
+class FichaTecnicaEntityHandler extends EntityHandler
 {
 
     public function getEntityClass()
     {
-        return Coisa::class;
+        return FichaTecnica::class;
     }
 }
