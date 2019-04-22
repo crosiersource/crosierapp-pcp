@@ -1,0 +1,124 @@
+<?php
+
+namespace App\Entity;
+
+use CrosierSource\CrosierLibBaseBundle\Entity\EntityId;
+use CrosierSource\CrosierLibBaseBundle\Entity\EntityIdTrait;
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * TipoArtigo
+ *
+ * @ORM\Table(name="prod_tipo_artigo")
+ * @ORM\Entity(repositoryClass="App\Repository\TipoArtigoRepository")
+ *
+ * @author Carlos Eduardo Pauluk
+ */
+class TipoArtigo implements EntityId
+{
+
+    use EntityIdTrait;
+
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="codigo", type="integer", nullable=false)
+     */
+    private $codigo;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="descricao", type="string", length=100, nullable=false)
+     */
+    private $descricao;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="modo_calculo", type="string", length=15, nullable=false)
+     */
+    private $modoCalculo;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="subdepto_id", type="bigint", nullable=false)
+     */
+    private $subdeptoId;
+
+    /**
+     * @return int
+     */
+    public function getCodigo(): int
+    {
+        return $this->codigo;
+    }
+
+    /**
+     * @param int $codigo
+     * @return TipoArtigo
+     */
+    public function setCodigo(int $codigo): TipoArtigo
+    {
+        $this->codigo = $codigo;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDescricao(): string
+    {
+        return $this->descricao;
+    }
+
+    /**
+     * @param string $descricao
+     * @return TipoArtigo
+     */
+    public function setDescricao(string $descricao): TipoArtigo
+    {
+        $this->descricao = $descricao;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getModoCalculo(): string
+    {
+        return $this->modoCalculo;
+    }
+
+    /**
+     * @param string $modoCalculo
+     * @return TipoArtigo
+     */
+    public function setModoCalculo(string $modoCalculo): TipoArtigo
+    {
+        $this->modoCalculo = $modoCalculo;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getSubdeptoId(): int
+    {
+        return $this->subdeptoId;
+    }
+
+    /**
+     * @param int $subdeptoId
+     * @return TipoArtigo
+     */
+    public function setSubdeptoId(int $subdeptoId): TipoArtigo
+    {
+        $this->subdeptoId = $subdeptoId;
+        return $this;
+    }
+
+
+}

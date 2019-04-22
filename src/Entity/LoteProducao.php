@@ -1,0 +1,98 @@
+<?php
+
+namespace App\Entity;
+
+use CrosierSource\CrosierLibBaseBundle\Entity\EntityId;
+use CrosierSource\CrosierLibBaseBundle\Entity\EntityIdTrait;
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * LoteProducao
+ *
+ * @ORM\Table(name="prod_lote_confeccao")
+ * @ORM\Entity(repositoryClass="App\Repository\LoteProducaoRepository")
+ *
+ * @author Carlos Eduardo Pauluk
+ */
+class LoteProducao implements EntityId
+{
+
+    use EntityIdTrait;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="codigo", type="integer", nullable=false)
+     */
+    private $codigo;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="descricao", type="string", length=200, nullable=false)
+     */
+    private $descricao;
+
+    /**
+     * @var \DateTime|null
+     *
+     * @ORM\Column(name="dt_lote", type="date", nullable=true)
+     */
+    private $dtLote;
+
+    /**
+     * @return int
+     */
+    public function getCodigo(): int
+    {
+        return $this->codigo;
+    }
+
+    /**
+     * @param int $codigo
+     * @return LoteProducao
+     */
+    public function setCodigo(int $codigo): LoteProducao
+    {
+        $this->codigo = $codigo;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDescricao(): string
+    {
+        return $this->descricao;
+    }
+
+    /**
+     * @param string $descricao
+     * @return LoteProducao
+     */
+    public function setDescricao(string $descricao): LoteProducao
+    {
+        $this->descricao = $descricao;
+        return $this;
+    }
+
+    /**
+     * @return \DateTime|null
+     */
+    public function getDtLote(): ?\DateTime
+    {
+        return $this->dtLote;
+    }
+
+    /**
+     * @param \DateTime|null $dtLote
+     * @return LoteProducao
+     */
+    public function setDtLote(?\DateTime $dtLote): LoteProducao
+    {
+        $this->dtLote = $dtLote;
+        return $this;
+    }
+
+
+}

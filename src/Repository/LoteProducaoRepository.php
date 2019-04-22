@@ -2,21 +2,22 @@
 
 namespace App\Repository;
 
-use App\Entity\Coisa;
+
+use App\Entity\LoteProducao;
 use CrosierSource\CrosierLibBaseBundle\Repository\FilterRepository;
 
 /**
- * Repository para a entidade Coisa.
+ * Repository para a entidade LoteProducao.
  *
  * @author Carlos Eduardo Pauluk
  *
  */
-class CoisaRepository extends FilterRepository
+class LoteProducaoRepository extends FilterRepository
 {
 
     public function getEntityClass(): string
     {
-        return Coisa::class;
+        return LoteProducao::class;
     }
 
 
