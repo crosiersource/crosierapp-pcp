@@ -21,7 +21,7 @@ class Insumo implements EntityId
     use EntityIdTrait;
 
     /**
-     * @var int
+     * @var null|int
      *
      * @ORM\Column(name="codigo", type="integer", nullable=false)
      * @Groups("entity")
@@ -29,7 +29,7 @@ class Insumo implements EntityId
     private $codigo;
 
     /**
-     * @var string
+     * @var null|string
      *
      * @ORM\Column(name="descricao", type="string", length=200, nullable=false)
      * @Groups("entity")
@@ -37,7 +37,7 @@ class Insumo implements EntityId
     private $descricao;
 
     /**
-     * @var int
+     * @var null|int
      *
      * @ORM\Column(name="unidade_produto_id", type="bigint", nullable=false)
      * @Groups("entity")
@@ -45,7 +45,7 @@ class Insumo implements EntityId
     private $unidadeProdutoId;
 
     /**
-     * @var TipoInsumo
+     * @var null|TipoInsumo
      *
      * @ORM\ManyToOne(targetEntity="TipoInsumo")
      * @ORM\JoinColumns({
@@ -56,73 +56,74 @@ class Insumo implements EntityId
     private $tipoInsumo;
 
 
-    /**
-     * @return int
-     */
-    public function getCodigo(): int
+    public function getCodigo($format = false)
     {
+        if ($format) {
+            return str_pad($this->codigo, 3, '0', STR_PAD_LEFT);
+        }
+
         return $this->codigo;
     }
 
     /**
-     * @param int $codigo
+     * @param int|null $codigo
      * @return Insumo
      */
-    public function setCodigo(int $codigo): Insumo
+    public function setCodigo(?int $codigo): Insumo
     {
         $this->codigo = $codigo;
         return $this;
     }
 
     /**
-     * @return string
+     * @return null|string
      */
-    public function getDescricao(): string
+    public function getDescricao(): ?string
     {
         return $this->descricao;
     }
 
     /**
-     * @param string $descricao
+     * @param null|string $descricao
      * @return Insumo
      */
-    public function setDescricao(string $descricao): Insumo
+    public function setDescricao(?string $descricao): Insumo
     {
         $this->descricao = $descricao;
         return $this;
     }
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function getUnidadeProdutoId(): int
+    public function getUnidadeProdutoId(): ?int
     {
         return $this->unidadeProdutoId;
     }
 
     /**
-     * @param int $unidadeProdutoId
+     * @param int|null $unidadeProdutoId
      * @return Insumo
      */
-    public function setUnidadeProdutoId(int $unidadeProdutoId): Insumo
+    public function setUnidadeProdutoId(?int $unidadeProdutoId): Insumo
     {
         $this->unidadeProdutoId = $unidadeProdutoId;
         return $this;
     }
 
     /**
-     * @return TipoInsumo
+     * @return TipoInsumo|null
      */
-    public function getTipoInsumo(): TipoInsumo
+    public function getTipoInsumo(): ?TipoInsumo
     {
         return $this->tipoInsumo;
     }
 
     /**
-     * @param TipoInsumo $tipoInsumo
+     * @param TipoInsumo|null $tipoInsumo
      * @return Insumo
      */
-    public function setTipoInsumo(TipoInsumo $tipoInsumo): Insumo
+    public function setTipoInsumo(?TipoInsumo $tipoInsumo): Insumo
     {
         $this->tipoInsumo = $tipoInsumo;
         return $this;

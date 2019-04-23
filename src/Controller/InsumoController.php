@@ -3,9 +3,9 @@
 namespace App\Controller;
 
 
-use App\Entity\TipoInsumo;
-use App\EntityHandler\TipoInsumoEntityHandler;
-use App\Form\TipoInsumoType;
+use App\Entity\Insumo;
+use App\EntityHandler\InsumoEntityHandler;
+use App\Form\InsumoType;
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\FilterData;
 use Symfony\Component\HttpFoundation\Request;
@@ -13,38 +13,38 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * CRUD Controller para TipoInsumo.
+ * CRUD Controller para Insumo.
  *
  * @package App\Controller\Financeiro
  * @author Carlos Eduardo Pauluk
  */
-class TipoInsumoController extends FormListController
+class InsumoController extends FormListController
 {
 
     protected $crudParams =
         [
-            'typeClass' => TipoInsumoType::class,
+            'typeClass' => InsumoType::class,
 
             'formView' => '@CrosierLibBase/form.html.twig',
-            'formRoute' => 'tipoInsumo_form',
-            'formPageTitle' => 'Tipo de Insumo',
+            'formRoute' => 'insumo_form',
+            'formPageTitle' => 'Insumo',
             'form_PROGRAM_UUID' => null,
 
             'listView' => '@CrosierLibBase/list.html.twig',
-            'listRoute' => 'tipoInsumo_list',
-            'listRouteAjax' => 'tipoInsumo_datatablesJsList',
-            'listPageTitle' => 'Tipos de Insumos',
-            'listId' => 'tipoInsumoList',
+            'listRoute' => 'insumo_list',
+            'listRouteAjax' => 'insumo_datatablesJsList',
+            'listPageTitle' => 'Insumos',
+            'listId' => 'insumoList',
             'list_PROGRAM_UUID' => null,
-            'listJS' => 'tipoInsumoList.js',
+            'listJS' => 'insumoList.js',
 
         ];
 
     /**
      * @required
-     * @param TipoInsumoEntityHandler $entityHandler
+     * @param InsumoEntityHandler $entityHandler
      */
-    public function setEntityHandler(TipoInsumoEntityHandler $entityHandler): void
+    public function setEntityHandler(InsumoEntityHandler $entityHandler): void
     {
         $this->entityHandler = $entityHandler;
     }
@@ -52,26 +52,26 @@ class TipoInsumoController extends FormListController
     public function getFilterDatas(array $params): array
     {
         return [
-            new FilterData(['descricao'], 'LIKE', 'descricao', $params)
+            new FilterData(['descricao', 'ti.descricao'], 'LIKE', 'str', $params)
         ];
     }
 
     /**
      *
-     * @Route("/tipoInsumo/form/{id}", name="tipoInsumo_form", defaults={"id"=null}, requirements={"id"="\d+"})
+     * @Route("/insumo/form/{id}", name="insumo_form", defaults={"id"=null}, requirements={"id"="\d+"})
      * @param Request $request
-     * @param TipoInsumo|null $tipoInsumo
+     * @param Insumo|null $insumo
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      * @throws \Exception
      */
-    public function form(Request $request, TipoInsumo $tipoInsumo = null)
+    public function form(Request $request, Insumo $insumo = null)
     {
-        return $this->doForm($request, $tipoInsumo);
+        return $this->doForm($request, $insumo);
     }
 
     /**
      *
-     * @Route("/tipoInsumo/list/", name="tipoInsumo_list")
+     * @Route("/insumo/list/", name="insumo_list")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
      * @throws \Exception
@@ -83,7 +83,7 @@ class TipoInsumoController extends FormListController
 
     /**
      *
-     * @Route("/tipoInsumo/datatablesJsList/", name="tipoInsumo_datatablesJsList")
+     * @Route("/insumo/datatablesJsList/", name="insumo_datatablesJsList")
      * @param Request $request
      * @return Response
      * @throws \CrosierSource\CrosierLibBaseBundle\Exception\ViewException
@@ -95,14 +95,14 @@ class TipoInsumoController extends FormListController
 
     /**
      *
-     * @Route("/tipoInsumo/delete/{id}/", name="tipoInsumo_delete", requirements={"id"="\d+"})
+     * @Route("/insumo/delete/{id}/", name="insumo_delete", requirements={"id"="\d+"})
      * @param Request $request
-     * @param TipoInsumo $tipoInsumo
+     * @param Insumo $insumo
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function delete(Request $request, TipoInsumo $tipoInsumo): \Symfony\Component\HttpFoundation\RedirectResponse
+    public function delete(Request $request, Insumo $insumo): \Symfony\Component\HttpFoundation\RedirectResponse
     {
-        return $this->doDelete($request, $tipoInsumo);
+        return $this->doDelete($request, $insumo);
     }
 
 

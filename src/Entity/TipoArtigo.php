@@ -22,7 +22,7 @@ class TipoArtigo implements EntityId
 
 
     /**
-     * @var int
+     * @var null|int
      *
      * @ORM\Column(name="codigo", type="integer", nullable=false)
      * @Groups("entity")
@@ -30,7 +30,7 @@ class TipoArtigo implements EntityId
     private $codigo;
 
     /**
-     * @var string
+     * @var null|string
      *
      * @ORM\Column(name="descricao", type="string", length=100, nullable=false)
      * @Groups("entity")
@@ -38,7 +38,7 @@ class TipoArtigo implements EntityId
     private $descricao;
 
     /**
-     * @var string
+     * @var null|string
      *
      * @ORM\Column(name="modo_calculo", type="string", length=15, nullable=false)
      * @Groups("entity")
@@ -46,7 +46,7 @@ class TipoArtigo implements EntityId
     private $modoCalculo;
 
     /**
-     * @var int
+     * @var null|int
      *
      * @ORM\Column(name="subdepto_id", type="bigint", nullable=false)
      * @Groups("entity")
@@ -54,74 +54,73 @@ class TipoArtigo implements EntityId
     private $subdeptoId;
 
 
-
-    /**
-     * @return int
-     */
-    public function getCodigo(): int
+    public function getCodigo($format = false)
     {
+        if ($format) {
+            return str_pad($this->codigo, 3, '0', STR_PAD_LEFT);
+        }
+
         return $this->codigo;
     }
 
     /**
-     * @param int $codigo
-     * @return TipoArtigo
+     * @return null|string
      */
-    public function setCodigo(int $codigo): TipoArtigo
-    {
-        $this->codigo = $codigo;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getDescricao(): string
+    public function getDescricao(): ?string
     {
         return $this->descricao;
     }
 
     /**
-     * @param string $descricao
+     * @return string
+     * @Groups("entity")
+     */
+    public function getDescricaoMontada(): string
+    {
+        return $this->getCodigo(true) . ' - ' . $this->getDescricao();
+    }
+
+    /**
+     * @param null|string $descricao
      * @return TipoArtigo
      */
-    public function setDescricao(string $descricao): TipoArtigo
+    public function setDescricao(?string $descricao): TipoArtigo
     {
         $this->descricao = $descricao;
         return $this;
     }
 
     /**
-     * @return string
+     * @return null|string
      */
-    public function getModoCalculo(): string
+    public function getModoCalculo(): ?string
     {
         return $this->modoCalculo;
     }
 
     /**
-     * @param string $modoCalculo
+     * @param null|string $modoCalculo
      * @return TipoArtigo
      */
-    public function setModoCalculo(string $modoCalculo): TipoArtigo
+    public function setModoCalculo(?string $modoCalculo): TipoArtigo
     {
         $this->modoCalculo = $modoCalculo;
         return $this;
     }
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function getSubdeptoId(): int
+    public function getSubdeptoId(): ?int
     {
         return $this->subdeptoId;
     }
 
     /**
-     * @param int $subdeptoId
+     * @param int|null $subdeptoId
      * @return TipoArtigo
      */
-    public function setSubdeptoId(int $subdeptoId): TipoArtigo
+    public function setSubdeptoId(?int $subdeptoId): TipoArtigo
     {
         $this->subdeptoId = $subdeptoId;
         return $this;

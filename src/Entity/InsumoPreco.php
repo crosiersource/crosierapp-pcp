@@ -21,7 +21,7 @@ class InsumoPreco implements EntityId
     use EntityIdTrait;
 
     /**
-     * @var float
+     * @var null|float
      *
      * @ORM\Column(name="coeficiente", type="float", precision=10, scale=0, nullable=false)
      * @Groups("entity")
@@ -29,7 +29,7 @@ class InsumoPreco implements EntityId
     private $coeficiente;
 
     /**
-     * @var float
+     * @var null|float
      *
      * @ORM\Column(name="custo_operacional", type="float", precision=10, scale=0, nullable=false)
      * @Groups("entity")
@@ -37,7 +37,7 @@ class InsumoPreco implements EntityId
     private $custoOperacional;
 
     /**
-     * @var \DateTime
+     * @var null|\DateTime
      *
      * @ORM\Column(name="dt_custo", type="date", nullable=false)
      * @Groups("entity")
@@ -45,7 +45,7 @@ class InsumoPreco implements EntityId
     private $dtCusto;
 
     /**
-     * @var float
+     * @var null|float
      *
      * @ORM\Column(name="margem", type="float", precision=10, scale=0, nullable=false)
      * @Groups("entity")
@@ -53,7 +53,7 @@ class InsumoPreco implements EntityId
     private $margem;
 
     /**
-     * @var int
+     * @var null|int
      *
      * @ORM\Column(name="prazo", type="integer", nullable=false)
      * @Groups("entity")
@@ -61,7 +61,7 @@ class InsumoPreco implements EntityId
     private $prazo;
 
     /**
-     * @var float
+     * @var null|float
      *
      * @ORM\Column(name="preco_custo", type="float", precision=10, scale=0, nullable=false)
      * @Groups("entity")
@@ -69,7 +69,7 @@ class InsumoPreco implements EntityId
     private $precoCusto;
 
     /**
-     * @var float
+     * @var null|float
      *
      * @ORM\Column(name="preco_prazo", type="float", precision=10, scale=0, nullable=false)
      * @Groups("entity")
@@ -77,7 +77,7 @@ class InsumoPreco implements EntityId
     private $precoPrazo;
 
     /**
-     * @var float
+     * @var null|float
      *
      * @ORM\Column(name="preco_vista", type="float", precision=10, scale=0, nullable=false)
      * @Groups("entity")
@@ -85,7 +85,7 @@ class InsumoPreco implements EntityId
     private $precoVista;
 
     /**
-     * @var int|null
+     * @var null|int
      *
      * @ORM\Column(name="fornecedor_id", type="bigint", nullable=true)
      * @Groups("entity")
@@ -93,7 +93,7 @@ class InsumoPreco implements EntityId
     private $fornecedorId;
 
     /**
-     * @var int
+     * @var null|int
      *
      * @ORM\Column(name="insumo_id", type="bigint", nullable=false)
      * @Groups("entity")
@@ -101,7 +101,7 @@ class InsumoPreco implements EntityId
     private $insumoId;
 
     /**
-     * @var string
+     * @var null|string
      *
      * @ORM\Column(name="custo_financeiro", type="decimal", precision=19, scale=2, nullable=false)
      * @Groups("entity")
@@ -109,153 +109,152 @@ class InsumoPreco implements EntityId
     private $custoFinanceiro;
 
     /**
-     * @var bool
+     * @var null|bool
      *
      * @ORM\Column(name="atual", type="boolean", nullable=false)
      * @Groups("entity")
      */
     private $atual;
 
-
     /**
-     * @return float
+     * @return float|null
      */
-    public function getCoeficiente(): float
+    public function getCoeficiente(): ?float
     {
         return $this->coeficiente;
     }
 
     /**
-     * @param float $coeficiente
+     * @param float|null $coeficiente
      * @return InsumoPreco
      */
-    public function setCoeficiente(float $coeficiente): InsumoPreco
+    public function setCoeficiente(?float $coeficiente): InsumoPreco
     {
         $this->coeficiente = $coeficiente;
         return $this;
     }
 
     /**
-     * @return float
+     * @return float|null
      */
-    public function getCustoOperacional(): float
+    public function getCustoOperacional(): ?float
     {
         return $this->custoOperacional;
     }
 
     /**
-     * @param float $custoOperacional
+     * @param float|null $custoOperacional
      * @return InsumoPreco
      */
-    public function setCustoOperacional(float $custoOperacional): InsumoPreco
+    public function setCustoOperacional(?float $custoOperacional): InsumoPreco
     {
         $this->custoOperacional = $custoOperacional;
         return $this;
     }
 
     /**
-     * @return \DateTime
+     * @return \DateTime|null
      */
-    public function getDtCusto(): \DateTime
+    public function getDtCusto(): ?\DateTime
     {
         return $this->dtCusto;
     }
 
     /**
-     * @param \DateTime $dtCusto
+     * @param \DateTime|null $dtCusto
      * @return InsumoPreco
      */
-    public function setDtCusto(\DateTime $dtCusto): InsumoPreco
+    public function setDtCusto(?\DateTime $dtCusto): InsumoPreco
     {
         $this->dtCusto = $dtCusto;
         return $this;
     }
 
     /**
-     * @return float
+     * @return float|null
      */
-    public function getMargem(): float
+    public function getMargem(): ?float
     {
         return $this->margem;
     }
 
     /**
-     * @param float $margem
+     * @param float|null $margem
      * @return InsumoPreco
      */
-    public function setMargem(float $margem): InsumoPreco
+    public function setMargem(?float $margem): InsumoPreco
     {
         $this->margem = $margem;
         return $this;
     }
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function getPrazo(): int
+    public function getPrazo(): ?int
     {
         return $this->prazo;
     }
 
     /**
-     * @param int $prazo
+     * @param int|null $prazo
      * @return InsumoPreco
      */
-    public function setPrazo(int $prazo): InsumoPreco
+    public function setPrazo(?int $prazo): InsumoPreco
     {
         $this->prazo = $prazo;
         return $this;
     }
 
     /**
-     * @return float
+     * @return float|null
      */
-    public function getPrecoCusto(): float
+    public function getPrecoCusto(): ?float
     {
         return $this->precoCusto;
     }
 
     /**
-     * @param float $precoCusto
+     * @param float|null $precoCusto
      * @return InsumoPreco
      */
-    public function setPrecoCusto(float $precoCusto): InsumoPreco
+    public function setPrecoCusto(?float $precoCusto): InsumoPreco
     {
         $this->precoCusto = $precoCusto;
         return $this;
     }
 
     /**
-     * @return float
+     * @return float|null
      */
-    public function getPrecoPrazo(): float
+    public function getPrecoPrazo(): ?float
     {
         return $this->precoPrazo;
     }
 
     /**
-     * @param float $precoPrazo
+     * @param float|null $precoPrazo
      * @return InsumoPreco
      */
-    public function setPrecoPrazo(float $precoPrazo): InsumoPreco
+    public function setPrecoPrazo(?float $precoPrazo): InsumoPreco
     {
         $this->precoPrazo = $precoPrazo;
         return $this;
     }
 
     /**
-     * @return float
+     * @return float|null
      */
-    public function getPrecoVista(): float
+    public function getPrecoVista(): ?float
     {
         return $this->precoVista;
     }
 
     /**
-     * @param float $precoVista
+     * @param float|null $precoVista
      * @return InsumoPreco
      */
-    public function setPrecoVista(float $precoVista): InsumoPreco
+    public function setPrecoVista(?float $precoVista): InsumoPreco
     {
         $this->precoVista = $precoVista;
         return $this;
@@ -280,54 +279,54 @@ class InsumoPreco implements EntityId
     }
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function getInsumoId(): int
+    public function getInsumoId(): ?int
     {
         return $this->insumoId;
     }
 
     /**
-     * @param int $insumoId
+     * @param int|null $insumoId
      * @return InsumoPreco
      */
-    public function setInsumoId(int $insumoId): InsumoPreco
+    public function setInsumoId(?int $insumoId): InsumoPreco
     {
         $this->insumoId = $insumoId;
         return $this;
     }
 
     /**
-     * @return string
+     * @return null|string
      */
-    public function getCustoFinanceiro(): string
+    public function getCustoFinanceiro(): ?string
     {
         return $this->custoFinanceiro;
     }
 
     /**
-     * @param string $custoFinanceiro
+     * @param null|string $custoFinanceiro
      * @return InsumoPreco
      */
-    public function setCustoFinanceiro(string $custoFinanceiro): InsumoPreco
+    public function setCustoFinanceiro(?string $custoFinanceiro): InsumoPreco
     {
         $this->custoFinanceiro = $custoFinanceiro;
         return $this;
     }
 
     /**
-     * @return bool
+     * @return bool|null
      */
-    public function isAtual(): bool
+    public function getAtual(): ?bool
     {
         return $this->atual;
     }
 
     /**
-     * @param bool $atual
+     * @param bool|null $atual
      * @return InsumoPreco
      */
-    public function setAtual(bool $atual): InsumoPreco
+    public function setAtual(?bool $atual): InsumoPreco
     {
         $this->atual = $atual;
         return $this;

@@ -10,7 +10,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 /**
  * FichaTecnicaPreco
  *
- * @ORM\Table(name="prod_confeccao_preco")
+ * @ORM\Table(name="prod_fichatecnica_preco")
  * @ORM\Entity(repositoryClass="App\Repository\FichaTecnicaPrecoRepository")
  *
  * @author Carlos Eduardo Pauluk
@@ -21,7 +21,7 @@ class FichaTecnicaPreco implements EntityId
     use EntityIdTrait;
 
     /**
-     * @var float
+     * @var null|float
      *
      * @ORM\Column(name="coeficiente", type="float", precision=10, scale=0, nullable=false)
      * @Groups("entity")
@@ -29,7 +29,7 @@ class FichaTecnicaPreco implements EntityId
     private $coeficiente;
 
     /**
-     * @var float
+     * @var null|float
      *
      * @ORM\Column(name="custo_operacional", type="float", precision=10, scale=0, nullable=false)
      * @Groups("entity")
@@ -37,7 +37,7 @@ class FichaTecnicaPreco implements EntityId
     private $custoOperacional;
 
     /**
-     * @var string
+     * @var null|string
      *
      * @ORM\Column(name="descricao", type="string", length=200, nullable=false)
      * @Groups("entity")
@@ -45,7 +45,7 @@ class FichaTecnicaPreco implements EntityId
     private $descricao;
 
     /**
-     * @var \DateTime
+     * @var null|\DateTime
      *
      * @ORM\Column(name="dt_custo", type="date", nullable=false)
      * @Groups("entity")
@@ -53,7 +53,7 @@ class FichaTecnicaPreco implements EntityId
     private $dtCusto;
 
     /**
-     * @var float
+     * @var null|float
      *
      * @ORM\Column(name="margem", type="float", precision=10, scale=0, nullable=false)
      * @Groups("entity")
@@ -61,7 +61,7 @@ class FichaTecnicaPreco implements EntityId
     private $margem;
 
     /**
-     * @var int
+     * @var null|int
      *
      * @ORM\Column(name="prazo", type="integer", nullable=false)
      * @Groups("entity")
@@ -69,7 +69,7 @@ class FichaTecnicaPreco implements EntityId
     private $prazo;
 
     /**
-     * @var float
+     * @var null|float
      *
      * @ORM\Column(name="preco_custo", type="float", precision=10, scale=0, nullable=false)
      * @Groups("entity")
@@ -77,7 +77,7 @@ class FichaTecnicaPreco implements EntityId
     private $precoCusto;
 
     /**
-     * @var float
+     * @var null|float
      *
      * @ORM\Column(name="preco_prazo", type="float", precision=10, scale=0, nullable=false)
      * @Groups("entity")
@@ -85,7 +85,7 @@ class FichaTecnicaPreco implements EntityId
     private $precoPrazo;
 
     /**
-     * @var float
+     * @var null|float
      *
      * @ORM\Column(name="preco_vista", type="float", precision=10, scale=0, nullable=false)
      * @Groups("entity")
@@ -93,7 +93,7 @@ class FichaTecnicaPreco implements EntityId
     private $precoVista;
 
     /**
-     * @var string
+     * @var null|string
      *
      * @ORM\Column(name="custo_financeiro", type="decimal", precision=19, scale=2, nullable=false)
      * @Groups("entity")
@@ -101,7 +101,7 @@ class FichaTecnicaPreco implements EntityId
     private $custoFinanceiro;
 
     /**
-     * @var FichaTecnica
+     * @var null|FichaTecnica
      *
      * @ORM\ManyToOne(targetEntity="FichaTecnica")
      * @ORM\JoinColumns({
@@ -113,198 +113,198 @@ class FichaTecnicaPreco implements EntityId
 
 
     /**
-     * @return float
+     * @return float|null
      */
-    public function getCoeficiente(): float
+    public function getCoeficiente(): ?float
     {
         return $this->coeficiente;
     }
 
     /**
-     * @param float $coeficiente
+     * @param float|null $coeficiente
      * @return FichaTecnicaPreco
      */
-    public function setCoeficiente(float $coeficiente): FichaTecnicaPreco
+    public function setCoeficiente(?float $coeficiente): FichaTecnicaPreco
     {
         $this->coeficiente = $coeficiente;
         return $this;
     }
 
     /**
-     * @return float
+     * @return float|null
      */
-    public function getCustoOperacional(): float
+    public function getCustoOperacional(): ?float
     {
         return $this->custoOperacional;
     }
 
     /**
-     * @param float $custoOperacional
+     * @param float|null $custoOperacional
      * @return FichaTecnicaPreco
      */
-    public function setCustoOperacional(float $custoOperacional): FichaTecnicaPreco
+    public function setCustoOperacional(?float $custoOperacional): FichaTecnicaPreco
     {
         $this->custoOperacional = $custoOperacional;
         return $this;
     }
 
     /**
-     * @return string
+     * @return null|string
      */
-    public function getDescricao(): string
+    public function getDescricao(): ?string
     {
         return $this->descricao;
     }
 
     /**
-     * @param string $descricao
+     * @param null|string $descricao
      * @return FichaTecnicaPreco
      */
-    public function setDescricao(string $descricao): FichaTecnicaPreco
+    public function setDescricao(?string $descricao): FichaTecnicaPreco
     {
         $this->descricao = $descricao;
         return $this;
     }
 
     /**
-     * @return \DateTime
+     * @return \DateTime|null
      */
-    public function getDtCusto(): \DateTime
+    public function getDtCusto(): ?\DateTime
     {
         return $this->dtCusto;
     }
 
     /**
-     * @param \DateTime $dtCusto
+     * @param \DateTime|null $dtCusto
      * @return FichaTecnicaPreco
      */
-    public function setDtCusto(\DateTime $dtCusto): FichaTecnicaPreco
+    public function setDtCusto(?\DateTime $dtCusto): FichaTecnicaPreco
     {
         $this->dtCusto = $dtCusto;
         return $this;
     }
 
     /**
-     * @return float
+     * @return float|null
      */
-    public function getMargem(): float
+    public function getMargem(): ?float
     {
         return $this->margem;
     }
 
     /**
-     * @param float $margem
+     * @param float|null $margem
      * @return FichaTecnicaPreco
      */
-    public function setMargem(float $margem): FichaTecnicaPreco
+    public function setMargem(?float $margem): FichaTecnicaPreco
     {
         $this->margem = $margem;
         return $this;
     }
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function getPrazo(): int
+    public function getPrazo(): ?int
     {
         return $this->prazo;
     }
 
     /**
-     * @param int $prazo
+     * @param int|null $prazo
      * @return FichaTecnicaPreco
      */
-    public function setPrazo(int $prazo): FichaTecnicaPreco
+    public function setPrazo(?int $prazo): FichaTecnicaPreco
     {
         $this->prazo = $prazo;
         return $this;
     }
 
     /**
-     * @return float
+     * @return float|null
      */
-    public function getPrecoCusto(): float
+    public function getPrecoCusto(): ?float
     {
         return $this->precoCusto;
     }
 
     /**
-     * @param float $precoCusto
+     * @param float|null $precoCusto
      * @return FichaTecnicaPreco
      */
-    public function setPrecoCusto(float $precoCusto): FichaTecnicaPreco
+    public function setPrecoCusto(?float $precoCusto): FichaTecnicaPreco
     {
         $this->precoCusto = $precoCusto;
         return $this;
     }
 
     /**
-     * @return float
+     * @return float|null
      */
-    public function getPrecoPrazo(): float
+    public function getPrecoPrazo(): ?float
     {
         return $this->precoPrazo;
     }
 
     /**
-     * @param float $precoPrazo
+     * @param float|null $precoPrazo
      * @return FichaTecnicaPreco
      */
-    public function setPrecoPrazo(float $precoPrazo): FichaTecnicaPreco
+    public function setPrecoPrazo(?float $precoPrazo): FichaTecnicaPreco
     {
         $this->precoPrazo = $precoPrazo;
         return $this;
     }
 
     /**
-     * @return float
+     * @return float|null
      */
-    public function getPrecoVista(): float
+    public function getPrecoVista(): ?float
     {
         return $this->precoVista;
     }
 
     /**
-     * @param float $precoVista
+     * @param float|null $precoVista
      * @return FichaTecnicaPreco
      */
-    public function setPrecoVista(float $precoVista): FichaTecnicaPreco
+    public function setPrecoVista(?float $precoVista): FichaTecnicaPreco
     {
         $this->precoVista = $precoVista;
         return $this;
     }
 
     /**
-     * @return string
+     * @return null|string
      */
-    public function getCustoFinanceiro(): string
+    public function getCustoFinanceiro(): ?string
     {
         return $this->custoFinanceiro;
     }
 
     /**
-     * @param string $custoFinanceiro
+     * @param null|string $custoFinanceiro
      * @return FichaTecnicaPreco
      */
-    public function setCustoFinanceiro(string $custoFinanceiro): FichaTecnicaPreco
+    public function setCustoFinanceiro(?string $custoFinanceiro): FichaTecnicaPreco
     {
         $this->custoFinanceiro = $custoFinanceiro;
         return $this;
     }
 
     /**
-     * @return FichaTecnica
+     * @return FichaTecnica|null
      */
-    public function getFichaTecnica(): FichaTecnica
+    public function getFichaTecnica(): ?FichaTecnica
     {
         return $this->fichaTecnica;
     }
 
     /**
-     * @param FichaTecnica $fichaTecnica
+     * @param FichaTecnica|null $fichaTecnica
      * @return FichaTecnicaPreco
      */
-    public function setFichaTecnica(FichaTecnica $fichaTecnica): FichaTecnicaPreco
+    public function setFichaTecnica(?FichaTecnica $fichaTecnica): FichaTecnicaPreco
     {
         $this->fichaTecnica = $fichaTecnica;
         return $this;

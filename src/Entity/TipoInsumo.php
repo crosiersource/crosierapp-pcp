@@ -21,7 +21,7 @@ class TipoInsumo implements EntityId
     use EntityIdTrait;
 
     /**
-     * @var int
+     * @var null|int
      *
      * @ORM\Column(name="codigo", type="integer", nullable=false)
      * @Groups("entity")
@@ -29,7 +29,7 @@ class TipoInsumo implements EntityId
     private $codigo;
 
     /**
-     * @var string
+     * @var null|string
      *
      * @ORM\Column(name="descricao", type="string", length=100, nullable=false)
      * @Groups("entity")
@@ -37,62 +37,63 @@ class TipoInsumo implements EntityId
     private $descricao;
 
     /**
-     * @var int
+     * @var null|int
      *
      * @ORM\Column(name="unidade_produto_id", type="bigint", nullable=false)
      * @Groups("entity")
      */
     private $unidadeProdutoId;
 
-    /**
-     * @return int
-     */
-    public function getCodigo(): int
+
+    public function getCodigo($format = false)
     {
+        if ($format) {
+            return str_pad($this->codigo, 3, '0', STR_PAD_LEFT);
+        }
+
         return $this->codigo;
     }
 
     /**
-     * @param int $codigo
-     * @return TipoInsumo
+     * @return null|string
      */
-    public function setCodigo(int $codigo): TipoInsumo
-    {
-        $this->codigo = $codigo;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getDescricao(): string
+    public function getDescricao(): ?string
     {
         return $this->descricao;
     }
 
     /**
-     * @param string $descricao
+     * @return string
+     * @Groups("entity")
+     */
+    public function getDescricaoMontada(): string
+    {
+        return $this->getCodigo(true) . ' - ' . $this->getDescricao();
+    }
+
+    /**
+     * @param null|string $descricao
      * @return TipoInsumo
      */
-    public function setDescricao(string $descricao): TipoInsumo
+    public function setDescricao(?string $descricao): TipoInsumo
     {
         $this->descricao = $descricao;
         return $this;
     }
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function getUnidadeProdutoId(): int
+    public function getUnidadeProdutoId(): ?int
     {
         return $this->unidadeProdutoId;
     }
 
     /**
-     * @param int $unidadeProdutoId
+     * @param int|null $unidadeProdutoId
      * @return TipoInsumo
      */
-    public function setUnidadeProdutoId(int $unidadeProdutoId): TipoInsumo
+    public function setUnidadeProdutoId(?int $unidadeProdutoId): TipoInsumo
     {
         $this->unidadeProdutoId = $unidadeProdutoId;
         return $this;

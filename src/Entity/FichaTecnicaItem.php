@@ -5,11 +5,12 @@ namespace App\Entity;
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityId;
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityIdTrait;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * FichaTecnicaItem
  *
- * @ORM\Table(name="prod_confeccao_item")
+ * @ORM\Table(name="prod_fichatecnica_item")
  * @ORM\Entity(repositoryClass="App\Repository\FichaTecnicaItemRepository")
  *
  * @author Carlos Eduardo Pauluk
@@ -21,7 +22,7 @@ class FichaTecnicaItem implements EntityId
 
 
     /**
-     * @var FichaTecnica
+     * @var null|FichaTecnica
      *
      * @ORM\ManyToOne(targetEntity="FichaTecnica")
      * @ORM\JoinColumns({
@@ -32,7 +33,7 @@ class FichaTecnicaItem implements EntityId
     private $fichaTecnica;
 
     /**
-     * @var Insumo
+     * @var null|Insumo
      *
      * @ORM\ManyToOne(targetEntity="Insumo")
      * @ORM\JoinColumns({
@@ -42,37 +43,38 @@ class FichaTecnicaItem implements EntityId
      */
     private $insumo;
 
+
     /**
-     * @return FichaTecnica
+     * @return FichaTecnica|null
      */
-    public function getFichaTecnica(): FichaTecnica
+    public function getFichaTecnica(): ?FichaTecnica
     {
         return $this->fichaTecnica;
     }
 
     /**
-     * @param FichaTecnica $fichaTecnica
+     * @param FichaTecnica|null $fichaTecnica
      * @return FichaTecnicaItem
      */
-    public function setFichaTecnica(FichaTecnica $fichaTecnica): FichaTecnicaItem
+    public function setFichaTecnica(?FichaTecnica $fichaTecnica): FichaTecnicaItem
     {
         $this->fichaTecnica = $fichaTecnica;
         return $this;
     }
 
     /**
-     * @return Insumo
+     * @return Insumo|null
      */
-    public function getInsumo(): Insumo
+    public function getInsumo(): ?Insumo
     {
         return $this->insumo;
     }
 
     /**
-     * @param Insumo $insumo
+     * @param Insumo|null $insumo
      * @return FichaTecnicaItem
      */
-    public function setInsumo(Insumo $insumo): FichaTecnicaItem
+    public function setInsumo(?Insumo $insumo): FichaTecnicaItem
     {
         $this->insumo = $insumo;
         return $this;

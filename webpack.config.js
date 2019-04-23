@@ -30,6 +30,9 @@ Encore
      */
     // .createSharedEntry('bse_layout', './assets/js/bse/layout.js')
     .addEntry('tipoInsumoList', './assets/js/tipoInsumoList.js')
+    .addEntry('tipoArtigoList', './assets/js/tipoArtigoList.js')
+    .addEntry('insumoList', './assets/js/insumoList.js')
+    .addEntry('fichaTecnicaList', './assets/js/fichaTecnicaList.js')
 
     /*
      * FEATURE CONFIG

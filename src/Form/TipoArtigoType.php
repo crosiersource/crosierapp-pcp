@@ -2,7 +2,6 @@
 
 namespace App\Form;
 
-use App\Entity\TipoInsumo;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -10,11 +9,11 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Class TipoInsumoType
+ * Class TipoArtigoType
  *
  * @author Carlos Eduardo Pauluk
  */
-class TipoInsumoType extends AbstractType
+class TipoArtigoType extends AbstractType
 {
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -27,8 +26,12 @@ class TipoInsumoType extends AbstractType
             'label' => 'Descrição'
         ));
 
-        $builder->add('unidadeProdutoId', IntegerType::class, array(
-            'label' => 'Unidade'
+        $builder->add('modoCalculo', IntegerType::class, array(
+            'label' => 'Modo de Cálculo'
+        ));
+
+        $builder->add('subdeptoId', IntegerType::class, array(
+            'label' => 'Subdepto'
         ));
 
     }
@@ -36,7 +39,7 @@ class TipoInsumoType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => TipoInsumo::class
+            'data_class' => TipoArtigo::class
         ));
     }
 }

@@ -10,7 +10,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 /**
  * LoteProducaoItem
  *
- * @ORM\Table(name="prod_lote_confeccao_item")
+ * @ORM\Table(name="prod_lote_producao_item")
  * @ORM\Entity
  *
  * @author Carlos Eduardo Pauluk
@@ -22,7 +22,7 @@ class LoteProducaoItem implements EntityId
 
 
     /**
-     * @var string
+     * @var null|string
      *
      * @ORM\Column(name="obs", type="string", length=5000, nullable=false)
      * @Groups("entity")
@@ -30,7 +30,7 @@ class LoteProducaoItem implements EntityId
     private $obs;
 
     /**
-     * @var int
+     * @var null|int
      *
      * @ORM\Column(name="ordem", type="integer", nullable=false)
      * @Groups("entity")
@@ -38,7 +38,7 @@ class LoteProducaoItem implements EntityId
     private $ordem;
 
     /**
-     * @var FichaTecnica
+     * @var null|FichaTecnica
      *
      * @ORM\ManyToOne(targetEntity="FichaTecnica")
      * @ORM\JoinColumns({
@@ -49,84 +49,83 @@ class LoteProducaoItem implements EntityId
     private $fichaTecnica;
 
     /**
-     * @var LoteProducao
+     * @var null|LoteProducao
      *
      * @ORM\ManyToOne(targetEntity="LoteProducao")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="lote_confeccao_id", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="lote_producao_id", referencedColumnName="id")
      * })
      * @Groups("entity")
      */
     private $loteConfeccao;
 
-
     /**
-     * @return string
+     * @return null|string
      */
-    public function getObs(): string
+    public function getObs(): ?string
     {
         return $this->obs;
     }
 
     /**
-     * @param string $obs
+     * @param null|string $obs
      * @return LoteProducaoItem
      */
-    public function setObs(string $obs): LoteProducaoItem
+    public function setObs(?string $obs): LoteProducaoItem
     {
         $this->obs = $obs;
         return $this;
     }
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function getOrdem(): int
+    public function getOrdem(): ?int
     {
         return $this->ordem;
     }
 
     /**
-     * @param int $ordem
+     * @param int|null $ordem
      * @return LoteProducaoItem
      */
-    public function setOrdem(int $ordem): LoteProducaoItem
+    public function setOrdem(?int $ordem): LoteProducaoItem
     {
         $this->ordem = $ordem;
         return $this;
     }
 
     /**
-     * @return FichaTecnica
+     * @return FichaTecnica|null
      */
-    public function getFichaTecnica(): FichaTecnica
+    public function getFichaTecnica(): ?FichaTecnica
     {
         return $this->fichaTecnica;
     }
 
     /**
-     * @param FichaTecnica $fichaTecnica
+     * @param FichaTecnica|null $fichaTecnica
      * @return LoteProducaoItem
      */
-    public function setFichaTecnica(FichaTecnica $fichaTecnica): LoteProducaoItem
+    public function setFichaTecnica(?FichaTecnica $fichaTecnica): LoteProducaoItem
     {
         $this->fichaTecnica = $fichaTecnica;
         return $this;
     }
 
     /**
-     * @return LoteProducao
+     * @return LoteProducao|null
      */
-    public function getLoteConfeccao(): LoteProducao
+    public function getLoteConfeccao(): ?LoteProducao
     {
         return $this->loteConfeccao;
     }
 
     /**
-     * @param LoteProducao $loteConfeccao
+     * @param LoteProducao|null $loteConfeccao
      * @return LoteProducaoItem
      */
-    public function setLoteConfeccao(LoteProducao $loteConfeccao): LoteProducaoItem
+    public function setLoteConfeccao(?LoteProducao $loteConfeccao): LoteProducaoItem
     {
         $this->loteConfeccao = $loteConfeccao;
         return $this;

@@ -3,9 +3,9 @@
 namespace App\Controller;
 
 
-use App\Entity\TipoInsumo;
-use App\EntityHandler\TipoInsumoEntityHandler;
-use App\Form\TipoInsumoType;
+use App\Entity\TipoArtigo;
+use App\EntityHandler\TipoArtigoEntityHandler;
+use App\Form\TipoArtigoType;
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\FilterData;
 use Symfony\Component\HttpFoundation\Request;
@@ -13,38 +13,38 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * CRUD Controller para TipoInsumo.
+ * CRUD Controller para TipoArtigo.
  *
- * @package App\Controller\Financeiro
+ * @package App\Controller
  * @author Carlos Eduardo Pauluk
  */
-class TipoInsumoController extends FormListController
+class TipoArtigoController extends FormListController
 {
 
     protected $crudParams =
         [
-            'typeClass' => TipoInsumoType::class,
+            'typeClass' => TipoArtigoType::class,
 
             'formView' => '@CrosierLibBase/form.html.twig',
-            'formRoute' => 'tipoInsumo_form',
-            'formPageTitle' => 'Tipo de Insumo',
+            'formRoute' => 'tipoArtigo_form',
+            'formPageTitle' => 'Tipo de Artigo',
             'form_PROGRAM_UUID' => null,
 
             'listView' => '@CrosierLibBase/list.html.twig',
-            'listRoute' => 'tipoInsumo_list',
-            'listRouteAjax' => 'tipoInsumo_datatablesJsList',
-            'listPageTitle' => 'Tipos de Insumos',
-            'listId' => 'tipoInsumoList',
+            'listRoute' => 'tipoArtigo_list',
+            'listRouteAjax' => 'tipoArtigo_datatablesJsList',
+            'listPageTitle' => 'Tipos de Artigos',
+            'listId' => 'tipoArtigoList',
             'list_PROGRAM_UUID' => null,
-            'listJS' => 'tipoInsumoList.js',
+            'listJS' => 'tipoArtigoList.js',
 
         ];
 
     /**
      * @required
-     * @param TipoInsumoEntityHandler $entityHandler
+     * @param TipoArtigoEntityHandler $entityHandler
      */
-    public function setEntityHandler(TipoInsumoEntityHandler $entityHandler): void
+    public function setEntityHandler(TipoArtigoEntityHandler $entityHandler): void
     {
         $this->entityHandler = $entityHandler;
     }
@@ -52,26 +52,26 @@ class TipoInsumoController extends FormListController
     public function getFilterDatas(array $params): array
     {
         return [
-            new FilterData(['descricao'], 'LIKE', 'descricao', $params)
+            new FilterData(['descricao'], 'LIKE', 'str', $params)
         ];
     }
 
     /**
      *
-     * @Route("/tipoInsumo/form/{id}", name="tipoInsumo_form", defaults={"id"=null}, requirements={"id"="\d+"})
+     * @Route("/tipoArtigo/form/{id}", name="tipoArtigo_form", defaults={"id"=null}, requirements={"id"="\d+"})
      * @param Request $request
-     * @param TipoInsumo|null $tipoInsumo
+     * @param TipoArtigo|null $tipoArtigo
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      * @throws \Exception
      */
-    public function form(Request $request, TipoInsumo $tipoInsumo = null)
+    public function form(Request $request, TipoArtigo $tipoArtigo = null)
     {
-        return $this->doForm($request, $tipoInsumo);
+        return $this->doForm($request, $tipoArtigo);
     }
 
     /**
      *
-     * @Route("/tipoInsumo/list/", name="tipoInsumo_list")
+     * @Route("/tipoArtigo/list/", name="tipoArtigo_list")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
      * @throws \Exception
@@ -83,7 +83,7 @@ class TipoInsumoController extends FormListController
 
     /**
      *
-     * @Route("/tipoInsumo/datatablesJsList/", name="tipoInsumo_datatablesJsList")
+     * @Route("/tipoArtigo/datatablesJsList/", name="tipoArtigo_datatablesJsList")
      * @param Request $request
      * @return Response
      * @throws \CrosierSource\CrosierLibBaseBundle\Exception\ViewException
@@ -95,14 +95,14 @@ class TipoInsumoController extends FormListController
 
     /**
      *
-     * @Route("/tipoInsumo/delete/{id}/", name="tipoInsumo_delete", requirements={"id"="\d+"})
+     * @Route("/tipoArtigo/delete/{id}/", name="tipoArtigo_delete", requirements={"id"="\d+"})
      * @param Request $request
-     * @param TipoInsumo $tipoInsumo
+     * @param TipoArtigo $tipoArtigo
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function delete(Request $request, TipoInsumo $tipoInsumo): \Symfony\Component\HttpFoundation\RedirectResponse
+    public function delete(Request $request, TipoArtigo $tipoArtigo): \Symfony\Component\HttpFoundation\RedirectResponse
     {
-        return $this->doDelete($request, $tipoInsumo);
+        return $this->doDelete($request, $tipoArtigo);
     }
 
 

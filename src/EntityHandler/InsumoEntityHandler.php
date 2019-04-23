@@ -3,6 +3,7 @@
 namespace App\EntityHandler;
 
 use App\Entity\Insumo;
+use App\Repository\InsumoRepository;
 use CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler;
 
 /**
@@ -14,8 +15,22 @@ use CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler;
 class InsumoEntityHandler extends EntityHandler
 {
 
+
     public function getEntityClass()
     {
         return Insumo::class;
     }
+
+    public function beforeSave($insumo)
+    {
+        /** @var Insumo $insumo */
+        if (!$insumo->getCodigo()) {
+            /** @var InsumoRepository $repoInsumo */
+            $repoInsumo = $this->getDoctrine()->getRepository(Insumo::class);
+            $insumo->setCodigo($repoInsumo->findProximoCodigo());
+        }
+
+    }
+
+
 }

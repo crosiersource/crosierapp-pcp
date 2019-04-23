@@ -10,7 +10,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 /**
  * LoteProducaoItemQtde
  *
- * @ORM\Table(name="prod_lote_confeccao_item_qtde")
+ * @ORM\Table(name="prod_lote_producao_item_qtde")
  * @ORM\Entity
  *
  * @author Carlos Eduardo Pauluk
@@ -21,7 +21,7 @@ class LoteProducaoItemQtde implements EntityId
     use EntityIdTrait;
 
     /**
-     * @var int
+     * @var null|int
      *
      * @ORM\Column(name="qtde", type="integer", nullable=false)
      * @Groups("entity")
@@ -29,7 +29,7 @@ class LoteProducaoItemQtde implements EntityId
     private $qtde;
 
     /**
-     * @var int
+     * @var null|int
      *
      * @ORM\Column(name="grade_tamanho_id", type="bigint", nullable=false)
      * @Groups("entity")
@@ -37,11 +37,11 @@ class LoteProducaoItemQtde implements EntityId
     private $gradeTamanhoId;
 
     /**
-     * @var LoteProducaoItem
+     * @var null|LoteProducaoItem
      *
      * @ORM\ManyToOne(targetEntity="LoteProducaoItem")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="lote_confeccao_item_id", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="lote_producao_item_id", referencedColumnName="id")
      * })
      * @Groups("entity")
      */
@@ -49,54 +49,54 @@ class LoteProducaoItemQtde implements EntityId
 
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function getQtde(): int
+    public function getQtde(): ?int
     {
         return $this->qtde;
     }
 
     /**
-     * @param int $qtde
+     * @param int|null $qtde
      * @return LoteProducaoItemQtde
      */
-    public function setQtde(int $qtde): LoteProducaoItemQtde
+    public function setQtde(?int $qtde): LoteProducaoItemQtde
     {
         $this->qtde = $qtde;
         return $this;
     }
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function getGradeTamanhoId(): int
+    public function getGradeTamanhoId(): ?int
     {
         return $this->gradeTamanhoId;
     }
 
     /**
-     * @param int $gradeTamanhoId
+     * @param int|null $gradeTamanhoId
      * @return LoteProducaoItemQtde
      */
-    public function setGradeTamanhoId(int $gradeTamanhoId): LoteProducaoItemQtde
+    public function setGradeTamanhoId(?int $gradeTamanhoId): LoteProducaoItemQtde
     {
         $this->gradeTamanhoId = $gradeTamanhoId;
         return $this;
     }
 
     /**
-     * @return LoteProducaoItem
+     * @return LoteProducaoItem|null
      */
-    public function getLoteProducaoItem(): LoteProducaoItem
+    public function getLoteProducaoItem(): ?LoteProducaoItem
     {
         return $this->loteProducaoItem;
     }
 
     /**
-     * @param LoteProducaoItem $loteProducaoItem
+     * @param LoteProducaoItem|null $loteProducaoItem
      * @return LoteProducaoItemQtde
      */
-    public function setLoteProducaoItem(LoteProducaoItem $loteProducaoItem): LoteProducaoItemQtde
+    public function setLoteProducaoItem(?LoteProducaoItem $loteProducaoItem): LoteProducaoItemQtde
     {
         $this->loteProducaoItem = $loteProducaoItem;
         return $this;

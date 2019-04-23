@@ -10,7 +10,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 /**
  * FichaTecnicaItemQtde
  *
- * @ORM\Table(name="prod_confeccao_item_qtde")
+ * @ORM\Table(name="prod_fichatecnica_item_qtde")
  * @ORM\Entity
  *
  * @author Carlos Eduardo Pauluk
@@ -22,7 +22,7 @@ class FichaTecnicaItemQtde implements EntityId
 
 
     /**
-     * @var string|null
+     * @var null|string
      *
      * @ORM\Column(name="qtde", type="decimal", precision=15, scale=3, nullable=true)
      * @Groups("entity")
@@ -30,7 +30,7 @@ class FichaTecnicaItemQtde implements EntityId
     private $qtde;
 
     /**
-     * @var int
+     * @var null|int
      *
      * @ORM\Column(name="grade_tamanho_id", type="bigint", nullable=false)
      * @Groups("entity")
@@ -38,7 +38,7 @@ class FichaTecnicaItemQtde implements EntityId
     private $gradeTamanhoId;
 
     /**
-     * @var FichaTecnicaItem
+     * @var null|FichaTecnicaItem
      *
      * @ORM\ManyToOne(targetEntity="FichaTecnicaItem")
      * @ORM\JoinColumns({
@@ -47,6 +47,7 @@ class FichaTecnicaItemQtde implements EntityId
      * @Groups("entity")
      */
     private $fichaTecnicaItem;
+
 
     /**
      * @return null|string
@@ -67,36 +68,36 @@ class FichaTecnicaItemQtde implements EntityId
     }
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function getGradeTamanhoId(): int
+    public function getGradeTamanhoId(): ?int
     {
         return $this->gradeTamanhoId;
     }
 
     /**
-     * @param int $gradeTamanhoId
+     * @param int|null $gradeTamanhoId
      * @return FichaTecnicaItemQtde
      */
-    public function setGradeTamanhoId(int $gradeTamanhoId): FichaTecnicaItemQtde
+    public function setGradeTamanhoId(?int $gradeTamanhoId): FichaTecnicaItemQtde
     {
         $this->gradeTamanhoId = $gradeTamanhoId;
         return $this;
     }
 
     /**
-     * @return FichaTecnicaItem
+     * @return FichaTecnicaItem|null
      */
-    public function getFichaTecnicaItem(): FichaTecnicaItem
+    public function getFichaTecnicaItem(): ?FichaTecnicaItem
     {
         return $this->fichaTecnicaItem;
     }
 
     /**
-     * @param FichaTecnicaItem $fichaTecnicaItem
+     * @param FichaTecnicaItem|null $fichaTecnicaItem
      * @return FichaTecnicaItemQtde
      */
-    public function setFichaTecnicaItem(FichaTecnicaItem $fichaTecnicaItem): FichaTecnicaItemQtde
+    public function setFichaTecnicaItem(?FichaTecnicaItem $fichaTecnicaItem): FichaTecnicaItemQtde
     {
         $this->fichaTecnicaItem = $fichaTecnicaItem;
         return $this;

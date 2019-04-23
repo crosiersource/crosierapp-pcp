@@ -10,7 +10,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 /**
  * LoteProducao
  *
- * @ORM\Table(name="prod_lote_confeccao")
+ * @ORM\Table(name="prod_lote_producao")
  * @ORM\Entity(repositoryClass="App\Repository\LoteProducaoRepository")
  *
  * @author Carlos Eduardo Pauluk
@@ -21,7 +21,7 @@ class LoteProducao implements EntityId
     use EntityIdTrait;
 
     /**
-     * @var int
+     * @var null|int
      *
      * @ORM\Column(name="codigo", type="integer", nullable=false)
      * @Groups("entity")
@@ -29,7 +29,7 @@ class LoteProducao implements EntityId
     private $codigo;
 
     /**
-     * @var string
+     * @var null|string
      *
      * @ORM\Column(name="descricao", type="string", length=200, nullable=false)
      * @Groups("entity")
@@ -37,7 +37,7 @@ class LoteProducao implements EntityId
     private $descricao;
 
     /**
-     * @var \DateTime|null
+     * @var null|\DateTime
      *
      * @ORM\Column(name="dt_lote", type="date", nullable=true)
      * @Groups("entity")
@@ -46,36 +46,36 @@ class LoteProducao implements EntityId
 
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function getCodigo(): int
+    public function getCodigo(): ?int
     {
         return $this->codigo;
     }
 
     /**
-     * @param int $codigo
+     * @param int|null $codigo
      * @return LoteProducao
      */
-    public function setCodigo(int $codigo): LoteProducao
+    public function setCodigo(?int $codigo): LoteProducao
     {
         $this->codigo = $codigo;
         return $this;
     }
 
     /**
-     * @return string
+     * @return null|string
      */
-    public function getDescricao(): string
+    public function getDescricao(): ?string
     {
         return $this->descricao;
     }
 
     /**
-     * @param string $descricao
+     * @param null|string $descricao
      * @return LoteProducao
      */
-    public function setDescricao(string $descricao): LoteProducao
+    public function setDescricao(?string $descricao): LoteProducao
     {
         $this->descricao = $descricao;
         return $this;
