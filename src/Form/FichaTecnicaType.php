@@ -5,6 +5,7 @@ namespace App\Form;
 use App\Entity\FichaTecnica;
 use App\Entity\TipoArtigo;
 use CrosierSource\CrosierLibBaseBundle\APIClient\Base\PessoaAPIClient;
+use CrosierSource\CrosierLibBaseBundle\APIClient\Base\PropAPIClient;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\WhereBuilder;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bridge\Doctrine\RegistryInterface;
@@ -30,6 +31,9 @@ class FichaTecnicaType extends AbstractType
     /** @var RegistryInterface */
     private $doctrine;
 
+    /** @var PropAPIClient */
+    private $propAPIClient;
+
     /**
      * @required
      * @param RegistryInterface $doctrine
@@ -37,6 +41,17 @@ class FichaTecnicaType extends AbstractType
     public function setDoctrine(RegistryInterface $doctrine): void
     {
         $this->doctrine = $doctrine;
+    }
+
+    /**
+     * @required
+     * @param PropAPIClient $propAPIClient
+     * @return FichaTecnicaType
+     */
+    public function setPropAPIClient(PropAPIClient $propAPIClient): FichaTecnicaType
+    {
+        $this->propAPIClient = $propAPIClient;
+        return $this;
     }
 
 
@@ -123,31 +138,31 @@ class FichaTecnicaType extends AbstractType
                 ]
             ]);
 
-            $form->add('gradeId', IntegerType::class, [
-                'label' => 'Grade'
+            $grades = array_flip($this->propAPIClient->findGrades());
+            $form->add('gradeId', ChoiceType::class, [
+                'label' => 'Grade',
+                'required' => false,
+                'choices' => $grades,
+                'attr' => [
+                    'class' => 'autoSelect2'
+                ]
             ]);
 
             $form->add('pessoaId', ChoiceType::class, [
                 'label' => 'Instituição',
                 'required' => false,
-                'choices' => $choices['pessoaId'] ?? null,
-                'attr' => isset($choices['pessoaId']) ? ['class' => 'autoSelect2'] : [
-                    'data-id-route-url' => $fichaTecnica && $fichaTecnica->getPessoaId() ? PessoaAPIClient::getBaseUri() . '/findById/' . $fichaTecnica->getPessoaId() : '',
+                'choices' => $fichaTecnica && $fichaTecnica->getPessoaId() ? [$fichaTecnica->getPessoaNome() => $fichaTecnica->getPessoaId()] : null,
+                'attr' => [
                     'data-route-url' => PessoaAPIClient::getBaseUri() . '/findByStr/',
-                    'data-text-format' => '%(nomeFantasia)s (%(nome)s)',
+                    'data-text-format' => '%(nome)s - %(nomeFantasia)s',
                     'data-val' => $fichaTecnica && $fichaTecnica->getPessoaId() ? $fichaTecnica->getPessoaId() : '',
                     'class' => 'autoSelect2'
                 ]
             ]);
 
-            $form->add('pessoaNome', TextType::class, [
-                'disabled' => true,
-                'required' => false,
-                'label' => 'Instituição'
-            ]);
-
             $form->add('obs', TextareaType::class, [
-                'label' => 'Obs'
+                'label' => 'Obs',
+                'required' => false
             ]);
 
         });
@@ -157,9 +172,9 @@ class FichaTecnicaType extends AbstractType
             function (FormEvent $event) {
                 $form = $event->getForm();
 
-                $instituicao = $event->getData()['pessoa'] ?: null;
-                $form->remove('pessoa');
-                $form->add('pessoa', ChoiceType::class, array(
+                $instituicao = $event->getData()['pessoaId'] ?: null;
+                $form->remove('pessoaId');
+                $form->add('pessoaId', ChoiceType::class, array(
                     'label' => 'Instituição',
                     'required' => false,
                     'choices' => [$instituicao]

@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityId;
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityIdTrait;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
@@ -43,6 +45,23 @@ class LoteProducao implements EntityId
      * @Groups("entity")
      */
     private $dtLote;
+
+    /**
+     *
+     * @var LoteProducaoItem[]|ArrayCollection
+     *
+     * @ORM\OneToMany(
+     *      targetEntity="LoteProducaoItem",
+     *      mappedBy="loteProducao",
+     *      orphanRemoval=true
+     * )
+     */
+    private $itens;
+
+    public function __construct()
+    {
+        $this->itens = new ArrayCollection();
+    }
 
 
     /**
@@ -97,6 +116,16 @@ class LoteProducao implements EntityId
     {
         $this->dtLote = $dtLote;
         return $this;
+    }
+
+
+    /**
+     *
+     * @return Collection|LoteProducaoItem[]
+     */
+    public function getItens(): Collection
+    {
+        return $this->itens;
     }
 
 

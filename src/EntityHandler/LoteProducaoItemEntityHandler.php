@@ -18,4 +18,19 @@ class LoteProducaoItemEntityHandler extends EntityHandler
     {
         return LoteProducaoItem::class;
     }
+
+    public function beforeSave($loteProducaoItem)
+    {
+        /** @var LoteProducaoItem $loteProducaoItem */
+        if (!$loteProducaoItem->getOrdem()) {
+            $loteProducao = $loteProducaoItem->getLoteProducao();
+            $maxOrdem = 0;
+            foreach ($loteProducao->getItens() as $item) {
+                $maxOrdem = $maxOrdem < $item->getOrdem() ? $item->getOrdem() : $maxOrdem;
+            }
+            $loteProducaoItem->setOrdem($maxOrdem + 1);
+        }
+    }
+
+
 }

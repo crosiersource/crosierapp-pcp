@@ -57,7 +57,7 @@ class LoteProducaoItem implements EntityId
      * })
      * @Groups("entity")
      */
-    private $loteConfeccao;
+    private $loteProducao;
 
     /**
      * @return null|string
@@ -116,18 +116,18 @@ class LoteProducaoItem implements EntityId
     /**
      * @return LoteProducao|null
      */
-    public function getLoteConfeccao(): ?LoteProducao
+    public function getLoteProducao(): ?LoteProducao
     {
-        return $this->loteConfeccao;
+        return $this->loteProducao;
     }
 
     /**
-     * @param LoteProducao|null $loteConfeccao
+     * @param LoteProducao|null $loteProducao
      * @return LoteProducaoItem
      */
-    public function setLoteConfeccao(?LoteProducao $loteConfeccao): LoteProducaoItem
+    public function setLoteProducao(?LoteProducao $loteProducao): LoteProducaoItem
     {
-        $this->loteConfeccao = $loteConfeccao;
+        $this->loteProducao = $loteProducao;
         return $this;
     }
 
