@@ -47,5 +47,16 @@ INSERT INTO cfg_entmenu(uuid, label, icon, tipo, program_uuid, pai_uuid, ordem, 
 VALUES ('6b380d26-b90b-45b5-9a44-e1336df58b32', 'Fichas Técnicas', 'fas fa-file-powerpoint', 'ENT', '508a278c-4993-42e9-b7ac-f874f7dc50bf', '90a155bf-0d77-499c-8465-330bc4ce1dd9', 1 , null, now(), now(), 1, 1, 1);
 
 
+-- Lotes de Produção
+DELETE FROM cfg_program WHERE uuid = 'b2f859b3-978e-43f6-9c25-1edccf1670d7';
+DELETE FROM cfg_entmenu WHERE uuid = '417b12af-4b62-47f2-8831-d5a548e641b3';
+
+INSERT INTO cfg_program(uuid, descricao, url, app_uuid, entmenu_uuid ,inserted, updated, estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES ('b2f859b3-978e-43f6-9c25-1edccf1670d7','LOTES DE PRODUÇÃO [LIST]', '/loteProducao/list', '1a6f4dce-b967-49ac-9fd5-892e22b90212', null, now(), now(), 1, 1, 1);
+
+INSERT INTO cfg_entmenu(uuid, label, icon, tipo, program_uuid, pai_uuid, ordem, css_style, inserted, updated, estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES ('417b12af-4b62-47f2-8831-d5a548e641b3', 'Lotes de Produção', 'fas fa-industry', 'ENT', 'b2f859b3-978e-43f6-9c25-1edccf1670d7', '90a155bf-0d77-499c-8465-330bc4ce1dd9', 1 , null, now(), now(), 1, 1, 1);
+
+
 
 COMMIT;

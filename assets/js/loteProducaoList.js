@@ -2,6 +2,10 @@
 
 let listId = "#loteProducaoList";
 
+import Moment from 'moment';
+import 'moment/locale/pt-br';
+
+
 import DatatablesJs from './crosier/DatatablesJs';
 
 import routes from '../static/fos_js_routes.json';
@@ -14,7 +18,10 @@ function getDatatablesColumns() {
         {
             name: 'e.codigo',
             data: 'e.codigo',
-            title: 'Código'
+            title: 'Código',
+            render: function (data, type, row) {
+                return new String(data).padStart(8, '0');
+            }
         },
         {
             name: 'e.descricao',
