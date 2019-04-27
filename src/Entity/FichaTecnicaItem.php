@@ -26,7 +26,7 @@ class FichaTecnicaItem implements EntityId
      *
      * @ORM\ManyToOne(targetEntity="FichaTecnica")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="confeccao_id", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="fichatecnica_id", referencedColumnName="id")
      * })
      * @Groups("entity")
      */

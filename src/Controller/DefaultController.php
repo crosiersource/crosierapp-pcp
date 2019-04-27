@@ -23,4 +23,5 @@ class DefaultController extends BaseController
         return $this->doRender('dashboard.html.twig');
     }
 
+
 }

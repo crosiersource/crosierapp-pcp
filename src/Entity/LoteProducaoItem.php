@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityId;
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityIdTrait;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
@@ -42,7 +43,7 @@ class LoteProducaoItem implements EntityId
      *
      * @ORM\ManyToOne(targetEntity="FichaTecnica")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="confeccao_id", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="fichatecnica_id", referencedColumnName="id")
      * })
      * @Groups("entity")
      */
@@ -51,13 +52,38 @@ class LoteProducaoItem implements EntityId
     /**
      * @var null|LoteProducao
      *
-     * @ORM\ManyToOne(targetEntity="LoteProducao")
+     * @ORM\ManyToOne(targetEntity="LoteProducao",inversedBy="itens")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="lote_producao_id", referencedColumnName="id")
      * })
      * @Groups("entity")
      */
     private $loteProducao;
+
+    /**
+     *
+     * @var LoteProducaoItemQtde[]|ArrayCollection
+     *
+     * @ORM\OneToMany(
+     *      targetEntity="LoteProducaoItemQtde",
+     *      mappedBy="loteProducaoItem",
+     *      orphanRemoval=true
+     * )
+     */
+    private $qtdes;
+
+    /**
+     * Transient.
+     *
+     * @var array
+     */
+    private $qtdesTamanhosArray;
+
+
+    public function __construct()
+    {
+        $this->qtdes = new ArrayCollection();
+    }
 
     /**
      * @return null|string
@@ -129,6 +155,41 @@ class LoteProducaoItem implements EntityId
     {
         $this->loteProducao = $loteProducao;
         return $this;
+    }
+
+    /**
+     * @return LoteProducaoItemQtde[]|ArrayCollection
+     */
+    public function getQtdes()
+    {
+        return $this->qtdes;
+    }
+
+    /**
+     * @param LoteProducaoItemQtde[]|ArrayCollection $qtdes
+     * @return LoteProducaoItem
+     */
+    public function setQtdes($qtdes): LoteProducaoItem
+    {
+        $this->qtdes = $qtdes;
+        return $this;
+    }
+
+
+    /**
+     * @return array
+     */
+    public function getQtdesTamanhosArray(): array
+    {
+        return $this->qtdesTamanhosArray;
+    }
+
+    /**
+     * @param array $qtdesTamanhosArray
+     */
+    public function setQtdesTamanhosArray(array $qtdesTamanhosArray): void
+    {
+        $this->qtdesTamanhosArray = $qtdesTamanhosArray;
     }
 
 

@@ -39,7 +39,7 @@ class LoteProducaoItemQtde implements EntityId
     /**
      * @var null|LoteProducaoItem
      *
-     * @ORM\ManyToOne(targetEntity="LoteProducaoItem")
+     * @ORM\ManyToOne(targetEntity="LoteProducaoItem", inversedBy="qtdes")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="lote_producao_item_id", referencedColumnName="id")
      * })

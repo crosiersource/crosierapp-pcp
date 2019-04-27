@@ -1,0 +1,77 @@
+{% extends '@CrosierLibBase/index.html.twig' %}
+
+
+
+{% block page_content %}
+
+
+    <div class="card">
+        <div class="card-header">
+
+            <div class="row">
+                <div class="col-8">
+                    <h3>{{ formPageTitle }}</h3>
+                </div>
+                <div class="col-4 text-right">
+                    <button type="button" class="btn btn-secondary"
+                            onclick="window.location.href='{{ url(formRoute) }}'">
+                        <i class="fas fa-file" aria-hidden="true"></i> Novo
+                    </button>
+                    <button type="button" class="btn btn-secondary"
+                            onclick="window.location.href='{{ url(listRoute) }}'">
+                        <i class="fas fa-sync" aria-hidden="true"></i> Listar
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="card-body">
+
+
+
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" id="lote-tab" data-toggle="tab" href="#lote" role="tab" aria-controls="lote" aria-selected="true">Lote</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="itens-tab" data-toggle="tab" href="#itens" role="tab" aria-controls="profile" aria-selected="false">Itens</a>
+                </li>
+            </ul>
+            <div class="tab-content" id="myTabContent">
+                <div class="tab-pane fade show active" id="lote" role="tabpanel" aria-labelledby="lote-tab">
+
+                    {% form_theme form 'bootstrap_4_horizontal_layout.html.twig' %}
+
+                    {{ form_start(form) }}
+                    {{ form_widget(form) }}
+
+                    <div class="row">
+                        <div class="col text-right">
+                            <button type="submit" class="btn btn-primary btn-lg" value="Salvar">
+                                <i class="fas fa-save" aria-hidden="true"></i> Salvar
+                            </button>
+                        </div>
+                    </div>
+
+
+                    {{ form_end(form) }}
+
+                </div>
+                <div class="tab-pane fade" id="itens" role="tabpanel" aria-labelledby="itens-tab">
+                    {% include 'loteProducaoForm_itens.html.twig'  %}
+                </div>
+            </div>
+
+
+
+
+        </div>
+    </div>
+
+
+
+
+
+
+{% endblock %}

@@ -104,6 +104,13 @@ class FichaTecnica implements EntityId
     private $gradeId;
 
     /**
+     * Transient.
+     *
+     * @var array
+     */
+    private $gradesTamanhosByPosicaoArray;
+
+    /**
      * @var null|bool
      *
      * @ORM\Column(name="oculta", type="boolean", nullable=false)
@@ -360,6 +367,22 @@ class FichaTecnica implements EntityId
     {
         $this->tipoArtigo = $tipoArtigo;
         return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getGradesTamanhosByPosicaoArray(): array
+    {
+        return $this->gradesTamanhosByPosicaoArray;
+    }
+
+    /**
+     * @param array $gradesTamanhosByPosicaoArray
+     */
+    public function setGradesTamanhosByPosicaoArray(array $gradesTamanhosByPosicaoArray): void
+    {
+        $this->gradesTamanhosByPosicaoArray = $gradesTamanhosByPosicaoArray;
     }
 
 

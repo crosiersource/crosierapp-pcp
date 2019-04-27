@@ -42,7 +42,7 @@ class FichaTecnicaItemQtde implements EntityId
      *
      * @ORM\ManyToOne(targetEntity="FichaTecnicaItem")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="confeccao_item_id", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="fichatecnica_item_id", referencedColumnName="id")
      * })
      * @Groups("entity")
      */

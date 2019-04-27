@@ -3,10 +3,15 @@
 namespace App\Controller;
 
 
+use App\Business\LoteProducaoBusiness;
 use App\Entity\LoteProducao;
+use App\Entity\LoteProducaoItem;
 use App\EntityHandler\LoteProducaoEntityHandler;
+use App\Form\LoteProducaoItemType;
 use App\Form\LoteProducaoType;
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
+use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
+use CrosierSource\CrosierLibBaseBundle\Utils\ExceptionUtils\ExceptionUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\FilterData;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -25,7 +30,7 @@ class LoteProducaoController extends FormListController
         [
             'typeClass' => LoteProducaoType::class,
 
-            'formView' => '@CrosierLibBase/form.html.twig',
+            'formView' => 'loteProducaoForm.html.twig',
             'formRoute' => 'loteProducao_form',
             'formPageTitle' => 'Lote de Produção',
             'form_PROGRAM_UUID' => null,
@@ -40,6 +45,9 @@ class LoteProducaoController extends FormListController
 
         ];
 
+    /** @var LoteProducaoBusiness */
+    private $loteProducaoBusiness;
+
     /**
      * @required
      * @param LoteProducaoEntityHandler $entityHandler
@@ -49,6 +57,19 @@ class LoteProducaoController extends FormListController
         $this->entityHandler = $entityHandler;
     }
 
+    /**
+     * @required
+     * @param LoteProducaoBusiness $loteProducaoBusiness
+     */
+    public function setLoteProducaoBusiness(LoteProducaoBusiness $loteProducaoBusiness): void
+    {
+        $this->loteProducaoBusiness = $loteProducaoBusiness;
+    }
+
+    /**
+     * @param array $params
+     * @return array
+     */
     public function getFilterDatas(array $params): array
     {
         return [
@@ -66,7 +87,44 @@ class LoteProducaoController extends FormListController
      */
     public function form(Request $request, LoteProducao $loteProducao = null)
     {
-        return $this->doForm($request, $loteProducao);
+
+        $loteProducaoItem = new LoteProducaoItem();
+        $loteProducaoItem->setLoteProducao($loteProducao);
+
+        if ($loteProducao) {
+            $this->loteProducaoBusiness->buildLoteQtdesTamanhosArray($loteProducao);
+        }
+
+        $formItem = $this->createForm(LoteProducaoItemType::class, $loteProducaoItem);
+        $formItem->handleRequest($request);
+
+        if ($formItem->isSubmitted()) {
+            if ($formItem->isValid()) {
+                try {
+                    $entity = $formItem->getData();
+                    $this->getEntityHandler()->save($entity);
+                    $this->addFlash('success', 'Registro salvo com sucesso!');
+                    // return $this->redirectTo($request, $entity, $parameters);
+                } catch (ViewException $e) {
+                    $this->addFlash('error', $e->getMessage());
+                } catch (\Exception $e) {
+                    $msg = ExceptionUtils::treatException($e);
+                    $this->addFlash('error', $msg);
+                    $this->addFlash('error', 'Erro ao salvar!');
+                }
+            } else {
+                $errors = $formItem->getErrors(true, true);
+                foreach ($errors as $error) {
+                    $this->addFlash('error', $error->getMessage());
+                }
+            }
+        }
+
+        $parameters = [];
+        $parameters['formItem'] = $formItem->createView();
+
+
+        return $this->doForm($request, $loteProducao, $parameters);
     }
 
     /**

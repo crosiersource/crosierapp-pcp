@@ -48,9 +48,8 @@ class LoteProducaoItemType extends AbstractType
             $loteProducaoItem = $event->getData();
             $form = $event->getForm();
 
-            $form->add('loteProducao', HiddenType::class);
-
-            $form->add('fichaTecnica', EntityType::class, array(
+            $form->add('fichaTecnica', EntityType::class, [
+                'label' => 'Ficha Técnica',
                 'class' => FichaTecnica::class,
                 'choices' => $this->doctrine->getRepository(FichaTecnica::class)->findAll(WhereBuilder::buildOrderBy('descricao')),
                 'placeholder' => '...',
@@ -59,12 +58,12 @@ class LoteProducaoItemType extends AbstractType
                     return $fichaTecnica && $fichaTecnica->getDescricao() ? $fichaTecnica->getDescricao() : '';
                 },
                 'attr' => ['class' => 'autoSelect2']
-            ));
+            ]);
 
-            $form->add('obs', TextType::class, array(
+            $form->add('obs', TextType::class, [
                 'label' => 'Obs',
                 'required' => true
-            ));
+            ]);
 
         });
 
@@ -72,8 +71,8 @@ class LoteProducaoItemType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'data_class' => LoteProducaoItem::class
-        ));
+        ]);
     }
 }
