@@ -62,7 +62,7 @@ class LoteProducaoItemType extends AbstractType
 
             $form->add('obs', TextType::class, [
                 'label' => 'Obs',
-                'required' => true
+                'required' => false
             ]);
 
         });

@@ -7,6 +7,7 @@ use App\Business\LoteProducaoBusiness;
 use App\Entity\LoteProducao;
 use App\Entity\LoteProducaoItem;
 use App\EntityHandler\LoteProducaoEntityHandler;
+use App\EntityHandler\LoteProducaoItemEntityHandler;
 use App\Form\LoteProducaoItemType;
 use App\Form\LoteProducaoType;
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
@@ -48,6 +49,9 @@ class LoteProducaoController extends FormListController
     /** @var LoteProducaoBusiness */
     private $loteProducaoBusiness;
 
+    /** @var LoteProducaoItemEntityHandler */
+    private $loteProducaoItemEntityHandler;
+
     /**
      * @required
      * @param LoteProducaoEntityHandler $entityHandler
@@ -64,6 +68,15 @@ class LoteProducaoController extends FormListController
     public function setLoteProducaoBusiness(LoteProducaoBusiness $loteProducaoBusiness): void
     {
         $this->loteProducaoBusiness = $loteProducaoBusiness;
+    }
+
+    /**
+     * @required
+     * @param LoteProducaoItemEntityHandler $loteProducaoItemEntityHandler
+     */
+    public function setLoteProducaoItemEntityHandler(LoteProducaoItemEntityHandler $loteProducaoItemEntityHandler): void
+    {
+        $this->loteProducaoItemEntityHandler = $loteProducaoItemEntityHandler;
     }
 
     /**
@@ -102,9 +115,9 @@ class LoteProducaoController extends FormListController
             if ($formItem->isValid()) {
                 try {
                     $entity = $formItem->getData();
-                    $this->getEntityHandler()->save($entity);
+                    $this->loteProducaoItemEntityHandler->save($entity);
                     $this->addFlash('success', 'Registro salvo com sucesso!');
-                    // return $this->redirectTo($request, $entity, $parameters);
+                    return $this->redirectToRoute('loteProducao_form', ['id' => $loteProducao->getId(), '_fragment' => 'itens']);
                 } catch (ViewException $e) {
                     $this->addFlash('error', $e->getMessage());
                 } catch (\Exception $e) {
@@ -123,8 +136,57 @@ class LoteProducaoController extends FormListController
         $parameters = [];
         $parameters['formItem'] = $formItem->createView();
 
-
         return $this->doForm($request, $loteProducao, $parameters);
+    }
+
+    /**
+     *
+     * @Route("/loteProducaoItem/form/{loteProducaoItem}", name="loteProducaoItem_form", defaults={"loteProducaoItem"=null}, requirements={"loteProducaoItem"="\d+"})
+     * @param Request $request
+     * @param LoteProducaoItem|null $loteProducaoItem
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @throws \Exception
+     */
+    public function itemForm(Request $request, LoteProducaoItem $loteProducaoItem)
+    {
+
+        if ($loteProducaoItem) {
+            $this->loteProducaoBusiness->buildLoteQtdesTamanhosArray($loteProducaoItem->getLoteProducao());
+        }
+
+        $form = $this->createForm(LoteProducaoItemType::class, $loteProducaoItem);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted()) {
+            if ($form->isValid()) {
+                try {
+                    $entity = $form->getData();
+                    if ($request->get('lote_producao_item_qtde')) {
+                        $this->loteProducaoItemEntityHandler->handleSaveArrayQtdes($entity, $request->get('lote_producao_item_qtde'));
+                    }
+                    $this->loteProducaoItemEntityHandler->save($entity);
+                    $this->addFlash('success', 'Registro salvo com sucesso!');
+                    return $this->redirectToRoute('loteProducao_form', ['id' => $loteProducaoItem->getLoteProducao()->getId(), '_fragment' => 'itens']);
+                } catch (ViewException $e) {
+                    $this->addFlash('error', $e->getMessage());
+                } catch (\Exception $e) {
+                    $msg = ExceptionUtils::treatException($e);
+                    $this->addFlash('error', $msg);
+                    $this->addFlash('error', 'Erro ao salvar!');
+                }
+            } else {
+                $errors = $form->getErrors(true, true);
+                foreach ($errors as $error) {
+                    $this->addFlash('error', $error->getMessage());
+                }
+            }
+        }
+
+        $parameters = [];
+        $parameters['form'] = $form->createView();
+        $parameters['loteProducaoItem'] = $loteProducaoItem;
+
+        return $this->doRender('loteProducaoItemForm.html.twig', $parameters);
     }
 
     /**
@@ -161,6 +223,30 @@ class LoteProducaoController extends FormListController
     public function delete(Request $request, LoteProducao $loteProducao): \Symfony\Component\HttpFoundation\RedirectResponse
     {
         return $this->doDelete($request, $loteProducao);
+    }
+
+    /**
+     * @Route("/loteProducao/deleteItem/{loteProducaoItem}/", name="loteProducao_deleteItem", requirements={"loteProducaoItem"="\d+"})
+     * @param Request $request
+     * @param LoteProducaoItem $loteProducaoItem
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function deleteItem(Request $request, LoteProducaoItem $loteProducaoItem): \Symfony\Component\HttpFoundation\RedirectResponse
+    {
+        $loteProducao = $loteProducaoItem->getLoteProducao();
+        $this->checkAccess('loteProducao_deleteItem');
+        if (!$this->isCsrfTokenValid('loteProducao_deleteItem', $request->request->get('token'))) {
+            $this->addFlash('error', 'Erro interno do sistema.');
+        } else {
+            try {
+                $this->loteProducaoItemEntityHandler->delete($loteProducaoItem);
+                $this->addFlash('success', 'Registro deletado com sucesso.');
+            } catch (\Exception $e) {
+                $this->addFlash('error', 'Erro ao deletar registro.');
+            }
+        }
+
+        return $this->redirectToRoute('loteProducao_form', ['id' => $loteProducao->getId(), '_fragment' => 'itens']);
     }
 
 

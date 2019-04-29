@@ -330,7 +330,7 @@ CREATE TABLE `prod_lote_producao_item` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `fichatecnica_id` bigint(20) NOT NULL,
   `lote_producao_id` bigint(20) NOT NULL,
-  `obs` varchar(5000) COLLATE utf8_swedish_ci NOT NULL,
+  `obs` varchar(5000) COLLATE utf8_swedish_ci DEFAULT NULL,
   `ordem` int(11) NOT NULL,
   
   PRIMARY KEY (`id`),

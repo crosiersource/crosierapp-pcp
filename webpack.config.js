@@ -34,6 +34,7 @@ Encore
     .addEntry('insumoList', './assets/js/insumoList.js')
     .addEntry('fichaTecnicaList', './assets/js/fichaTecnicaList.js')
     .addEntry('loteProducaoList', './assets/js/loteProducaoList.js')
+    .addEntry('loteProducaoForm', './assets/js/loteProducaoForm.js')
 
     /*
      * FEATURE CONFIG

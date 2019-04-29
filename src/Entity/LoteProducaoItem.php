@@ -25,7 +25,7 @@ class LoteProducaoItem implements EntityId
     /**
      * @var null|string
      *
-     * @ORM\Column(name="obs", type="string", length=5000, nullable=false)
+     * @ORM\Column(name="obs", type="string", length=5000, nullable=true)
      * @Groups("entity")
      */
     private $obs;
@@ -67,7 +67,8 @@ class LoteProducaoItem implements EntityId
      * @ORM\OneToMany(
      *      targetEntity="LoteProducaoItemQtde",
      *      mappedBy="loteProducaoItem",
-     *      orphanRemoval=true
+     *      orphanRemoval=true,
+     *     cascade={"all"}
      * )
      */
     private $qtdes;
@@ -78,6 +79,13 @@ class LoteProducaoItem implements EntityId
      * @var array
      */
     private $qtdesTamanhosArray;
+
+    /**
+     * Transient.
+     *
+     * @var integer
+     */
+    private $totalQtdes;
 
 
     public function __construct()
@@ -190,6 +198,20 @@ class LoteProducaoItem implements EntityId
     public function setQtdesTamanhosArray(array $qtdesTamanhosArray): void
     {
         $this->qtdesTamanhosArray = $qtdesTamanhosArray;
+    }
+
+    /**
+     * @return int
+     */
+    public function getTotalQtdes(): int
+    {
+        $this->totalQtdes = 0;
+        if ($this->getQtdes()) {
+            foreach ($this->getQtdes() as $qtde) {
+                $this->totalQtdes += $qtde->getQtde();
+            }
+        }
+        return $this->totalQtdes;
     }
 
 

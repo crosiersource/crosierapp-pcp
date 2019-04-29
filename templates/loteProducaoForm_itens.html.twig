@@ -19,34 +19,45 @@
     {% set gradeId = 0 %}
     {% for item in e.itens %}
 
-        {% if gradeId != item.fichaTecnica.gradeId %}
-        {% set gradeId = item.fichaTecnica.gradeId %}
-        <thead>
-        <tr>
-            <th scope="col">Id</th>
-            <th scope="col">Descrição</th>
-            {% for i in 1..15 %}
-                <th scope="col" class="text-center">{{ item.fichaTecnica.gradesTamanhosByPosicaoArray[i] }}</th>
-            {% endfor %}
-            <th scope="col">Total</th>
-            <th scope="col"></th>
-        </tr>
-        </thead>
-        {% endif %}
+    {% if gradeId != item.fichaTecnica.gradeId %}
+    {% set gradeId = item.fichaTecnica.gradeId %}
+    <thead>
+    <tr>
+        <th scope="col">Id</th>
+        <th scope="col">Descrição</th>
+        {% for i in 1..15 %}
+            <th scope="col" class="text-center">{{ item.fichaTecnica.gradesTamanhosByPosicaoArray[i] }}</th>
+        {% endfor %}
+        <th scope="col">Total</th>
+        <th scope="col"></th>
+    </tr>
+    </thead>
+    {% endif %}
 
-        <tr>
-            <td>{{ item.id }}</td>
-            <td>
-                {{ item.fichaTecnica.descricao }}
-                {{ item.fichaTecnica.obs ? '<br />' ~ item.fichaTecnica.obs : '' }}
-            </td>
-            {% for i in 1..15 %}
-                <td class="text-center">{{ item.qtdesTamanhosArray[i] }}</td>
-            {% endfor %}
-            <td class="text-right"></td>
-            <td class="text-right">
-            </td>
-        </tr>
+    <tr>
+        <td>{{ item.id }}</td>
+        <td>
+            {{ item.fichaTecnica.descricao }}
+            {{ item.obs != '' ? (('<br /><i style="font-size:smaller">'|raw) ~ item.obs ~ ("</i>"|raw))|raw : '' }}
+        </td>
+        {% for i in 1..15 %}
+            <td class="text-center">{{ item.qtdesTamanhosArray[i] }}</td>
+        {% endfor %}
+        <td class="text-right">{{ item.totalQtdes }}</td>
+        <td class="text-center">
+
+            <a class="btn btn-primary btn-sm" href="{{ url('loteProducaoItem_form', {'loteProducaoItem': item.id}) }}"
+               role="button">
+                <i class="fas fa-wrench" aria-hidden="true"></i></a>
+
+            <button type="button" class="btn btn-danger btn-sm"
+                    data-url="{{ url('loteProducao_deleteItem', {'loteProducaoItem': item.id}) }}"
+                    data-token="{{ csrf_token('loteProducao_deleteItem') }}" data-target="#confirmationModal"
+                    data-toggle="modal">
+                <i class="fa fa-trash" aria-hidden="true"></i>
+            </button>
+        </td>
+    </tr>
     {% endfor %}
     <tr style="background-color: lightgrey">
         <th scope="row" colspan="17" class="text-right">

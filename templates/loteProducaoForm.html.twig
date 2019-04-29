@@ -29,13 +29,14 @@
         <div class="card-body">
 
 
-
             <ul class="nav nav-tabs" id="myTab" role="tablist">
                 <li class="nav-item">
-                    <a class="nav-link active" id="lote-tab" data-toggle="tab" href="#lote" role="tab" aria-controls="lote" aria-selected="true">Lote</a>
+                    <a class="nav-link active" id="lote-tab" data-toggle="tab" href="#lote" role="tab"
+                       aria-controls="lote" aria-selected="true">Lote</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" id="itens-tab" data-toggle="tab" href="#itens" role="tab" aria-controls="profile" aria-selected="false">Itens</a>
+                    <a class="nav-link" id="itens-tab" data-toggle="tab" href="#itens" role="tab"
+                       aria-controls="profile" aria-selected="false">Itens</a>
                 </li>
             </ul>
             <div class="tab-content" id="myTabContent">
@@ -59,11 +60,9 @@
 
                 </div>
                 <div class="tab-pane fade" id="itens" role="tabpanel" aria-labelledby="itens-tab">
-                    {% include 'loteProducaoForm_itens.html.twig'  %}
+                    {% include 'loteProducaoForm_itens.html.twig' %}
                 </div>
             </div>
-
-
 
 
         </div>
@@ -71,7 +70,10 @@
 
 
 
+{% endblock %}
 
 
 
+{% block down_scripts %}
+    <script src="{{ asset('build/loteProducaoForm.js') }}"></script>
 {% endblock %}
