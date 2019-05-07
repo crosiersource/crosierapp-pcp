@@ -27,7 +27,6 @@ class FichaTecnicaEntityHandler extends EntityHandler
     }
 
 
-
     public function getEntityClass()
     {
         return FichaTecnica::class;
@@ -37,7 +36,7 @@ class FichaTecnicaEntityHandler extends EntityHandler
     {
         /** @var FichaTecnica $fichaTecnica */
         $pessoa = $this->pessoaAPIClient->findById($fichaTecnica->getPessoaId());
-        $fichaTecnica->setPessoaNome($pessoa['nome'] . isset($pessoa['nomeFantasia'])) ? ' (' . $pessoa['nomeFantasia'] . ')' : '';
+        $fichaTecnica->setPessoaNome($pessoa['nomeMontado']);
 
 
     }

@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityId;
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityIdTrait;
+use CrosierSource\CrosierLibBaseBundle\Utils\DateTimeUtils\DateTimeUtils;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
@@ -54,6 +56,32 @@ class Insumo implements EntityId
      * @Groups("entity")
      */
     private $tipoInsumo;
+
+
+    /**
+     *
+     * @var InsumoPreco[]|ArrayCollection
+     *
+     * @ORM\OneToMany(
+     *      targetEntity="InsumoPreco",
+     *      mappedBy="insumo",
+     *      orphanRemoval=true
+     * )
+     */
+    private $precos;
+
+    /**
+     * Transient.
+     *
+     * @var InsumoPreco
+     */
+    private $precoAtual;
+
+
+    public function __construct()
+    {
+        $this->precos = new ArrayCollection();
+    }
 
 
     public function getCodigo($format = false)
@@ -127,6 +155,50 @@ class Insumo implements EntityId
     {
         $this->tipoInsumo = $tipoInsumo;
         return $this;
+    }
+
+    /**
+     * @return InsumoPreco[]|ArrayCollection
+     */
+    public function getPrecos()
+    {
+        return $this->precos;
+    }
+
+    /**
+     * @param InsumoPreco[]|ArrayCollection $precos
+     * @return Insumo
+     */
+    public function setPrecos($precos)
+    {
+        $this->precos = $precos;
+        return $this;
+    }
+
+    /**
+     * @return null|InsumoPreco
+     */
+    public function getPrecoAtual(): ?InsumoPreco
+    {
+        if ($this->precos) {
+            foreach ($this->precos as $preco) {
+                if ($preco->getAtual()) {
+                    $this->precoAtual = $preco;
+                    break;
+                }
+            }
+
+            if (!$this->precoAtual) {
+                $iterator = $this->precos->getIterator();
+                $iterator->uasort(function (InsumoPreco $a, InsumoPreco $b) {
+                    return $a->getDtCusto() >= $b->getDtCusto();
+                });
+                $precos = new ArrayCollection(iterator_to_array($iterator));
+
+                $this->precoAtual = $precos[0];
+            }
+        }
+        return $this->precoAtual;
     }
 
 

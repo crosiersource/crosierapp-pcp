@@ -64,9 +64,16 @@ class FichaTecnicaType extends AbstractType
             $fichaTecnica = $event->getData();
             $form = $event->getForm();
 
-
-            $form->add('descricao', TextType::class, [
-                'label' => 'Descrição'
+            $form->add('pessoaId', ChoiceType::class, [
+                'label' => 'Instituição',
+                'required' => false,
+                'choices' => $fichaTecnica && $fichaTecnica->getPessoaId() ? [$fichaTecnica->getPessoaNome() => $fichaTecnica->getPessoaId()] : null,
+                'attr' => [
+                    'data-route-url' => PessoaAPIClient::getBaseUri() . '/findByStr/',
+                    'data-text-format' => '%(nome)s - %(nomeFantasia)s',
+                    'data-val' => $fichaTecnica && $fichaTecnica->getPessoaId() ? $fichaTecnica->getPessoaId() : '',
+                    'class' => 'autoSelect2'
+                ]
             ]);
 
             $form->add('tipoArtigo', EntityType::class, [
@@ -78,6 +85,10 @@ class FichaTecnicaType extends AbstractType
                     return $tipoArtigo && $tipoArtigo->getDescricaoMontada() ? $tipoArtigo->getDescricaoMontada() : '';
                 },
                 'attr' => ['class' => 'autoSelect2']
+            ]);
+
+            $form->add('descricao', TextType::class, [
+                'label' => 'Descrição'
             ]);
 
             $form->add('bloqueada', ChoiceType::class, [
@@ -131,10 +142,10 @@ class FichaTecnicaType extends AbstractType
 
             $form->add('modoCalculo', ChoiceType::class, [
                 'choices' => [
-                    'MODO_1' => 'Modo 1',
-                    'MODO_2' => 'Modo 2',
-                    'MODO_3' => 'Modo 3',
-                    'MODO_4' => 'Modo 4',
+                    'MODO 1' => 'MODO_1',
+                    'MODO 2' => 'MODO_2',
+                    'MODO 3' => 'MODO_3',
+                    'MODO 4' => 'MODO_4',
                 ]
             ]);
 
@@ -148,17 +159,6 @@ class FichaTecnicaType extends AbstractType
                 ]
             ]);
 
-            $form->add('pessoaId', ChoiceType::class, [
-                'label' => 'Instituição',
-                'required' => false,
-                'choices' => $fichaTecnica && $fichaTecnica->getPessoaId() ? [$fichaTecnica->getPessoaNome() => $fichaTecnica->getPessoaId()] : null,
-                'attr' => [
-                    'data-route-url' => PessoaAPIClient::getBaseUri() . '/findByStr/',
-                    'data-text-format' => '%(nome)s - %(nomeFantasia)s',
-                    'data-val' => $fichaTecnica && $fichaTecnica->getPessoaId() ? $fichaTecnica->getPessoaId() : '',
-                    'class' => 'autoSelect2'
-                ]
-            ]);
 
             $form->add('obs', TextareaType::class, [
                 'label' => 'Obs',

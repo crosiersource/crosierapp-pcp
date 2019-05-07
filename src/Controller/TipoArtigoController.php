@@ -8,6 +8,7 @@ use App\EntityHandler\TipoArtigoEntityHandler;
 use App\Form\TipoArtigoType;
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\FilterData;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -103,6 +104,24 @@ class TipoArtigoController extends FormListController
     public function delete(Request $request, TipoArtigo $tipoArtigo): \Symfony\Component\HttpFoundation\RedirectResponse
     {
         return $this->doDelete($request, $tipoArtigo);
+    }
+
+    /**
+     *
+     * @Route("/tipoArtigo/findByInstituicaoId/{instituicaoId}", name="tipoArtigo_findByInstituicaoId", requirements={"instituicaoId"="\d+"})
+     * @return Response
+     */
+    public function findByInstituicao(int $instituicaoId): Response
+    {
+        $itens = $this->getDoctrine()->getRepository(TipoArtigo::class)->findByInstituicao($instituicaoId);
+        $rs = [];
+        /** @var TipoArtigo $tipoArtigo */
+        foreach ($itens as $tipoArtigo) {
+            $r['id'] = $tipoArtigo->getId();
+            $r['text'] = $tipoArtigo->getDescricaoMontada();
+            $rs[] = $r;
+        }
+        return new JsonResponse($rs);
     }
 
 

@@ -333,13 +333,14 @@ CREATE TABLE `prod_lote_producao_item` (
   `obs` varchar(5000) COLLATE utf8_swedish_ci DEFAULT NULL,
   `ordem` int(11) NOT NULL,
   
-  PRIMARY KEY (`id`),
+
   KEY `K_prod_lote_producao_item_lote_producao` (`lote_producao_id`),
   CONSTRAINT `FK_prod_lote_producao_item_lote_producao` FOREIGN KEY (`lote_producao_id`) REFERENCES `prod_lote_producao` (`id`),
   KEY `K_prod_lote_producao_item_fichatecnica` (`fichatecnica_id`),
   CONSTRAINT `FK_prod_lote_producao_item_fichatecnica` FOREIGN KEY (`fichatecnica_id`) REFERENCES `prod_fichatecnica` (`id`),
   
   -- campo de controle
+  PRIMARY KEY (`id`),
   `inserted` datetime  NOT NULL,
   `updated` datetime  NOT NULL,
   `version` int(11) DEFAULT NULL,

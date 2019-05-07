@@ -311,4 +311,15 @@ class FichaTecnicaPreco implements EntityId
     }
 
 
+    /**
+     * @return mixed
+     */
+    public function __clone()
+    {
+        if ($this->id) {
+            $this->setId(null);
+        }
+    }
+
+
 }

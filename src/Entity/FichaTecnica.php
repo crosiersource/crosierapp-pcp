@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityId;
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityIdTrait;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
@@ -133,6 +134,41 @@ class FichaTecnica implements EntityId
      * @Groups("entity")
      */
     private $pessoaNome;
+
+
+    /**
+     *
+     * @var FichaTecnicaItem[]|ArrayCollection
+     *
+     * @ORM\OneToMany(
+     *      targetEntity="FichaTecnicaItem",
+     *      mappedBy="fichaTecnica",
+     *      orphanRemoval=true,
+     *     cascade={"all"}
+     * )
+     */
+    private $itens;
+
+
+    /**
+     *
+     * @var FichaTecnicaPreco[]|ArrayCollection
+     *
+     * @ORM\OneToMany(
+     *      targetEntity="FichaTecnicaPreco",
+     *      mappedBy="fichaTecnica",
+     *      orphanRemoval=true,
+     *     cascade={"all"}
+     * )
+     */
+    private $precos;
+
+
+    public function __construct()
+    {
+        $this->itens = new ArrayCollection();
+        $this->precos = new ArrayCollection();
+    }
 
 
     /**
@@ -370,6 +406,25 @@ class FichaTecnica implements EntityId
     }
 
     /**
+     * Ex.:
+     * ‌Array
+     * (
+     * [1] => 02
+     * [2] => 04
+     * [3] => 06
+     * [4] => 08
+     * [5] => 10
+     * [6] => 12
+     * [7] => 14
+     * [8] => 16
+     * [9] => P
+     * [10] => M
+     * [11] => G
+     * [12] => XG
+     * [13] => SG
+     * [14] => SS
+     * [15] => -
+     * )
      * @return array
      */
     public function getGradesTamanhosByPosicaoArray(): array
@@ -383,6 +438,69 @@ class FichaTecnica implements EntityId
     public function setGradesTamanhosByPosicaoArray(array $gradesTamanhosByPosicaoArray): void
     {
         $this->gradesTamanhosByPosicaoArray = $gradesTamanhosByPosicaoArray;
+    }
+
+    /**
+     * @return FichaTecnicaItem[]|ArrayCollection
+     */
+    public function getItens()
+    {
+        return $this->itens;
+    }
+
+    /**
+     * @param FichaTecnicaItem[]|ArrayCollection $itens
+     * @return FichaTecnica
+     */
+    public function setItens($itens): FichaTecnica
+    {
+        $this->itens = $itens;
+        return $this;
+    }
+
+    /**
+     * @return FichaTecnicaPreco[]|ArrayCollection
+     */
+    public function getPrecos()
+    {
+        return $this->precos;
+    }
+
+    /**
+     * @param FichaTecnicaPreco[]|ArrayCollection $precos
+     * @return FichaTecnica
+     */
+    public function setPrecos($precos): FichaTecnica
+    {
+        $this->precos = $precos;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function __clone()
+    {
+        if ($this->id) {
+            $this->setId(null);
+            $itens = $this->getItens();
+            $novosItens = new ArrayCollection();
+            foreach ($itens as $item) {
+                $novoItem = clone $item;
+                $novoItem->setFichaTecnica($this);
+                $novosItens->add($novoItem);
+            }
+            $this->itens = $novosItens;
+
+            $precos = $this->getPrecos();
+            $novosPrecos = new ArrayCollection();
+            foreach ($precos as $preco) {
+                $novoPreco = clone $preco;
+                $novoPreco->setFichaTecnica($this);
+                $novosPrecos->add($novoPreco);
+            }
+            $this->precos = $novosPrecos;
+        }
     }
 
 

@@ -21,6 +21,17 @@ class InsumoPreco implements EntityId
     use EntityIdTrait;
 
     /**
+     * @var null|Insumo
+     *
+     * @ORM\ManyToOne(targetEntity="Insumo", inversedBy="precos", inversedBy="precos")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="insumo_id", referencedColumnName="id")
+     * })
+     * @Groups("entity")
+     */
+    private $insumo;
+
+    /**
      * @var null|float
      *
      * @ORM\Column(name="coeficiente", type="float", precision=10, scale=0, nullable=false)
@@ -93,14 +104,6 @@ class InsumoPreco implements EntityId
     private $fornecedorId;
 
     /**
-     * @var null|int
-     *
-     * @ORM\Column(name="insumo_id", type="bigint", nullable=false)
-     * @Groups("entity")
-     */
-    private $insumoId;
-
-    /**
      * @var null|string
      *
      * @ORM\Column(name="custo_financeiro", type="decimal", precision=19, scale=2, nullable=false)
@@ -115,6 +118,25 @@ class InsumoPreco implements EntityId
      * @Groups("entity")
      */
     private $atual;
+
+    /**
+     * @return Insumo|null
+     */
+    public function getInsumo(): ?Insumo
+    {
+        return $this->insumo;
+    }
+
+    /**
+     * @param Insumo|null $insumo
+     * @return InsumoPreco
+     */
+    public function setInsumo(?Insumo $insumo): InsumoPreco
+    {
+        $this->insumo = $insumo;
+        return $this;
+    }
+
 
     /**
      * @return float|null
@@ -275,24 +297,6 @@ class InsumoPreco implements EntityId
     public function setFornecedorId(?int $fornecedorId): InsumoPreco
     {
         $this->fornecedorId = $fornecedorId;
-        return $this;
-    }
-
-    /**
-     * @return int|null
-     */
-    public function getInsumoId(): ?int
-    {
-        return $this->insumoId;
-    }
-
-    /**
-     * @param int|null $insumoId
-     * @return InsumoPreco
-     */
-    public function setInsumoId(?int $insumoId): InsumoPreco
-    {
-        $this->insumoId = $insumoId;
         return $this;
     }
 

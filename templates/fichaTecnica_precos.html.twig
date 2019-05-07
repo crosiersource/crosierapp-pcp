@@ -1,0 +1,50 @@
+<nav class="navbar navbar-light bg-light justify-content-between">
+    <a class="navbar-brand">
+        Modo de Cálculo: {{ fichaTecnica.modoCalculo }}
+    </a>
+
+    <button type="button" class="btn btn-danger btn-sm"
+            data-url="{{ url('fichaTecnica_calcularPrecos', {'fichaTecnica' : fichaTecnica.id}) }}"
+            data-target="#confirmationModal" data-toggle="modal">
+        <i class="fas fa-dollar-sign"></i> Calcular Preços
+    </button>
+
+</nav>
+
+
+<table class="table table-sm table-striped table-hover table-bordered">
+
+
+    <thead>
+    <tr>
+        <th scope="col">Tamanhos</th>
+        <th scope="col">Preço Custo</th>
+        <th scope="col">Prazo</th>
+        <th scope="col">Margem</th>
+        <th scope="col">Preço Prazo</th>
+        <th scope="col">Preço Vista</th>
+    </tr>
+    </thead>
+
+
+    <tbody>
+    {% for preco in fichaTecnica.precos %}
+
+
+        <tr>
+            <td>{{ preco.descricao }}</td>
+            <td class="text-right">{{ preco.precoCusto|number_format(2,',','.') }}</td>
+            <td class="text-center">{{ preco.prazo }}</td>
+            <td class="text-center">{{ preco.margem|number_format(2,',','.') }}%</td>
+            <td class="text-right">{{ preco.precoPrazo|number_format(2,',','.') }}</td>
+            <td class="text-right">{{ preco.precoVista|number_format(2,',','.') }}</td>
+
+        </tr>
+    {% endfor %}
+
+
+    </tbody>
+
+</table>
+
+

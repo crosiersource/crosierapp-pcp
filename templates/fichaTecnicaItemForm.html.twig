@@ -1,0 +1,94 @@
+{% extends '@CrosierLibBase/index.html.twig' %}
+
+
+{% block page_content %}
+
+    <div class="card">
+        <div class="card-header">
+
+            <div class="row">
+                <div class="col-8">
+                    <h3>{{ formPageTitle }}</h3>
+                </div>
+                <div class="col-4 text-right">
+                    <button type="button" class="btn btn-secondary"
+                            onclick="window.location.href='{{ url(formRoute) }}'">
+                        <i class="fas fa-file" aria-hidden="true"></i> Novo
+                    </button>
+                    <button type="button" class="btn btn-secondary"
+                            onclick="window.location.href='{{ url('fichaTecnica_builder', {'id':fichaTecnicaItem.fichaTecnica.id}) }}'">
+                        <i class="fas fa-backward" aria-hidden="true"></i> Voltar
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="card-body">
+
+            <form method="POST" action="{{ url('fichaTecnicaItem_form', {'fichaTecnicaItem':fichaTecnicaItem.id}) }}">
+
+                <div class="form-group row">
+                    <label class="col-form-label col-sm-2 required" for="insumo">Insumo</label>
+                    <div class="col-sm-10">
+                        <input type="text" disabled value="{{ fichaTecnicaItem.insumo.descricao }}" class="form-control" />
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <div class="col-sm-12 text-right">
+                        <button type="button" class="btn btn-outline-primary btn-sm"
+                                data-jsfunction="igualarValores"
+                                data-target="#confirmationModal"
+                                data-toggle="modal">
+                            <i class="fas fa-equals"></i> Igualar
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary btn-sm"
+                                data-jsfunction="zerarValores"
+                                data-target="#confirmationModal"
+                                data-toggle="modal">
+                            <i class="fab fa-creative-commons-zero"></i> Zerar
+                        </button>
+                    </div>
+                </div>
+
+
+
+            {% for i in 1..15 %}
+                {% if fichaTecnicaItem.fichaTecnica.gradesTamanhosByPosicaoArray[i] != '-' %}
+                    <div class="form-group row">
+                        <label class="col-form-label col-sm-2" id="ficha_tecnica_item_qtde_label_{{ i }}"
+                               for="ficha_tecnica_item_qtde_{{ i }}">
+                            {{ fichaTecnicaItem.fichaTecnica.gradesTamanhosByPosicaoArray[i] }}
+                        </label>
+                        <div class="col-sm-10">
+                            <input type="{{ unidade.casasDecimais == 0 ? 'number' : 'text'}}" id="ficha_tecnica_item_qtde_{{ i }}"
+                                   name="ficha_tecnica_item_qtde[{{ i }}]"
+                                   class="form-control {{ unidade.casasDecimais == 3 ? 'crsr-dec3' : ''}} {{ unidade.casasDecimais == 2 ? 'crsr-dec2' : ''}} " value="{{ fichaTecnicaItem.qtdesTamanhosArray[i] }}"/>
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+
+            <div class="row">
+                <div class="col text-right">
+                    <button type="submit" class="btn btn-primary btn-lg" value="Salvar" name="btnSalvarItemForm">
+                        <i class="fas fa-save" aria-hidden="true"></i> Salvar
+                    </button>
+                </div>
+            </div>
+
+            </form>
+
+
+        </div>
+    </div>
+
+
+{% endblock %}
+
+
+
+{% block down_scripts %}
+    <script src="{{ asset('build/fichaTecnicaItemForm.js') }}"></script>
+{% endblock %}

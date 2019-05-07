@@ -40,7 +40,7 @@ class FichaTecnicaItemQtde implements EntityId
     /**
      * @var null|FichaTecnicaItem
      *
-     * @ORM\ManyToOne(targetEntity="FichaTecnicaItem")
+     * @ORM\ManyToOne(targetEntity="FichaTecnicaItem", inversedBy="qtdes")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="fichatecnica_item_id", referencedColumnName="id")
      * })
@@ -101,6 +101,17 @@ class FichaTecnicaItemQtde implements EntityId
     {
         $this->fichaTecnicaItem = $fichaTecnicaItem;
         return $this;
+    }
+
+
+    /**
+     * @return mixed
+     */
+    public function __clone()
+    {
+        if ($this->id) {
+            $this->setId(null);
+        }
     }
 
 
