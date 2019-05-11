@@ -8,7 +8,7 @@ use App\Entity\FichaTecnicaPreco;
 use App\Entity\Insumo;
 use App\EntityHandler\FichaTecnicaEntityHandler;
 use CrosierSource\CrosierLibBaseBundle\APIClient\Base\PropAPIClient;
-use CrosierSource\CrosierLibBaseBundle\APIClient\GenericCrosierAPIClient;
+use CrosierSource\CrosierLibBaseBundle\APIClient\CrosierEntityIdAPIClient;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
@@ -22,8 +22,8 @@ class FichaTecnicaBusiness
     /** @var PropAPIClient */
     private $propAPIClient;
 
-    /** @var GenericCrosierAPIClient */
-    private $genericAPIClient;
+    /** @var CrosierEntityIdAPIClient */
+    private $crosierEntityIdAPIClient;
 
     /** @var FichaTecnicaEntityHandler */
     private $fichaTecnicaEntityHandler;
@@ -40,11 +40,11 @@ class FichaTecnicaBusiness
 
     /**
      * @required
-     * @param GenericCrosierAPIClient $genericAPIClient
+     * @param CrosierEntityIdAPIClient $crosierEntityIdAPIClient
      */
-    public function setGenericAPIClient(GenericCrosierAPIClient $genericAPIClient): void
+    public function setGenericAPIClient(CrosierEntityIdAPIClient $crosierEntityIdAPIClient): void
     {
-        $this->genericAPIClient = $genericAPIClient;
+        $this->crosierEntityIdAPIClient = $crosierEntityIdAPIClient;
     }
 
     /**
@@ -170,13 +170,13 @@ class FichaTecnicaBusiness
             $fichaTecnica = $this->calcularModo3($fichaTecnica, $insumosArray['totalGlobal']);
         }
 
-        $this->genericAPIClient->setBaseUri($_SERVER['CROSIERCORE_URL']);
-        $r = $this->genericAPIClient->get('/api/cfg/appConfig/getConfigByChave', ['chave' => 'CROSIERAPPVENDEST_URL', 'app' => 'PCP']);
+        $this->crosierEntityIdAPIClient->setBaseUri($_SERVER['CROSIERCORE_URL']);
+        $r = $this->crosierEntityIdAPIClient->get('/api/cfg/appConfig/getConfigByChave', ['chave' => 'CROSIERAPPVENDEST_URL', 'app' => 'PCP']);
         $r = json_decode($r, true);
         $CROSIERAPPVENDEST_URL = $r['valor'];
 
 
-        $this->genericAPIClient->setBaseUri($CROSIERAPPVENDEST_URL);
+        $this->crosierEntityIdAPIClient->setBaseUri($CROSIERAPPVENDEST_URL);
 
         /** @var FichaTecnicaPreco $preco */
         foreach ($fichaTecnica->getPrecos() as $preco) {
@@ -198,7 +198,7 @@ class FichaTecnicaBusiness
                 'coeficiente' => 0.0,
             ];
             if ($preco->getPrecoCusto()) {
-                $rPrecoParams = $this->genericAPIClient->get('/api/est/calcularPreco', $precoParams);
+                $rPrecoParams = $this->crosierEntityIdAPIClient->get('/api/est/calcularPreco', $precoParams);
                 $precoArray = json_decode($rPrecoParams, true);
             }
             $preco->setPrecoPrazo((float)$precoArray['precoPrazo']);
