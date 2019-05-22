@@ -44,6 +44,9 @@ class LoteProducaoController extends FormListController
             'list_PROGRAM_UUID' => null,
             'listJS' => 'loteProducaoList.js',
 
+            'role_access' => 'ROLE_PCP',
+            'role_delete' => 'ROLE_PCP',
+
         ];
 
     /** @var LoteProducaoBusiness */

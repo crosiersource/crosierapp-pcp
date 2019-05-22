@@ -46,6 +46,9 @@ class FichaTecnicaController extends FormListController
             'list_PROGRAM_UUID' => null,
             'listJS' => 'fichaTecnicaList.js',
 
+            'role_access' => 'ROLE_PCP',
+            'role_delete' => 'ROLE_PCP',
+
         ];
 
     /** @var PessoaAPIClient */

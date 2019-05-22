@@ -38,6 +38,9 @@ class TipoInsumoController extends FormListController
             'list_PROGRAM_UUID' => null,
             'listJS' => 'tipoInsumoList.js',
 
+            'role_access' => 'ROLE_PCP_ADMIN',
+            'role_delete' => 'ROLE_PCP_ADMIN',
+
         ];
 
     /**

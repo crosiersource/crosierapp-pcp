@@ -39,6 +39,9 @@ class TipoArtigoController extends FormListController
             'list_PROGRAM_UUID' => null,
             'listJS' => 'tipoArtigoList.js',
 
+            'role_access' => 'ROLE_PCP_ADMIN',
+            'role_delete' => 'ROLE_PCP_ADMIN',
+
         ];
 
     /**
