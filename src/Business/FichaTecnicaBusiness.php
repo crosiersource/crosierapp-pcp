@@ -170,14 +170,6 @@ class FichaTecnicaBusiness
             $fichaTecnica = $this->calcularModo3($fichaTecnica, $insumosArray['totalGlobal']);
         }
 
-        $this->crosierEntityIdAPIClient->setBaseUri($_SERVER['CROSIERCORE_URL']);
-        $r = $this->crosierEntityIdAPIClient->get('/api/cfg/appConfig/getConfigByChave', ['chave' => 'CROSIERAPPVENDEST_URL', 'app' => 'PCP']);
-        $r = json_decode($r, true);
-        $CROSIERAPPVENDEST_URL = $r['valor'];
-
-
-        $this->crosierEntityIdAPIClient->setBaseUri($CROSIERAPPVENDEST_URL);
-
         /** @var FichaTecnicaPreco $preco */
         foreach ($fichaTecnica->getPrecos() as $preco) {
             $preco->setDtCusto(new \DateTime());
@@ -198,7 +190,9 @@ class FichaTecnicaBusiness
                 'coeficiente' => 0.0,
             ];
             if ($preco->getPrecoCusto()) {
-                $rPrecoParams = $this->crosierEntityIdAPIClient->get('/api/est/calcularPreco', $precoParams);
+                $rPrecoParams = $this->crosierEntityIdAPIClient
+                    ->setBaseURI($_SERVER['CROSIERAPPVENDEST_URL'])
+                    ->get('/api/est/calcularPreco', $precoParams);
                 $precoArray = json_decode($rPrecoParams, true);
             }
             $preco->setPrecoPrazo((float)$precoArray['precoPrazo']);
