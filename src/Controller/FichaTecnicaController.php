@@ -353,7 +353,7 @@ class FichaTecnicaController extends FormListController
     private function buildInstituicoesSelect2()
     {
         // Valores para o select de instituição
-        $instituicoes = $this->pessoaAPIClient->findByCategEStr('CLIENTE_PCP', null, 10000)['results'];
+        $instituicoes = $this->pessoaAPIClient->findByFilters([['categ.descricao','LIKE','CLIENTE_PCP']]);
         uasort($instituicoes, function ($a, $b) {
             return strcasecmp($a['nomeMontado'], $b['nomeMontado']);
         });
