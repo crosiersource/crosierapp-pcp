@@ -97,7 +97,14 @@ class LoteProducaoRepository extends FilterRepository
             $query->setParameter('loteProducaoId', $loteProducao->getId());
             $query->setParameter('tipoInsumoId', $tipoInsumoId);
 
-            $dados[$tipoInsumoDescricao] = $query->getResult();
+            $r = $query->getResult();
+
+            $dados[$tipoInsumoDescricao]['insumos'] = $r;
+            $total = 0.0;
+            foreach ($r as $insumo) {
+                $total += $insumo['total'];
+            }
+            $dados[$tipoInsumoDescricao]['total'] = $total;
 
 
 

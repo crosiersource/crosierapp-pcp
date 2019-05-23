@@ -269,6 +269,8 @@ class LoteProducaoController extends FormListController
         // Configure Dompdf according to your needs
         $pdfOptions = new Options();
         $pdfOptions->set('defaultFont', 'Arial');
+        $pdfOptions->set('enable_remote', true);
+        $pdfOptions->set('isHtml5ParserEnabled', true);
 
         // Instantiate Dompdf with our options
         $dompdf = new Dompdf($pdfOptions);
