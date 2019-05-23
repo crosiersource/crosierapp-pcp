@@ -35,7 +35,7 @@
     <tr>
         <td>{{ item.id }}</td>
         <td>
-            {{ item.fichaTecnica.descricao }}
+            <a href="{{ url('fichaTecnica_builder', {'id': item.fichaTecnica.id}) }}" target="_blank">{{ item.fichaTecnica.descricao }}</a>
             {{ item.obs != '' ? (('<br /><i style="font-size:smaller">'|raw) ~ item.obs ~ ("</i>"|raw))|raw : '' }}
         </td>
         {% for i in 1..15 %}

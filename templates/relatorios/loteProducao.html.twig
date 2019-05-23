@@ -1,0 +1,108 @@
+<html>
+<head>
+
+    <link href="https://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet">
+
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <style>
+        body {
+            font-family: 'Ubuntu', sans-serif;
+        }
+    </style>
+
+    <style>
+        /**
+            Set the margins of the page to 0, so the footer and the header
+            can be of the full height and width !
+         **/
+        @page {
+            margin: 0cm 0cm;
+        }
+
+        /** Define now the real margins of every page in the PDF **/
+        body {
+            margin: 3.5cm 1cm 1.5cm;
+            max-width: 21cm;
+            font-size: small;
+        }
+
+        /** Define the header rules **/
+        header {
+            position: fixed;
+            max-width: 21cm;
+            top: 1cm;
+            left: 1cm;
+            right: 1cm;
+            height: 3cm;
+        }
+
+        /** Define the footer rules **/
+        footer {
+            position: fixed;
+            bottom: 0cm;
+            left: 0cm;
+            right: 0cm;
+            height: 2cm;
+        }
+    </style>
+</head>
+<body>
+
+
+<header>
+    <table width="100%">
+        <tbody>
+        <tr>
+            <td style="vertical-align: top"></td>
+            <td style="text-align: right;">
+                <span style="font-size: x-large; font-weight: bolder">Lote de Produção</span><br/>
+                <span style="font-size: small;">{{ loteProducao.descricao }}</span><br/>
+                <span style="font-size: x-small;"><i>Dt Lote: {{ loteProducao.dtLote|date('d/m/Y') }}</i></span>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</header>
+
+
+<!-- Wrap the content of your PDF inside a main tag -->
+<main>
+    <table class="table table-sm table-striped" width="100% ">
+
+        <tbody>
+
+        {% for tipoInsumo, insumos in dados %}
+
+            <tr>
+                <td colspan="999">
+                    <h2>{{ tipoInsumo }}</h2>
+                </td>
+            <tr>
+
+            <tr>
+                <td style="font-weight: bolder;">Insumo</td>
+                <td style="font-weight: bolder;">Qtde</td>
+                <td style="font-weight: bolder;">Preço</td>
+                <td style="font-weight: bolder;">Total</td>
+            </tr>
+
+            {% for insumo in insumos %}
+                <tr>
+                    <td>{{ insumo.descricao }}</td>
+                    <td style="text-align: right;">{{ insumo.qtde_total|number_format(3,',','.') }}</td>
+                    <td style="text-align: right;">{{ insumo.preco_custo|number_format(2,',','.') }}</td>
+                    <td style="text-align: right;">{{ insumo.total|number_format(2,',','.') }}</td>
+                </tr>
+            {% endfor %}
+
+        {% endfor %}
+
+        </tbody>
+    </table>
+</main>
+
+
+</body>
+</html>

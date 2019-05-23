@@ -61,4 +61,32 @@ class LoteProducaoBusiness
         $item->setQtdesTamanhosArray($array);
     }
 
+
+    /**
+     * @param LoteProducao $loteProducao
+     * @return array
+     */
+    public function buildDadosPorTipoInsumo(LoteProducao $loteProducao): array
+    {
+        $itens = $loteProducao->getItens()->toArray();
+
+
+
+        uasort($itens, function ($a, $b) {
+            return strcasecmp($a->get['tipoInsumo'], $b['tipoInsumo']);
+        });
+
+        $tipoInsumo = null;
+
+        $dados = [];
+        foreach ($itens as $item) {
+            if ($tipoInsumo !== $item['tipoInsumo']) {
+                $tipoInsumo = $item['tipoInsumo'];
+            }
+            $dados[$tipoInsumo][] = $item;
+        }
+
+        return $dados;
+    }
+
 }

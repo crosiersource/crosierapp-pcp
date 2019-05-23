@@ -18,4 +18,19 @@ class LoteProducaoEntityHandler extends EntityHandler
     {
         return LoteProducao::class;
     }
+
+    /**
+     * @param $entityId
+     * @return mixed|void
+     */
+    public function beforeSave($loteProducao)
+    {
+        /** @var LoteProducao $loteProducao */
+        if (!$loteProducao->getCodigo()) {
+            $proxCodigo = $this->getDoctrine()->getRepository(LoteProducao::class)->findProx('codigo');
+            $loteProducao->setCodigo($proxCodigo);
+        }
+    }
+
+
 }

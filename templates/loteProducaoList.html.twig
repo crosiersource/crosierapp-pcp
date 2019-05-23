@@ -1,0 +1,25 @@
+{% extends '@CrosierLibBase/list.html.twig' %}
+
+{% block campos_pesquisar %}
+
+    <div class="form-group">
+        <label for="p_descricao">Descrição</label>
+        <input type="text" class="form-control" id="filter[descricao]" name="filter[descricao]"
+               value="{{ filter.descricao|default('') }}">
+    </div>
+
+    <div class="form-group">
+        <label>Dt Lote</label>
+        <div class="row">
+            <div class="col">
+                <input type="date" size="15" class="form-control" name="filter[dtLote][i]"
+                       value="{{ filter.dtLote.i|default('') }}">
+            </div>
+            <div class="col">
+                <input type="date" size="15" class="form-control" name="filter[dtLote][f]"
+                       value="{{ filter.dtLote.f|default('') }}">
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

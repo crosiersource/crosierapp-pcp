@@ -4,6 +4,7 @@ namespace App\Controller;
 
 
 use App\Entity\Insumo;
+use App\Entity\InsumoPreco;
 use App\EntityHandler\InsumoEntityHandler;
 use App\Form\InsumoType;
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
@@ -106,6 +107,38 @@ class InsumoController extends FormListController
     public function delete(Request $request, Insumo $insumo): \Symfony\Component\HttpFoundation\RedirectResponse
     {
         return $this->doDelete($request, $insumo);
+    }
+
+
+    /**
+     *
+     * @Route("/insumo/precos/ajustarAtual", name="insumo_precos_ajustarAtual")
+     * @param Request $request
+     * @param Insumo $insumo
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function ajustarAtual(): Response
+    {
+        $insumos = $this->getDoctrine()->getRepository(Insumo::class)->findAll();
+
+        /** @var Insumo $insumo */
+        foreach ($insumos as $insumo) {
+            $precos = $insumo->getPrecos()->toArray();
+
+            uasort($precos, function ($a, $b) {
+                /** @var InsumoPreco $a */
+                /** @var InsumoPreco $b */
+                return $a->getDtCusto() > $b->getDtCusto();
+            });
+
+            /** @var InsumoPreco $precoAtual */
+            $precoAtual = $this->getDoctrine()->getRepository(InsumoPreco::class)->find($precos[0]->getId());
+            $precoAtual->setAtual(true);
+            $this->getDoctrine()->getManager()->persist($precoAtual);
+
+        }
+        $this->getDoctrine()->getManager()->flush();
+
     }
 
 

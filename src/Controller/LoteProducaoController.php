@@ -14,9 +14,12 @@ use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibBaseBundle\Utils\ExceptionUtils\ExceptionUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\FilterData;
+use Dompdf\Dompdf;
+use Dompdf\Options;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+
 
 /**
  * CRUD Controller para LoteProducao.
@@ -36,7 +39,7 @@ class LoteProducaoController extends FormListController
             'formPageTitle' => 'Lote de Produção',
             'form_PROGRAM_UUID' => null,
 
-            'listView' => '@CrosierLibBase/list.html.twig',
+            'listView' => 'loteProducaoList.html.twig',
             'listRoute' => 'loteProducao_list',
             'listRouteAjax' => 'loteProducao_datatablesJsList',
             'listPageTitle' => 'Lotes de Produção',
@@ -89,7 +92,8 @@ class LoteProducaoController extends FormListController
     public function getFilterDatas(array $params): array
     {
         return [
-            new FilterData(['descricao'], 'LIKE', 'str', $params)
+            new FilterData(['descricao', 'codigo'], 'LIKE', 'descricao', $params),
+            new FilterData(['dtLote'], 'BETWEEN_DATE', 'dtLote', $params),
         ];
     }
 
@@ -250,6 +254,61 @@ class LoteProducaoController extends FormListController
         }
 
         return $this->redirectToRoute('loteProducao_form', ['id' => $loteProducao->getId(), '_fragment' => 'itens']);
+    }
+
+
+    /**
+     *
+     * @Route("/loteProducao/relatorio/{loteProducao}", name="aPagarReceber_fichaMovimentacao", requirements={"loteProducao"="\d+"})
+     *
+     * @param LoteProducao $loteProducao
+     * @return void
+     */
+    public function loteProducaoPDF(LoteProducao $loteProducao): void
+    {
+        // Configure Dompdf according to your needs
+        $pdfOptions = new Options();
+        $pdfOptions->set('defaultFont', 'Arial');
+
+        // Instantiate Dompdf with our options
+        $dompdf = new Dompdf($pdfOptions);
+
+
+        $dados = $this->getDoctrine()->getRepository(LoteProducao::class)->buildDadosPorTipoInsumo($loteProducao);
+
+
+        // Retrieve the HTML generated in our twig file
+        $html = $this->renderView('relatorios/loteProducao.html.twig', ['dados' => $dados, 'loteProducao' => $loteProducao]);
+        // Load HTML to Dompdf
+        $dompdf->loadHtml($html);
+
+
+        // (Optional) Setup the paper size and orientation 'portrait' or 'portrait'
+        $dompdf->setPaper('A4', 'portrait');
+
+        // Render the HTML as PDF
+        $dompdf->render();
+
+        // Output the generated PDF to Browser (inline view)
+        $dompdf->stream('loteProducao.pdf', [
+            'Attachment' => false
+        ]);
+
+    }
+
+    /**
+     *
+     * @Route("/loteProducao/relatorioHTML/{loteProducao}", name="loteProducao_relatorioHTML", requirements={"loteProducao"="\d+"})
+     *
+     * @param LoteProducao $loteProducao
+     * @return Response
+     */
+    public function relatorioHTML(LoteProducao $loteProducao): Response
+    {
+        $dados = $this->getDoctrine()->getRepository(LoteProducao::class)->buildDadosPorTipoInsumo($loteProducao);
+        return $this->render('relatorios/loteProducao.html.twig', ['dados' => $dados, 'loteProducao' => $loteProducao]);
+
+
     }
 
 
