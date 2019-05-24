@@ -241,7 +241,6 @@ class LoteProducaoController extends FormListController
     public function deleteItem(Request $request, LoteProducaoItem $loteProducaoItem): \Symfony\Component\HttpFoundation\RedirectResponse
     {
         $loteProducao = $loteProducaoItem->getLoteProducao();
-        $this->checkAccess('loteProducao_deleteItem');
         if (!$this->isCsrfTokenValid('loteProducao_deleteItem', $request->request->get('token'))) {
             $this->addFlash('error', 'Erro interno do sistema.');
         } else {

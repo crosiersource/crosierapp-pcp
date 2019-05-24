@@ -295,7 +295,6 @@ class FichaTecnicaController extends FormListController
     public function deleteItem(Request $request, FichaTecnicaItem $fichaTecnicaItem): \Symfony\Component\HttpFoundation\RedirectResponse
     {
         $fichaTecnica = $fichaTecnicaItem->getFichaTecnica();
-        $this->checkAccess('fichaTecnica_deleteItem');
         if (!$this->isCsrfTokenValid('fichaTecnica_deleteItem', $request->request->get('token'))) {
             $this->addFlash('error', 'Erro interno do sistema.');
         } else {
