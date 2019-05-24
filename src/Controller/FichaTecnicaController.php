@@ -152,7 +152,7 @@ class FichaTecnicaController extends FormListController
      */
     public function list(Request $request): Response
     {
-        $this->crudParams['formRoute'] = 'fichaTecnica_builder';
+        // $this->crudParams['formRoute'] = 'fichaTecnica_builder';
         return $this->doList($request);
     }
 
