@@ -185,7 +185,7 @@ class FichaTecnicaBusiness
                 'custoOperacional' => $preco->getCustoOperacional(),
                 'custoFinanceiro' => $preco->getCustoFinanceiro(),
                 'precoCusto' => $preco->getPrecoCusto(),
-                'prazoPrazo' => 0.0,
+                'precoPrazo' => 0.0,
                 'precoVista' => 0.0,
                 'coeficiente' => 0.0,
             ];
@@ -193,11 +193,11 @@ class FichaTecnicaBusiness
                 $rPrecoParams = $this->crosierEntityIdAPIClient
                     ->setBaseURI($_SERVER['CROSIERAPPVENDEST_URL'])
                     ->get('/api/est/calcularPreco', $precoParams);
-                $precoArray = json_decode($rPrecoParams, true);
+                $precoParams = json_decode($rPrecoParams, true);
             }
-            $preco->setPrecoPrazo((float)$precoArray['precoPrazo']);
-            $preco->setPrecoVista((float)$precoArray['precoVista']);
-            $preco->setCoeficiente((float)$precoArray['coeficiente']);
+            $preco->setPrecoPrazo((float)$precoParams['precoPrazo']);
+            $preco->setPrecoVista((float)$precoParams['precoVista']);
+            $preco->setCoeficiente((float)$precoParams['coeficiente']);
 
             $this->fichaTecnicaEntityHandler->handleSavingEntityId($preco);
         }
