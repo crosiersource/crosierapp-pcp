@@ -142,7 +142,7 @@ class FichaTecnicaBusiness
 
                 $insumosArray[$c]['totais'][$i] = bcadd($insumosArray[$c]['totais'][$i], $total, 3);
 
-                $totalGlobal[$i] = bcadd($totalGlobal[$i], $total, 3);
+                $totalGlobal[$i] = (float)bcadd($totalGlobal[$i], $total, 3);
             }
         }
 
@@ -237,7 +237,7 @@ class FichaTecnicaBusiness
             $tams = $pos1 . '-' . $pos2 . '-' . $pos3;
             $preco->setDescricao('TAM ' . $tams);
 
-            $precoMedio = $vPos3 ?? $vPos2 ?? $vPos1;
+            $precoMedio = $vPos3 ?: $vPos2 ?: $vPos1;
 
             $preco->setPrecoCusto($precoMedio);
 
@@ -253,7 +253,7 @@ class FichaTecnicaBusiness
             $tams = $pos4 . '-' . $pos5;
             $preco->setDescricao('TAM ' . $tams);
 
-            $precoMedio = $vPos5 ?? $vPos4;
+            $precoMedio = $vPos5 ?: $vPos4;
             $preco->setPrecoCusto($precoMedio);
 
             $fichaTecnica->getPrecos()->add($preco);
@@ -266,7 +266,7 @@ class FichaTecnicaBusiness
             $tams = $pos6 . '-' . $pos7 . '-' . $pos8;
             $preco->setDescricao('TAM ' . $tams);
 
-            $precoMedio = $vPos8 ?? $vPos7 ?? $vPos6;
+            $precoMedio = $vPos8 ?: $vPos7 ?: $vPos6;
             $preco->setPrecoCusto($precoMedio);
 
             $fichaTecnica->getPrecos()->add($preco);
@@ -280,7 +280,7 @@ class FichaTecnicaBusiness
             $preco->setDescricao('TAM ' . $tams);
 
             // preferencialmente pega o M->-> caso seja nulo, pega o G-> Por último o P->
-            $precoMedio = $vPos10 ?? $vPos11 ?? $vPos9;
+            $precoMedio = $vPos10 ?: $vPos11 ?: $vPos9;
 
             $preco->setPrecoCusto($precoMedio);
             $fichaTecnica->getPrecos()->add($preco);
@@ -345,7 +345,7 @@ class FichaTecnicaBusiness
             $tams = $pos1 . '-' . $pos2 . '-' . $pos3 . '-' . $pos4;
             $preco->setDescricao('TAM ' . $tams);
 
-            $precoMedio = $vPos4 ?? $vPos3 ?? $vPos2 ?? $vPos1;
+            $precoMedio = $vPos4 ?: $vPos3 ?: $vPos2 ?: $vPos1;
             $preco->setPrecoCusto($precoMedio);
 
             $fichaTecnica->getPrecos()->add($preco);
@@ -358,7 +358,7 @@ class FichaTecnicaBusiness
             $tams = $pos5 . '-' . $pos6 . '-' . $pos7 . '-' . $pos8;
             $preco->setDescricao('TAM ' . $tams);
 
-            $precoMedio = $vPos8 ?? $vPos7 ?? $vPos6 ?? $vPos5;
+            $precoMedio = $vPos8 ?: $vPos7 ?: $vPos6 ?: $vPos5;
             $preco->setPrecoCusto($precoMedio);
 
             $fichaTecnica->getPrecos()->add($preco);
@@ -371,7 +371,7 @@ class FichaTecnicaBusiness
             $tams = $pos9 . '-' . $pos10 . '-' . $pos11;
             $preco->setDescricao('TAM ' . $tams);
 
-            $precoMedio = $vPos10 ?? $vPos11 ?? $vPos9;
+            $precoMedio = $vPos10 ?: $vPos11 ?: $vPos9;
             $preco->setPrecoCusto($precoMedio);
 
             $fichaTecnica->getPrecos()->add($preco);
@@ -433,7 +433,7 @@ class FichaTecnicaBusiness
             $tams = $pos1 . '-' . $pos2 . '-' . $pos3 . '-' . $pos4;
             $preco->setDescricao('TAM ' . $tams);
 
-            $precoMedio = $vPos4 ?? $vPos3 ?? $vPos2 ?? $vPos1;
+            $precoMedio = $vPos4 ?: $vPos3 ?: $vPos2 ?: $vPos1;
             $preco->setPrecoCusto($precoMedio);
 
             $fichaTecnica->getPrecos()->add($preco);
@@ -446,7 +446,7 @@ class FichaTecnicaBusiness
             $tams = $pos5 . '-' . $pos6 . '-' . $pos7;
             $preco->setDescricao('TAM ' . $tams);
 
-            $precoMedio = $vPos7 ?? $vPos6 ?? $vPos5;
+            $precoMedio = $vPos7 ?: $vPos6 ?: $vPos5;
             $preco->setPrecoCusto($precoMedio);
 
             $fichaTecnica->getPrecos()->add($preco);
@@ -458,7 +458,7 @@ class FichaTecnicaBusiness
             $tams = $pos8 . '-' . $pos9 . '-' . $pos10 . '-' . $pos11;
             $preco->setDescricao('TAM ' . $tams);
 
-            $precoMedio = $vPos10 ?? $vPos11 ?? $vPos9 ?? $vPos8;
+            $precoMedio = $vPos10 ?: $vPos11 ?: $vPos9 ?: $vPos8;
             $preco->setPrecoCusto($precoMedio);
 
             $fichaTecnica->getPrecos()->add($preco);
@@ -485,7 +485,7 @@ class FichaTecnicaBusiness
 
             $preco->setDescricao('TAM ' . $tams);
 
-            $precoMedio = $vPos14 ?? $vPos13 ?? $vPos12;
+            $precoMedio = $vPos14 ?: $vPos13 ?: $vPos12;
             $preco->setPrecoCusto($precoMedio);
 
             $fichaTecnica->getPrecos()->add($preco);
