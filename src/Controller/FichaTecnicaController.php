@@ -15,10 +15,12 @@ use CrosierSource\CrosierLibBaseBundle\APIClient\Base\PropAPIClient;
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\FilterData;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Contracts\Cache\ItemInterface;
 
 /**
  * CRUD Controller para FichaTecnica.
@@ -355,16 +357,22 @@ class FichaTecnicaController extends FormListController
      */
     private function buildInstituicoesSelect2()
     {
-        // Valores para o select de instituição
-        $instituicoes = $this->pessoaAPIClient->findByFilters([['categ.descricao','LIKE','CLIENTE_PCP']],0,99999999)['results'];
-        uasort($instituicoes, function ($a, $b) {
-            return strcasecmp($a['nomeMontado'], $b['nomeMontado']);
+        $cache = new FilesystemAdapter();
+
+        $arrInstituicoes = $cache->get('buildInstituicoesSelect2' , function (ItemInterface $item) {
+            $instituicoes = $this->pessoaAPIClient->findByFilters([['categ.descricao','LIKE','CLIENTE_PCP']],0,99999999)['results'];
+
+            uasort($instituicoes, function ($a, $b) {
+                return strcasecmp($a['nomeMontado'], $b['nomeMontado']);
+            });
+            $arrInstituicoes = [];
+            $arrInstituicoes[] = ['id' => '', 'text' => '...'];
+            foreach ($instituicoes as $instituicao) {
+                $arrInstituicoes[] = ['id' => $instituicao['id'], 'text' => $instituicao['nomeMontado']];
+            }
+            return $arrInstituicoes;
         });
-        $arrInstituicoes = [];
-        $arrInstituicoes[] = ['id' => '', 'text' => '...'];
-        foreach ($instituicoes as $instituicao) {
-            $arrInstituicoes[] = ['id' => $instituicao['id'], 'text' => $instituicao['nomeMontado']];
-        }
+
         return json_encode($arrInstituicoes);
     }
 
@@ -376,16 +384,23 @@ class FichaTecnicaController extends FormListController
      */
     private function buildInsumosSelect2()
     {
-        // Valores para o select de instituição
-        $insumos = $this->getDoctrine()->getRepository(Insumo::class)->findBy([], ['descricao' => 'ASC']);
+        $cache = new FilesystemAdapter();
 
-        $arrInsumos = [];
-        $arrInsumos[] = ['id' => '', 'text' => '...'];
-        /** @var Insumo $insumo */
-        foreach ($insumos as $insumo) {
-            $arrInsumos[] = ['id' => $insumo->getId(), 'text' => $insumo->getDescricao() . ' (' . number_format($insumo->getPrecoAtual()->getPrecoCusto(), 2, ',', '.') . ')'];
-        }
+        $arrInsumos = $cache->get('buildInstituicoesSelect2' , function (ItemInterface $item) {
+            $insumos = $this->getDoctrine()->getRepository(Insumo::class)->findBy([], ['descricao' => 'ASC']);
+
+            $arrInsumos = [];
+            $arrInsumos[] = ['id' => '', 'text' => '...'];
+            /** @var Insumo $insumo */
+            foreach ($insumos as $insumo) {
+                $arrInsumos[] = ['id' => $insumo->getId(), 'text' => $insumo->getDescricao() . ' (' . number_format($insumo->getPrecoAtual()->getPrecoCusto(), 2, ',', '.') . ')'];
+            }
+
+            return $arrInsumos;
+        });
+
         return json_encode($arrInsumos);
+
     }
 
 
