@@ -385,7 +385,7 @@ class FichaTecnicaController extends FormListController
     {
         $cache = new FilesystemAdapter();
 
-        $arrInsumos = $cache->get('buildInstituicoesSelect2' , function (ItemInterface $item) {
+        $arrInsumos = $cache->get('buildInsumosSelect2' , function (ItemInterface $item) {
             $insumos = $this->getDoctrine()->getRepository(Insumo::class)->findBy([], ['descricao' => 'ASC']);
 
             $arrInsumos = [];
