@@ -249,6 +249,9 @@ class FichaTecnicaController extends FormListController
 
         if ($request->get('btnSalvarItemForm')) {
             if ($request->get('ficha_tecnica_item_qtde')) {
+                /** @var Insumo $insumo */
+                $insumo = $this->getDoctrine()->getRepository(Insumo::class)->find($request->get('insumo'));
+                $fichaTecnicaItem->setInsumo($insumo);
                 $this->fichaTecnicaItemEntityHandler->handleSaveArrayQtdes($fichaTecnicaItem, $request->get('ficha_tecnica_item_qtde'));
             }
             $this->fichaTecnicaItemEntityHandler->save($fichaTecnicaItem);
@@ -258,6 +261,7 @@ class FichaTecnicaController extends FormListController
 
 
         $parameters = [];
+        $parameters['insumos'] = $this->buildInsumosSelect2();
         $parameters['fichaTecnicaItem'] = $fichaTecnicaItem;
         $parameters['unidade'] = $this->propAPIClient->findUnidadeById($fichaTecnicaItem->getInsumo()->getUnidadeProdutoId());
 
@@ -349,8 +353,6 @@ class FichaTecnicaController extends FormListController
     }
 
 
-
-
     /**
      * Valores para o select2 de Insumo.
      *
@@ -358,9 +360,9 @@ class FichaTecnicaController extends FormListController
      */
     private function buildInsumosSelect2()
     {
-        $cache = new FilesystemAdapter();
+        $cache = new FilesystemAdapter($_SERVER['CROSIERAPP_ID'] . '.cache');
 
-        $arrInsumos = $cache->get('buildInsumosSelect2' , function (ItemInterface $item) {
+        $arrInsumos = $cache->get('buildInsumosSelect2', function (ItemInterface $item) {
             $insumos = $this->getDoctrine()->getRepository(Insumo::class)->findBy([], ['descricao' => 'ASC']);
 
             $arrInsumos = [];

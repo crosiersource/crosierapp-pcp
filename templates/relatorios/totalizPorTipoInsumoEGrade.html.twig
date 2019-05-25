@@ -85,6 +85,7 @@
 
     <table class="table table-sm table-striped">
 
+
         <thead class="thead-dark">
         <tr>
             <th scope="col">Insumo</th>
@@ -94,38 +95,56 @@
         </tr>
         </thead>
 
-        {% for tipoInsumo, insumos in dados %}
-
+        {% for item in dados %}
 
             <tbody>
 
             <tr>
-                <th colspan="99" style="text-align: center; background-color: antiquewhite">
-                    <h5>{{ tipoInsumo }}</h5>
+                <th colspan="99" style="background-color: paleturquoise">
+                    <h5>{{ item.item.descricao }}</h5>
                 </th>
             </tr>
             <tr>
                 <th></th>
                 {% for tamanho in tamanhos %}
-                    <th style="text-align: center;">{{ tamanho }}</th>
+                    <th style="text-align: center;">{{ tamanho.tamanho }}</th>
                 {% endfor %}
                 <th></th>
             </tr>
 
-            {% for insumo in insumos.insumos %}
-                <tr>
-                    <td>{{ insumo.descricao }}</td>
-                    <td style="text-align: right;">{{ insumo.qtde_total|number_format(3,',','.') }}</td>
-                    <td style="text-align: right;">{{ insumo.preco_custo|number_format(2,',','.') }}</td>
-                    <td style="text-align: right;">{{ insumo.total|number_format(2,',','.') }}</td>
-                </tr>
-            {% endfor %}
-            </tbody>
+            {% for tipoInsumo, insumos in item.tiposInsumos %}
 
-            <tr>
-                <td style="text-align: right; font-weight: bolder;" colspan="3">TOTAL {{ tipoInsumo }} : </td>
-                <td style="text-align: right; font-weight: bolder;">{{ insumos.total|number_format(2,',','.') }}</td>
-            </tr>
+
+
+
+                <tr>
+                    <th colspan="99" style="text-align: center; background-color: antiquewhite">
+                        <h6>{{ tipoInsumo }}</h6>
+                    </th>
+                </tr>
+
+                {% for insumo in insumos %}
+                    <tr>
+                        <td>{{ insumo.insumo.descricao }}</td>
+                        {% for tamanho in tamanhos %}
+                            <th style="text-align: center;">
+                                {% if insumo.totaisPorTamanho[tamanho.tamanho]|default(0) > 0 %}
+                                    {{ insumo.totaisPorTamanho[tamanho.tamanho]|default(0)|number_format(insumo.insumo.casas_decimais,',','.') }}
+                                {% endif %}
+                            </th>
+                        {% endfor %}
+                        <td style="text-align: right;"></td>
+                    </tr>
+                {% endfor %}
+
+
+
+
+            {% endfor %}
+
+            <tr><td colspan="999">&nbsp;</td></tr>
+
+            </tbody>
 
         {% endfor %}
 

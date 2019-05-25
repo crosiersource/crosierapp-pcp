@@ -311,8 +311,6 @@ class LoteProducaoController extends FormListController
     }
 
 
-
-
     /**
      *
      * @Route("/loteProducao/relatorio/totalizPorTipoInsumoEGrade/PDF/{loteProducao}", name="loteProducao_relatorio_totalizPorTipoInsumoEGrade_PDF", requirements={"loteProducao"="\d+"})
@@ -320,7 +318,7 @@ class LoteProducaoController extends FormListController
      * @param LoteProducao $loteProducao
      * @return void
      */
-    public function totalizPorTipoInsumoEGradePDF(LoteProducao $loteProducao): void
+    public function totalizPorItemETipoInsumoEGradePDF(LoteProducao $loteProducao): void
     {
         // Configure Dompdf according to your needs
         $pdfOptions = new Options();
@@ -332,11 +330,16 @@ class LoteProducaoController extends FormListController
         $dompdf = new Dompdf($pdfOptions);
 
 
-        $dados = $this->getDoctrine()->getRepository(LoteProducao::class)->buildTotalizPorTipoInsumoEGrade($loteProducao);
-
+        $dados = $this->getDoctrine()->getRepository(LoteProducao::class)->buildTotalizPorItemETipoInsumoEGrade($loteProducao);
+        $tamanhos = $this->getDoctrine()->getRepository(LoteProducao::class)->getTamanhosPorLote($loteProducao);
 
         // Retrieve the HTML generated in our twig file
-        $html = $this->renderView('relatorios/totalizPorTipoInsumoEGrade.html.twig', ['dados' => $dados, 'loteProducao' => $loteProducao]);
+        $html = $this->renderView('relatorios/totalizPorTipoInsumoEGrade.html.twig',
+            [
+                'dados' => $dados,
+                'tamanhos' => $tamanhos,
+                'loteProducao' => $loteProducao
+            ]);
         // Load HTML to Dompdf
         $dompdf->loadHtml($html);
 
@@ -351,6 +354,28 @@ class LoteProducaoController extends FormListController
         $dompdf->stream('totalizPorTipoInsumoEGrade.pdf', [
             'Attachment' => false
         ]);
+
+    }
+
+
+    /**
+     *
+     * @Route("/loteProducao/relatorio/totalizPorTipoInsumoEGrade/HTML/{loteProducao}", name="loteProducao_relatorio_totalizPorTipoInsumoEGrade_HTML", requirements={"loteProducao"="\d+"})
+     *
+     * @param LoteProducao $loteProducao
+     * @return Response
+     */
+    public function totalizPorItemETipoInsumoEGradeHTML(LoteProducao $loteProducao): Response
+    {
+        $dados = $this->getDoctrine()->getRepository(LoteProducao::class)->buildTotalizPorItemETipoInsumoEGrade($loteProducao);
+        $tamanhos = $this->getDoctrine()->getRepository(LoteProducao::class)->getTamanhosPorLote($loteProducao);
+
+        return $this->render('relatorios/totalizPorTipoInsumoEGrade.html.twig',
+            [
+                'dados' => $dados,
+                'loteProducao' => $loteProducao,
+                'tamanhos' => $tamanhos
+            ]);
 
     }
 

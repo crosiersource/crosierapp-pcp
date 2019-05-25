@@ -4,6 +4,7 @@ namespace App\Repository;
 
 
 use App\Entity\LoteProducao;
+use App\Entity\LoteProducaoItem;
 use CrosierSource\CrosierLibBaseBundle\Repository\FilterRepository;
 use Doctrine\ORM\Query\ResultSetMapping;
 
@@ -63,7 +64,7 @@ class LoteProducaoRepository extends FilterRepository
     {
         $sql = 'select 
     gt.id,
-	gt.tamanho
+	gt.tamanho	
 from 
     prod_fichatecnica_item_qtde fiq, 
     prod_fichatecnica_item fi, 
@@ -74,7 +75,8 @@ from
     prod_insumo i,
     prod_insumo_preco ip,
     prod_tipo_insumo ti,
-    est_grade_tamanho gt
+    est_grade_tamanho gt    
+    
 where 
     l.id = li.lote_producao_id and
     liq.lote_producao_item_id = li.id and
@@ -86,7 +88,7 @@ where
     ip.insumo_id = i.id and
     i.tipo_insumo_id = ti.id and
     gt.id = liq.grade_tamanho_id and
-    gt.id = fiq.grade_tamanho_id and
+    gt.id = fiq.grade_tamanho_id and   
     l.id = ? and
     ip.atual is true
 GROUP BY gt.id
@@ -102,22 +104,24 @@ ORDER BY gt.tamanho;';
 
 
     /**
-     * @param LoteProducao $loteProducao
+     * @param LoteProducaoItem $loteProducaoItem
      * @param int $tipoInsumoId
      * @return array
      */
-    public function getInsumosPorLoteETipoInsumo(LoteProducao $loteProducao, int $tipoInsumoId): array
+    public function getInsumosPorLoteItemETipoInsumo(LoteProducaoItem $loteProducaoItem, int $tipoInsumoId): array
     {
         $sql = '
 select 
 	i.id,
-	i.descricao
+	i.descricao,
+	u.casas_decimais
 from 
     prod_fichatecnica_item fi, 
     prod_fichatecnica f, 
     prod_lote_producao l, 
     prod_lote_producao_item li,
     prod_insumo i,
+    est_unidade_produto u,
     prod_tipo_insumo ti
 where 
     l.id = li.lote_producao_id and
@@ -125,8 +129,9 @@ where
     fi.fichatecnica_id = f.id and
     fi.insumo_id = i.id and
     i.tipo_insumo_id = ti.id and
-    l.id = ? and
-    ti.id = ?
+    i.unidade_produto_id = u.id and    
+    li.id = :loteItemId and
+    ti.id = :tipoInsumoId
 GROUP BY i.id
 ORDER BY i.descricao;        
         ';
@@ -135,9 +140,10 @@ ORDER BY i.descricao;
         $rsm = new ResultSetMapping();
         $rsm->addScalarResult('id', 'id');
         $rsm->addScalarResult('descricao', 'descricao');
+        $rsm->addScalarResult('casas_decimais', 'casas_decimais');
         $query = $this->getEntityManager()->createNativeQuery($sql, $rsm);
-        $query->setParameter(1, $loteProducao->getId());
-        $query->setParameter(2, $tipoInsumoId);
+        $query->setParameter('loteItemId', $loteProducaoItem->getId());
+        $query->setParameter('tipoInsumoId', $tipoInsumoId);
         return $query->getResult();
     }
 
@@ -208,10 +214,12 @@ ORDER BY i.descricao;
 
 
     /**
-     * @param LoteProducao $loteProducao
-     * @return array
+     * @param LoteProducaoItem $loteProducaoItem
+     * @param int $insumoId
+     * @param int $gradeTamanhoId
+     * @return float
      */
-    public function getTotalPorLoteEInsumoETamanho(LoteProducao $loteProducao, int $insumoId, int $gradeTamanhoId): array
+    public function getTotalPorLoteItemEInsumoETamanho(LoteProducaoItem $loteProducaoItem, int $insumoId, int $gradeTamanhoId): float
     {
         $dados = [];
 
@@ -241,18 +249,18 @@ where
     i.tipo_insumo_id = ti.id and
     gt.id = liq.grade_tamanho_id and
     gt.id = fiq.grade_tamanho_id and
-    l.id = ? and
-    i.id = ? and
-    gt.id = ? and
+    li.id = :loteItemId and
+    i.id = :insumoId and
+    gt.id = :gradeTamanhoId and
     ip.atual is true';
 
         $rsm = new ResultSetMapping();
         $rsm->addScalarResult('total', 'total');
         $query = $this->getEntityManager()->createNativeQuery($sql, $rsm);
-        $query->setParameter(1, $loteProducao->getId());
-        $query->setParameter(2, $insumoId);
-        $query->setParameter(3, $gradeTamanhoId);
-        return $query->getResult();
+        $query->setParameter('loteItemId', $loteProducaoItem->getId());
+        $query->setParameter('insumoId', $insumoId);
+        $query->setParameter('gradeTamanhoId', $gradeTamanhoId);
+        return $query->getResult()[0]['total'] ?? 0.0;
     }
 
 
@@ -260,31 +268,44 @@ where
      * @param LoteProducao $loteProducao
      * @return array
      */
-    public function buildTotalizPorTipoInsumoEGrade(LoteProducao $loteProducao): array
+    public function buildTotalizPorItemETipoInsumoEGrade(LoteProducao $loteProducao): array
     {
         $dados = [];
 
         $tiposInsumos = $this->getTiposInsumosPorLote($loteProducao);
         $tamanhos = $this->getTamanhosPorLote($loteProducao);
 
-        foreach ($tiposInsumos as $tipoInsumo) {
+        $itens = $loteProducao->getItens();
 
-            $insumos = $this->getInsumosPorLoteETipoInsumo($loteProducao, $tipoInsumo['id']);
+        /** @var LoteProducaoItem $item */
+        foreach ($itens as $item) {
 
-            $rInsumo = [];
+            $rPorTipoInsumo = [];
 
-            foreach ($insumos as $insumo) {
-                $totaisPorTamanho = [];
-                $rInsumo[$insumo['id']]['insumo'] = $insumo;
-                foreach ($tamanhos as $tamanho) {
-                    $qtde = $this->getTotalPorLoteEInsumoETamanho($loteProducao, $insumo['id'], $tamanho['id']);
-                    $totaisPorTamanho[$tamanho['tamanho']] = $qtde;
+            foreach ($tiposInsumos as $tipoInsumo) {
+
+                $insumos = $this->getInsumosPorLoteItemETipoInsumo($item, $tipoInsumo['id']);
+
+                $rInsumo = [];
+
+                foreach ($insumos as $insumo) {
+                    $totaisPorTamanho = [];
+                    $rInsumo[$insumo['id']]['insumo'] = $insumo;
+                    foreach ($tamanhos as $tamanho) {
+                        $qtde = $this->getTotalPorLoteItemEInsumoETamanho($item, $insumo['id'], $tamanho['id']);
+                        $totaisPorTamanho[$tamanho['tamanho']] = $qtde;
+                    }
+                    $rInsumo[$insumo['id']]['totaisPorTamanho'] = $totaisPorTamanho;
                 }
-                $rInsumo[$insumo['id']]['totaisPorTamanho'] = $totaisPorTamanho;
+
+                $rPorTipoInsumo[$tipoInsumo['descricao']] = $rInsumo;
+
             }
 
-            $dados[$tipoInsumo['descricao']][] = $rInsumo;
-
+            $dados[$item->getId()] = [
+                'item' => ['descricao' => $item->getFichaTecnica()->getDescricao()],
+                'tiposInsumos' => $rPorTipoInsumo
+            ];
 
         }
 
