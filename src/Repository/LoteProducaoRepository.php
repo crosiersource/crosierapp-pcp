@@ -26,12 +26,9 @@ class LoteProducaoRepository extends FilterRepository
      * @param LoteProducao $loteProducao
      * @return array
      */
-    public function buildTotalizPorTipoInsumo(LoteProducao $loteProducao): array
+    public function getTiposInsumosPorLote(LoteProducao $loteProducao): array
     {
-
-        $dados = [];
-
-        $sql = 'select i.tipo_insumo_id, ti.descricao as descricao
+        $sql = 'select ti.id, ti.descricao
         from
             prod_fichatecnica_item fi,
             prod_fichatecnica f,
@@ -50,12 +47,110 @@ class LoteProducaoRepository extends FilterRepository
 
 
         $rsm = new ResultSetMapping();
-        $rsm->addScalarResult('tipo_insumo_id', 'tipo_insumo_id');
+        $rsm->addScalarResult('id', 'id');
         $rsm->addScalarResult('descricao', 'descricao');
         $query = $this->getEntityManager()->createNativeQuery($sql, $rsm);
         $query->setParameter(1, $loteProducao->getId());
-        $tiposInsumos = $query->getResult();
+        return $query->getResult();
+    }
 
+
+    /**
+     * @param LoteProducao $loteProducao
+     * @return array
+     */
+    public function getTamanhosPorLote(LoteProducao $loteProducao): array
+    {
+        $sql = 'select 
+    gt.id,
+	gt.tamanho
+from 
+    prod_fichatecnica_item_qtde fiq, 
+    prod_fichatecnica_item fi, 
+    prod_fichatecnica f, 
+    prod_lote_producao l, 
+    prod_lote_producao_item li,
+    prod_lote_producao_item_qtde liq,
+    prod_insumo i,
+    prod_insumo_preco ip,
+    prod_tipo_insumo ti,
+    est_grade_tamanho gt
+where 
+    l.id = li.lote_producao_id and
+    liq.lote_producao_item_id = li.id and
+    li.fichatecnica_id = f.id and
+    fi.fichatecnica_id = f.id and
+    fiq.fichatecnica_item_id = fi.id and
+    fi.insumo_id = i.id and
+    liq.grade_tamanho_id = fiq.grade_tamanho_id and
+    ip.insumo_id = i.id and
+    i.tipo_insumo_id = ti.id and
+    gt.id = liq.grade_tamanho_id and
+    gt.id = fiq.grade_tamanho_id and
+    l.id = ? and
+    ip.atual is true
+GROUP BY gt.id
+ORDER BY gt.tamanho;';
+
+        $rsm = new ResultSetMapping();
+        $rsm->addScalarResult('id', 'id');
+        $rsm->addScalarResult('tamanho', 'tamanho');
+        $query = $this->getEntityManager()->createNativeQuery($sql, $rsm);
+        $query->setParameter(1, $loteProducao->getId());
+        return $query->getResult();
+    }
+
+
+    /**
+     * @param LoteProducao $loteProducao
+     * @param int $tipoInsumoId
+     * @return array
+     */
+    public function getInsumosPorLoteETipoInsumo(LoteProducao $loteProducao, int $tipoInsumoId): array
+    {
+        $sql = '
+select 
+	i.id,
+	i.descricao
+from 
+    prod_fichatecnica_item fi, 
+    prod_fichatecnica f, 
+    prod_lote_producao l, 
+    prod_lote_producao_item li,
+    prod_insumo i,
+    prod_tipo_insumo ti
+where 
+    l.id = li.lote_producao_id and
+    li.fichatecnica_id = f.id and
+    fi.fichatecnica_id = f.id and
+    fi.insumo_id = i.id and
+    i.tipo_insumo_id = ti.id and
+    l.id = ? and
+    ti.id = ?
+GROUP BY i.id
+ORDER BY i.descricao;        
+        ';
+
+
+        $rsm = new ResultSetMapping();
+        $rsm->addScalarResult('id', 'id');
+        $rsm->addScalarResult('descricao', 'descricao');
+        $query = $this->getEntityManager()->createNativeQuery($sql, $rsm);
+        $query->setParameter(1, $loteProducao->getId());
+        $query->setParameter(2, $tipoInsumoId);
+        return $query->getResult();
+    }
+
+
+    /**
+     * @param LoteProducao $loteProducao
+     * @return array
+     */
+    public function buildTotalizPorTipoInsumo(LoteProducao $loteProducao): array
+    {
+        $dados = [];
+
+        $tiposInsumos = $this->getTiposInsumosPorLote($loteProducao);
 
         $sqlTotalInsumo =
             'select i.id, i.descricao, sum(fiq.qtde * liq.qtde) as qtde_total, ip.preco_custo, ((sum(fiq.qtde * liq.qtde)) * ip.preco_custo) as total
@@ -107,14 +202,58 @@ class LoteProducaoRepository extends FilterRepository
             $dados[$tipoInsumoDescricao]['total'] = $total;
 
 
-
         }
-
         return $dados;
-
-
     }
 
+
+    /**
+     * @param LoteProducao $loteProducao
+     * @return array
+     */
+    public function getTotalPorLoteEInsumoETamanho(LoteProducao $loteProducao, int $insumoId, int $gradeTamanhoId): array
+    {
+        $dados = [];
+
+        $sql =
+            'select 	
+	sum(liq.qtde * fiq.qtde) as total
+from 
+    prod_fichatecnica_item_qtde fiq, 
+    prod_fichatecnica_item fi, 
+    prod_fichatecnica f, 
+    prod_lote_producao l, 
+    prod_lote_producao_item li,
+    prod_lote_producao_item_qtde liq,
+    prod_insumo i,
+    prod_insumo_preco ip,
+    prod_tipo_insumo ti,
+    est_grade_tamanho gt
+where 
+    l.id = li.lote_producao_id and
+    liq.lote_producao_item_id = li.id and
+    li.fichatecnica_id = f.id and
+    fi.fichatecnica_id = f.id and
+    fiq.fichatecnica_item_id = fi.id and
+    fi.insumo_id = i.id and
+    liq.grade_tamanho_id = fiq.grade_tamanho_id and
+    ip.insumo_id = i.id and
+    i.tipo_insumo_id = ti.id and
+    gt.id = liq.grade_tamanho_id and
+    gt.id = fiq.grade_tamanho_id and
+    l.id = ? and
+    i.id = ? and
+    gt.id = ? and
+    ip.atual is true';
+
+        $rsm = new ResultSetMapping();
+        $rsm->addScalarResult('total', 'total');
+        $query = $this->getEntityManager()->createNativeQuery($sql, $rsm);
+        $query->setParameter(1, $loteProducao->getId());
+        $query->setParameter(2, $insumoId);
+        $query->setParameter(3, $gradeTamanhoId);
+        return $query->getResult();
+    }
 
 
     /**
@@ -123,90 +262,33 @@ class LoteProducaoRepository extends FilterRepository
      */
     public function buildTotalizPorTipoInsumoEGrade(LoteProducao $loteProducao): array
     {
-
         $dados = [];
 
-        $sql = 'select i.tipo_insumo_id, ti.descricao as descricao
-        from
-            prod_fichatecnica_item fi,
-            prod_fichatecnica f,
-            prod_lote_producao l,
-            prod_lote_producao_item li,
-            prod_insumo i,
-            prod_tipo_insumo ti
-        where
-            l.id = li.lote_producao_id and
-            li.fichatecnica_id = f.id and
-            fi.fichatecnica_id = f.id and
-            fi.insumo_id = i.id and
-            i.tipo_insumo_id = ti.id and
-            l.id = ?
-        GROUP BY i.tipo_insumo_id';
-
-
-        $rsm = new ResultSetMapping();
-        $rsm->addScalarResult('tipo_insumo_id', 'tipo_insumo_id');
-        $rsm->addScalarResult('descricao', 'descricao');
-        $query = $this->getEntityManager()->createNativeQuery($sql, $rsm);
-        $query->setParameter(1, $loteProducao->getId());
-        $tiposInsumos = $query->getResult();
-
-
-        $sqlTotalInsumo =
-            'select i.id, i.descricao, sum(fiq.qtde * liq.qtde) as qtde_total, ip.preco_custo, ((sum(fiq.qtde * liq.qtde)) * ip.preco_custo) as total
-            from 
-                prod_fichatecnica_item_qtde fiq, 
-                prod_fichatecnica_item fi, 
-                prod_fichatecnica f, 
-                prod_lote_producao l, 
-                prod_lote_producao_item li,
-                prod_lote_producao_item_qtde liq,
-                prod_insumo i,
-                prod_insumo_preco ip
-            where 
-                l.id = li.lote_producao_id and
-                liq.lote_producao_item_id = li.id and
-                li.fichatecnica_id = f.id and
-                fi.fichatecnica_id = f.id and
-                fiq.fichatecnica_item_id = fi.id and
-                fi.insumo_id = i.id and
-                liq.grade_tamanho_id = fiq.grade_tamanho_id and
-                l.id = :loteProducaoId and
-                i.tipo_insumo_id = :tipoInsumoId and 
-                ip.insumo_id = i.id and
-                ip.atual is true
-            GROUP BY i.id, ip.id
-            ORDER BY i.descricao
-            ';
+        $tiposInsumos = $this->getTiposInsumosPorLote($loteProducao);
+        $tamanhos = $this->getTamanhosPorLote($loteProducao);
 
         foreach ($tiposInsumos as $tipoInsumo) {
-            $tipoInsumoId = $tipoInsumo['tipo_insumo_id'];
-            $tipoInsumoDescricao = $tipoInsumo['descricao'];
-            $rsm = new ResultSetMapping();
-            $rsm->addScalarResult('id', 'id');
-            $rsm->addScalarResult('descricao', 'descricao');
-            $rsm->addScalarResult('qtde_total', 'qtde_total');
-            $rsm->addScalarResult('preco_custo', 'preco_custo');
-            $rsm->addScalarResult('total', 'total');
-            $query = $this->getEntityManager()->createNativeQuery($sqlTotalInsumo, $rsm);
-            $query->setParameter('loteProducaoId', $loteProducao->getId());
-            $query->setParameter('tipoInsumoId', $tipoInsumoId);
 
-            $r = $query->getResult();
+            $insumos = $this->getInsumosPorLoteETipoInsumo($loteProducao, $tipoInsumo['id']);
 
-            $dados[$tipoInsumoDescricao]['insumos'] = $r;
-            $total = 0.0;
-            foreach ($r as $insumo) {
-                $total += $insumo['total'];
+            $rInsumo = [];
+
+            foreach ($insumos as $insumo) {
+                $totaisPorTamanho = [];
+                $rInsumo[$insumo['id']]['insumo'] = $insumo;
+                foreach ($tamanhos as $tamanho) {
+                    $qtde = $this->getTotalPorLoteEInsumoETamanho($loteProducao, $insumo['id'], $tamanho['id']);
+                    $totaisPorTamanho[$tamanho['tamanho']] = $qtde;
+                }
+                $rInsumo[$insumo['id']]['totaisPorTamanho'] = $totaisPorTamanho;
             }
-            $dados[$tipoInsumoDescricao]['total'] = $total;
 
+            $dados[$tipoInsumo['descricao']][] = $rInsumo;
 
 
         }
 
         return $dados;
-
 
     }
 

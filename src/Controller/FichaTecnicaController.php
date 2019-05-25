@@ -181,7 +181,7 @@ class FichaTecnicaController extends FormListController
     {
         // Valores para o select de instituição
         $parameters = [];
-        $parameters['instituicoes'] = $this->buildInstituicoesSelect2();
+        $parameters['instituicoes'] = $this->fichaTecnicaBusiness->buildInstituicoesSelect2();
         $parameters['insumos'] = $this->buildInsumosSelect2();
 
         if ($fichaTecnica) {

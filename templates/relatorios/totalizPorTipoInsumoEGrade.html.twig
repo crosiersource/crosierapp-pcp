@@ -1,0 +1,143 @@
+<html>
+<head>
+
+    <link href="https://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet">
+
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <style>
+
+        body {
+            font-family: 'Ubuntu', sans-serif;
+        }
+
+    </style>
+    <style>
+        /**
+            Set the margins of the page to 0, so the footer and the header
+            can be of the full height and width !
+         **/
+        @page {
+            margin: 0cm 0cm;
+        }
+
+        /** Define now the real margins of every page in the PDF **/
+        body {
+            margin: 3.5cm 1cm 1.5cm 1cm;
+            max-width: 21cm;
+            font-size: small;
+        }
+
+        /** Define the header rules **/
+        header {
+            position: fixed;
+            max-width: 21cm;
+            top: 1cm;
+            left: 1cm;
+            right: 1cm;
+            height: 3cm;
+        }
+
+        /** Define the footer rules **/
+        footer {
+            position: fixed;
+            bottom: 0cm;
+            left: 0cm;
+            right: 0cm;
+            height: 2cm;
+        }
+
+        thead:before, thead:after {
+            display: none;
+        }
+
+        tbody:before, tbody:after {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+
+<header>
+    <table width="100%">
+        <tbody>
+        <tr>
+            <td style="vertical-align: top"><img src="https://www.casabonsucesso.com.br/img/LOGO_COMPLETO_300px.png"
+                                                 width="200px"/></td>
+            <td style="text-align: right;">
+                <span style="font-size: x-large; font-weight: bolder">Lote de Produção</span><br/>
+                <span style="font-size: small;">{{ loteProducao.codigo }} - {{ loteProducao.descricao }}</span><br/>
+                <span style="font-size: x-small;">{{ loteProducao.dtLote|date('d/m/Y') }}</span>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</header>
+
+
+<!-- Wrap the content of your PDF inside a main tag -->
+<main>
+
+    <hr/>
+
+
+    <table class="table table-sm table-striped">
+
+        <thead class="thead-dark">
+        <tr>
+            <th scope="col">Insumo</th>
+            <th scope="col">Qtde</th>
+            <th scope="col">Preço</th>
+            <th scope="col">Total</th>
+        </tr>
+        </thead>
+
+        {% for tipoInsumo, insumos in dados %}
+
+
+            <tbody>
+
+            <tr>
+                <th colspan="99" style="text-align: center; background-color: antiquewhite">
+                    <h5>{{ tipoInsumo }}</h5>
+                </th>
+            </tr>
+            <tr>
+                <th></th>
+                {% for tamanho in tamanhos %}
+                    <th style="text-align: center;">{{ tamanho }}</th>
+                {% endfor %}
+                <th></th>
+            </tr>
+
+            {% for insumo in insumos.insumos %}
+                <tr>
+                    <td>{{ insumo.descricao }}</td>
+                    <td style="text-align: right;">{{ insumo.qtde_total|number_format(3,',','.') }}</td>
+                    <td style="text-align: right;">{{ insumo.preco_custo|number_format(2,',','.') }}</td>
+                    <td style="text-align: right;">{{ insumo.total|number_format(2,',','.') }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+
+            <tr>
+                <td style="text-align: right; font-weight: bolder;" colspan="3">TOTAL {{ tipoInsumo }} : </td>
+                <td style="text-align: right; font-weight: bolder;">{{ insumos.total|number_format(2,',','.') }}</td>
+            </tr>
+
+        {% endfor %}
+
+
+    </table>
+
+
+</main>
+</body>
+</html>
+
+
+
+
+

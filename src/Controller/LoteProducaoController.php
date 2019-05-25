@@ -279,7 +279,7 @@ class LoteProducaoController extends FormListController
 
 
         // Retrieve the HTML generated in our twig file
-        $html = $this->renderView('relatorios/loteProducao.html.twig', ['dados' => $dados, 'loteProducao' => $loteProducao]);
+        $html = $this->renderView('relatorios/totalizPorTipoInsumo.html.twig', ['dados' => $dados, 'loteProducao' => $loteProducao]);
         // Load HTML to Dompdf
         $dompdf->loadHtml($html);
 
@@ -291,7 +291,7 @@ class LoteProducaoController extends FormListController
         $dompdf->render();
 
         // Output the generated PDF to Browser (inline view)
-        $dompdf->stream('loteProducao.pdf', [
+        $dompdf->stream('totalizPorTipoInsumo.pdf', [
             'Attachment' => false
         ]);
 
@@ -307,8 +307,50 @@ class LoteProducaoController extends FormListController
     public function totalizPorTipoInsumoHTML(LoteProducao $loteProducao): Response
     {
         $dados = $this->getDoctrine()->getRepository(LoteProducao::class)->buildTotalizPorTipoInsumo($loteProducao);
-        return $this->render('relatorios/loteProducao.html.twig', ['dados' => $dados, 'loteProducao' => $loteProducao]);
+        return $this->render('relatorios/totalizPorTipoInsumo.html.twig', ['dados' => $dados, 'loteProducao' => $loteProducao]);
+    }
 
+
+
+
+    /**
+     *
+     * @Route("/loteProducao/relatorio/totalizPorTipoInsumoEGrade/PDF/{loteProducao}", name="loteProducao_relatorio_totalizPorTipoInsumoEGrade_PDF", requirements={"loteProducao"="\d+"})
+     *
+     * @param LoteProducao $loteProducao
+     * @return void
+     */
+    public function totalizPorTipoInsumoEGradePDF(LoteProducao $loteProducao): void
+    {
+        // Configure Dompdf according to your needs
+        $pdfOptions = new Options();
+        $pdfOptions->set('defaultFont', 'Arial');
+        $pdfOptions->set('enable_remote', true);
+        $pdfOptions->set('isHtml5ParserEnabled', true);
+
+        // Instantiate Dompdf with our options
+        $dompdf = new Dompdf($pdfOptions);
+
+
+        $dados = $this->getDoctrine()->getRepository(LoteProducao::class)->buildTotalizPorTipoInsumoEGrade($loteProducao);
+
+
+        // Retrieve the HTML generated in our twig file
+        $html = $this->renderView('relatorios/totalizPorTipoInsumoEGrade.html.twig', ['dados' => $dados, 'loteProducao' => $loteProducao]);
+        // Load HTML to Dompdf
+        $dompdf->loadHtml($html);
+
+
+        // (Optional) Setup the paper size and orientation 'portrait' or 'portrait'
+        $dompdf->setPaper('A4', 'portrait');
+
+        // Render the HTML as PDF
+        $dompdf->render();
+
+        // Output the generated PDF to Browser (inline view)
+        $dompdf->stream('totalizPorTipoInsumoEGrade.pdf', [
+            'Attachment' => false
+        ]);
 
     }
 
