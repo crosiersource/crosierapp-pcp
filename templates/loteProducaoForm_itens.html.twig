@@ -8,6 +8,21 @@
         <button type="submit" class="btn btn-primary" value="Inserir">
             <i class="fas fa-save" aria-hidden="true"></i> Inserir
         </button>
+
+
+
+        <div class="btn-group" role="group">
+            <button id="btnGroupDrop1" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fas fa-print" aria-hidden="true"></i> Relatórios
+            </button>
+            <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                <a class="dropdown-item" href="{{ url('loteProducao_relatorio_totalizPorTipoInsumo_HTML', {'loteProducao' : e.id}) }}" target="_blank" role="button">Totalização por Tipo (HTML)</a>
+                <a class="dropdown-item" href="{{ url('loteProducao_relatorio_totalizPorTipoInsumo_PDF', {'loteProducao' : e.id}) }}" target="_blank" role="button">Totalização por Tipo (PDF)</a>
+                <hr class="dropdown-item" />
+
+            </div>
+        </div>
+
     </div>
 </div>
 <div class="row">&nbsp;</div>

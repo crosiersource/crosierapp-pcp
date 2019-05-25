@@ -258,12 +258,12 @@ class LoteProducaoController extends FormListController
 
     /**
      *
-     * @Route("/loteProducao/relatorio/{loteProducao}", name="aPagarReceber_fichaMovimentacao", requirements={"loteProducao"="\d+"})
+     * @Route("/loteProducao/relatorio/totalizPorTipoInsumo/PDF/{loteProducao}", name="loteProducao_relatorio_totalizPorTipoInsumo_PDF", requirements={"loteProducao"="\d+"})
      *
      * @param LoteProducao $loteProducao
      * @return void
      */
-    public function loteProducaoPDF(LoteProducao $loteProducao): void
+    public function totalizPorTipoInsumoPDF(LoteProducao $loteProducao): void
     {
         // Configure Dompdf according to your needs
         $pdfOptions = new Options();
@@ -275,7 +275,7 @@ class LoteProducaoController extends FormListController
         $dompdf = new Dompdf($pdfOptions);
 
 
-        $dados = $this->getDoctrine()->getRepository(LoteProducao::class)->buildDadosPorTipoInsumo($loteProducao);
+        $dados = $this->getDoctrine()->getRepository(LoteProducao::class)->buildTotalizPorTipoInsumo($loteProducao);
 
 
         // Retrieve the HTML generated in our twig file
@@ -299,14 +299,14 @@ class LoteProducaoController extends FormListController
 
     /**
      *
-     * @Route("/loteProducao/relatorioHTML/{loteProducao}", name="loteProducao_relatorioHTML", requirements={"loteProducao"="\d+"})
+     * @Route("/loteProducao/relatorio/totalizPorTipoInsumo/HTML/{loteProducao}", name="loteProducao_relatorio_totalizPorTipoInsumo_HTML", requirements={"loteProducao"="\d+"})
      *
      * @param LoteProducao $loteProducao
      * @return Response
      */
-    public function relatorioHTML(LoteProducao $loteProducao): Response
+    public function totalizPorTipoInsumoHTML(LoteProducao $loteProducao): Response
     {
-        $dados = $this->getDoctrine()->getRepository(LoteProducao::class)->buildDadosPorTipoInsumo($loteProducao);
+        $dados = $this->getDoctrine()->getRepository(LoteProducao::class)->buildTotalizPorTipoInsumo($loteProducao);
         return $this->render('relatorios/loteProducao.html.twig', ['dados' => $dados, 'loteProducao' => $loteProducao]);
 
 

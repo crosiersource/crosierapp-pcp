@@ -4,6 +4,7 @@ namespace App\Controller;
 
 
 use CrosierSource\CrosierLibBaseBundle\Controller\BaseController;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -21,6 +22,17 @@ class DefaultController extends BaseController
     public function index(): \Symfony\Component\HttpFoundation\Response
     {
         return $this->doRender('dashboard.html.twig');
+    }
+
+    /**
+     *
+     * @Route("/limparCaches", name="limparCaches")
+     */
+    public function limparCaches(): \Symfony\Component\HttpFoundation\RedirectResponse
+    {
+        $cache = new FilesystemAdapter($_SERVER['CROSIERAPP_ID'] . '.cache');
+        $cache->clear();
+        return $this->redirectToRoute('index');
     }
 
 

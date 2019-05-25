@@ -7,9 +7,12 @@ use App\Entity\FichaTecnicaItem;
 use App\Entity\FichaTecnicaPreco;
 use App\Entity\Insumo;
 use App\EntityHandler\FichaTecnicaEntityHandler;
+use CrosierSource\CrosierLibBaseBundle\APIClient\Base\PessoaAPIClient;
 use CrosierSource\CrosierLibBaseBundle\APIClient\Base\PropAPIClient;
 use CrosierSource\CrosierLibBaseBundle\APIClient\CrosierEntityIdAPIClient;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
+use Symfony\Contracts\Cache\ItemInterface;
 
 /**
  * Class FichaTecnicaBusiness
@@ -27,6 +30,9 @@ class FichaTecnicaBusiness
 
     /** @var FichaTecnicaEntityHandler */
     private $fichaTecnicaEntityHandler;
+
+    /** @var PessoaAPIClient */
+    private $pessoaAPIClient;
 
 
     /**
@@ -54,6 +60,15 @@ class FichaTecnicaBusiness
     public function setFichaTecnicaEntityHandler(FichaTecnicaEntityHandler $fichaTecnicaEntityHandler): void
     {
         $this->fichaTecnicaEntityHandler = $fichaTecnicaEntityHandler;
+    }
+
+    /**
+     * @required
+     * @param PessoaAPIClient $pessoaAPIClient
+     */
+    public function setPessoaAPIClient(PessoaAPIClient $pessoaAPIClient): void
+    {
+        $this->pessoaAPIClient = $pessoaAPIClient;
     }
 
 
@@ -547,5 +562,31 @@ class FichaTecnicaBusiness
         $rFichaTecnica = $this->fichaTecnicaEntityHandler->save($fichaTecnica);
         return $rFichaTecnica;
     }
+
+
+    /**
+     * @return false|string
+     */
+    public function buildInstituicoesSelect2()
+    {
+        $cache = new FilesystemAdapter($_SERVER['CROSIERAPP_ID'] . '.cache');
+
+        $arrInstituicoes = $cache->get('buildInstituicoesSelect2', function (ItemInterface $item) {
+            $instituicoes = $this->pessoaAPIClient->findByFilters([['categ.descricao', 'LIKE', 'CLIENTE_PCP']], 0, 99999999)['results'];
+
+            uasort($instituicoes, function ($a, $b) {
+                return strcasecmp($a['nomeMontado'], $b['nomeMontado']);
+            });
+            $arrInstituicoes = [];
+            $arrInstituicoes[] = ['id' => '', 'text' => '...'];
+            foreach ($instituicoes as $instituicao) {
+                $arrInstituicoes[] = ['id' => $instituicao['id'], 'text' => $instituicao['nomeMontado']];
+            }
+            return $arrInstituicoes;
+        });
+
+        return json_encode($arrInstituicoes);
+    }
+
 
 }

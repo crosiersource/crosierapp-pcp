@@ -341,7 +341,7 @@ class FichaTecnicaController extends FormListController
             return $this->redirectToRoute('fichaTecnica_builder', ['id' => $novaFichaTecnica->getId()]);
         }
 
-        $parameters['instituicoes'] = $this->buildInstituicoesSelect2();
+        $parameters['instituicoes'] = FichaTecnicaBusiness::buildInstituicoesSelect2();
         $parameters['fichaTecnicaOrigem'] = $fichaTecnica;
 
         return $this->doRender('fichaTecnica_clonar.html.twig', $parameters);
@@ -349,31 +349,6 @@ class FichaTecnicaController extends FormListController
     }
 
 
-    /**
-     * Valores para o select2 de Instituição.
-     *
-     * @return false|string
-     */
-    private function buildInstituicoesSelect2()
-    {
-        $cache = new FilesystemAdapter();
-
-        $arrInstituicoes = $cache->get('buildInstituicoesSelect2' , function (ItemInterface $item) {
-            $instituicoes = $this->pessoaAPIClient->findByFilters([['categ.descricao','LIKE','CLIENTE_PCP']],0,99999999)['results'];
-
-            uasort($instituicoes, function ($a, $b) {
-                return strcasecmp($a['nomeMontado'], $b['nomeMontado']);
-            });
-            $arrInstituicoes = [];
-            $arrInstituicoes[] = ['id' => '', 'text' => '...'];
-            foreach ($instituicoes as $instituicao) {
-                $arrInstituicoes[] = ['id' => $instituicao['id'], 'text' => $instituicao['nomeMontado']];
-            }
-            return $arrInstituicoes;
-        });
-
-        return json_encode($arrInstituicoes);
-    }
 
 
     /**

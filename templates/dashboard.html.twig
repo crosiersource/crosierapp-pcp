@@ -3,7 +3,10 @@
 
 {% block page_content %}
 
-    Hello World!
+    <button type="button" value="Limpar Cachês" class="btn btn-danger"
+            data-url="{{ url('limparCaches') }}" data-target="#confirmationModal"
+            data-toggle="modal">
+        <i class="fas fa-trash" aria-hidden="true"></i> Limpar Cachês
+    </button>
 
 {% endblock %}
-

@@ -2,9 +2,9 @@
 
 namespace App\Form;
 
+use App\Business\FichaTecnicaBusiness;
 use App\Entity\FichaTecnica;
 use App\Entity\TipoArtigo;
-use CrosierSource\CrosierLibBaseBundle\APIClient\Base\PessoaAPIClient;
 use CrosierSource\CrosierLibBaseBundle\APIClient\Base\PropAPIClient;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\WhereBuilder;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -34,6 +34,9 @@ class FichaTecnicaType extends AbstractType
     /** @var PropAPIClient */
     private $propAPIClient;
 
+    /** @var FichaTecnicaBusiness */
+    private $fichaTecnicaBusiness;
+
     /**
      * @required
      * @param RegistryInterface $doctrine
@@ -54,6 +57,15 @@ class FichaTecnicaType extends AbstractType
         return $this;
     }
 
+    /**
+     * @required
+     * @param FichaTecnicaBusiness $fichaTecnicaBusiness
+     */
+    public function setFichaTecnicaBusiness(FichaTecnicaBusiness $fichaTecnicaBusiness): void
+    {
+        $this->fichaTecnicaBusiness = $fichaTecnicaBusiness;
+    }
+
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -67,10 +79,8 @@ class FichaTecnicaType extends AbstractType
             $form->add('pessoaId', ChoiceType::class, [
                 'label' => 'Instituição',
                 'required' => false,
-                'choices' => $fichaTecnica && $fichaTecnica->getPessoaId() ? [$fichaTecnica->getPessoaNome() => $fichaTecnica->getPessoaId()] : null,
                 'attr' => [
-                    'data-route-url' => PessoaAPIClient::getBaseUri() . '/findByStr/',
-                    'data-text-format' => '%(nome)s - %(nomeFantasia)s',
+                    'data-options' => $this->fichaTecnicaBusiness->buildInstituicoesSelect2(),
                     'data-val' => $fichaTecnica && $fichaTecnica->getPessoaId() ? $fichaTecnica->getPessoaId() : '',
                     'class' => 'autoSelect2'
                 ]
