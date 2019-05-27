@@ -6,6 +6,7 @@ namespace App\Controller;
 use App\Business\LoteProducaoBusiness;
 use App\Entity\LoteProducao;
 use App\Entity\LoteProducaoItem;
+use App\Entity\TipoInsumo;
 use App\EntityHandler\LoteProducaoEntityHandler;
 use App\EntityHandler\LoteProducaoItemEntityHandler;
 use App\Form\LoteProducaoItemType;
@@ -144,6 +145,9 @@ class LoteProducaoController extends FormListController
         $parameters = [];
         $parameters['formItem'] = $formItem->createView();
 
+        $tiposInsumos = $this->getDoctrine()->getRepository(TipoInsumo::class)->findAll();
+        $parameters['tiposInsumos'] = $tiposInsumos;
+
         return $this->doForm($request, $loteProducao, $parameters);
     }
 
@@ -259,13 +263,43 @@ class LoteProducaoController extends FormListController
 
     /**
      *
+     * @Route("/loteProducao/relatorio/{loteProducao}", name="loteProducao_relatorio", requirements={"loteProducao"="\d+"})
+     *
+     */
+    public function relatorio(LoteProducao $loteProducao, Request $request)
+    {
+        $tiposInsumos = $request->get('tiposInsumos');
+        $loteItens = explode(',', $request->get('loteItens'));
+        if ($request->get('tipoRelatorio') === 'Relatório de Corte') {
+            if ($request->get('tipoImpressao') === 'HTML') {
+                return $this->relatorioDeCorteHTML($loteProducao, $loteItens, $tiposInsumos);
+            }
+            return $this->relatorioDeCortePDF($loteProducao, $loteItens, $tiposInsumos);
+        }
+        if ($request->get('tipoRelatorio') === 'Relatório de Insumos') {
+            if ($request->get('tipoImpressao') === 'HTML') {
+                return $this->relatorioDeInsumosHTML($loteProducao, $loteItens, $tiposInsumos);
+            }
+            return $this->relatorioDeInsumosPDF($loteProducao, $loteItens, $tiposInsumos);
+        }
+    }
+
+
+    /**
+     *
      * @Route("/loteProducao/relatorio/totalizPorTipoInsumo/PDF/{loteProducao}", name="loteProducao_relatorio_totalizPorTipoInsumo_PDF", requirements={"loteProducao"="\d+"})
      *
      * @param LoteProducao $loteProducao
-     * @return void
+     * @param array $loteProducaoItensIds
+     * @param array $tiposInsumos
      */
-    public function totalizPorTipoInsumoPDF(LoteProducao $loteProducao): void
+    public function relatorioDeInsumosPDF(LoteProducao $loteProducao, array $loteProducaoItensIds, array $tiposInsumos)
     {
+        $dados = $this->getDoctrine()->getRepository(LoteProducao::class)->buildRelatorioDeInsumos($loteProducaoItensIds, $tiposInsumos);
+
+        gc_collect_cycles();
+        gc_disable();
+
         // Configure Dompdf according to your needs
         $pdfOptions = new Options();
         $pdfOptions->set('defaultFont', 'Arial');
@@ -274,9 +308,6 @@ class LoteProducaoController extends FormListController
 
         // Instantiate Dompdf with our options
         $dompdf = new Dompdf($pdfOptions);
-
-
-        $dados = $this->getDoctrine()->getRepository(LoteProducao::class)->buildTotalizPorTipoInsumo($loteProducao);
 
 
         // Retrieve the HTML generated in our twig file
@@ -296,6 +327,9 @@ class LoteProducaoController extends FormListController
             'Attachment' => false
         ]);
 
+        gc_enable();
+        gc_collect_cycles();
+
     }
 
     /**
@@ -303,24 +337,31 @@ class LoteProducaoController extends FormListController
      * @Route("/loteProducao/relatorio/totalizPorTipoInsumo/HTML/{loteProducao}", name="loteProducao_relatorio_totalizPorTipoInsumo_HTML", requirements={"loteProducao"="\d+"})
      *
      * @param LoteProducao $loteProducao
+     * @param array $loteProducaoItensIds
+     * @param array $tiposInsumos
      * @return Response
      */
-    public function totalizPorTipoInsumoHTML(LoteProducao $loteProducao): Response
+    public function relatorioDeInsumosHTML(LoteProducao $loteProducao, array $loteProducaoItensIds, array $tiposInsumos): Response
     {
-        $dados = $this->getDoctrine()->getRepository(LoteProducao::class)->buildTotalizPorTipoInsumo($loteProducao);
+        /** @var LoteProducaoRepository $repoLoteProducao */
+        $repoLoteProducao = $this->getDoctrine()->getRepository(LoteProducao::class);
+        $dados = $repoLoteProducao->buildRelatorioDeInsumos($loteProducaoItensIds, $tiposInsumos);
         return $this->render('relatorios/totalizPorTipoInsumo.html.twig', ['dados' => $dados, 'loteProducao' => $loteProducao]);
     }
 
 
     /**
      *
-     * @Route("/loteProducao/relatorio/totalizPorTipoInsumoEGrade/PDF/{loteProducao}", name="loteProducao_relatorio_totalizPorTipoInsumoEGrade_PDF", requirements={"loteProducao"="\d+"})
+     * @Route("/loteProducao/relatorio/relatorioDeCorte/PDF", name="loteProducao_relatorio_relatorioDeCorte_PDF")
      *
      * @param LoteProducao $loteProducao
-     * @return void
+     * @param array $loteProducaoItensIds
+     * @param array $tiposInsumos
      */
-    public function totalizPorItemETipoInsumoEGradePDF(LoteProducao $loteProducao): void
+    private function relatorioDeCortePDF(LoteProducao $loteProducao, array $loteProducaoItensIds, array $tiposInsumos)
     {
+        $dados = $this->getDadosRelatorioDeCorte($loteProducao, $loteProducaoItensIds, $tiposInsumos);
+
         gc_collect_cycles();
         gc_disable();
 
@@ -333,19 +374,8 @@ class LoteProducaoController extends FormListController
         // Instantiate Dompdf with our options
         $dompdf = new Dompdf($pdfOptions);
 
-        /** @var LoteProducaoRepository $loteProducaoRepo */
-        $loteProducaoRepo = $this->getDoctrine()->getRepository(LoteProducao::class);
-
-        $dados = $loteProducaoRepo->buildTotalizPorItemETipoInsumoEGrade($loteProducao);
-        $tamanhos = $loteProducaoRepo->getTamanhosPorLote($loteProducao);
-
         // Retrieve the HTML generated in our twig file
-        $html = $this->renderView('relatorios/totalizPorTipoInsumoEGrade.html.twig',
-            [
-                'dados' => $dados,
-                'tamanhos' => $tamanhos,
-                'loteProducao' => $loteProducao
-            ]);
+        $html = $this->renderView('relatorios/totalizPorTipoInsumoEGrade.html.twig', ['dados' => $dados]);
         // Load HTML to Dompdf
         $dompdf->loadHtml($html);
 
@@ -368,25 +398,37 @@ class LoteProducaoController extends FormListController
 
     /**
      *
-     * @Route("/loteProducao/relatorio/totalizPorTipoInsumoEGrade/HTML/{loteProducao}", name="loteProducao_relatorio_totalizPorTipoInsumoEGrade_HTML", requirements={"loteProducao"="\d+"})
+     * @Route("/loteProducao/relatorio/totalizPorTipoInsumoEGrade/HTML", name="loteProducao_relatorio_totalizPorTipoInsumoEGrade_HTML")
      *
      * @param LoteProducao $loteProducao
+     * @param array $loteProducaoItensIds
+     * @param array $tiposInsumos
      * @return Response
      */
-    public function totalizPorItemETipoInsumoEGradeHTML(LoteProducao $loteProducao): Response
+    private function relatorioDeCorteHTML(LoteProducao $loteProducao, array $loteProducaoItensIds, array $tiposInsumos): Response
     {
-        /** @var LoteProducaoRepository $loteProducaoRepo */
-        $loteProducaoRepo = $this->getDoctrine()->getRepository(LoteProducao::class);
-
-        $dados = $loteProducaoRepo->buildTotalizPorItemETipoInsumoEGrade($loteProducao);
-        $tamanhos = $loteProducaoRepo->getTamanhosPorLote($loteProducao);
+        $dados = $this->getDadosRelatorioDeCorte($loteProducao, $loteProducaoItensIds, $tiposInsumos);
 
         return $this->render('relatorios/totalizPorTipoInsumoEGrade.html.twig',
             [
                 'dados' => $dados,
-                'loteProducao' => $loteProducao,
-                'tamanhos' => $tamanhos
             ]);
+    }
+
+
+    /**
+     * @param LoteProducao $loteProducao
+     * @param array $loteProducaoItensIds
+     * @param array $tiposInsumos
+     * @return array
+     */
+    private function getDadosRelatorioDeCorte(LoteProducao $loteProducao, array $loteProducaoItensIds, array $tiposInsumos): array
+    {
+
+        /** @var LoteProducaoRepository $repoLoteProducao */
+        $repoLoteProducao = $this->getDoctrine()->getRepository(LoteProducao::class);
+
+        return $repoLoteProducao->buildRelatorioDeCorte($loteProducao, $loteProducaoItensIds, $tiposInsumos);
 
     }
 

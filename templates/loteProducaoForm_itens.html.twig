@@ -9,18 +9,11 @@
             <i class="fas fa-save" aria-hidden="true"></i> Inserir
         </button>
 
-
-
         <div class="btn-group" role="group">
-            <button id="btnGroupDrop1" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <button id="btnModalOpcoesRelatorios" type="button" class="btn btn-secondary"
+                    data-target="#opcoesRelatoriosModal" data-toggle="modal" role="button">
                 <i class="fas fa-print" aria-hidden="true"></i> Relatórios
             </button>
-            <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
-                <a class="dropdown-item" href="{{ url('loteProducao_relatorio_totalizPorTipoInsumo_HTML', {'loteProducao' : e.id}) }}" target="_blank" role="button">Totalização por Tipo (HTML)</a>
-                <a class="dropdown-item" href="{{ url('loteProducao_relatorio_totalizPorTipoInsumo_PDF', {'loteProducao' : e.id}) }}" target="_blank" role="button">Totalização por Tipo (PDF)</a>
-                <hr class="dropdown-item" />
-
-            </div>
         </div>
 
     </div>
@@ -33,24 +26,29 @@
     {% for item in e.itens %}
 
     {% if gradeId != item.fichaTecnica.gradeId %}
-    {% set gradeId = item.fichaTecnica.gradeId %}
-    <thead>
-    <tr>
-        <th scope="col">Id</th>
-        <th scope="col">Descrição</th>
-        {% for i in 1..15 %}
-            <th scope="col" class="text-center">{{ item.fichaTecnica.gradesTamanhosByPosicaoArray[i] }}</th>
-        {% endfor %}
-        <th scope="col">Total</th>
-        <th scope="col"></th>
-    </tr>
-    </thead>
+        {% set gradeId = item.fichaTecnica.gradeId %}
+        <thead>
+        <tr>
+            <th scope="col"><input type="checkbox" id="selTodosLoteItens" title="Selecionar todos" checked/></th>
+            <th scope="col">Id</th>
+            <th scope="col">Descrição</th>
+            {% for i in 1..15 %}
+                <th scope="col" class="text-center">{{ item.fichaTecnica.gradesTamanhosByPosicaoArray[i] }}</th>
+            {% endfor %}
+            <th scope="col">Total</th>
+            <th scope="col"></th>
+        </tr>
+        </thead>
     {% endif %}
     <tbody>
     <tr>
+        <td>
+            <input type="checkbox" value="{{ item.id }}" id="loteItem[]" title="Selecionar" checked>
+        </td>
         <td>{{ item.id }}</td>
         <td>
-            <a href="{{ url('fichaTecnica_builder', {'id': item.fichaTecnica.id}) }}" target="_blank">{{ item.fichaTecnica.descricao }}</a>
+            <a href="{{ url('fichaTecnica_builder', {'id': item.fichaTecnica.id}) }}"
+               target="_blank">{{ item.fichaTecnica.descricao }}</a>
             {{ item.obs != '' ? (('<br /><i style="font-size:smaller">'|raw) ~ item.obs ~ ("</i>"|raw))|raw : '' }}
         </td>
         {% for i in 1..15 %}
@@ -84,10 +82,78 @@
 </table>
 
 
-</div>
-
-
 {{ form_end(formItem) }}
+
+<form action="{{ url('loteProducao_relatorio', {'loteProducao' : e.id}) }}" method="get" target="_blank">
+    <div class="modal fade" id="opcoesRelatoriosModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+
+            <div class="modal-content">
+
+
+                <div class="modal-body">
+
+                    <!-- Preenchido no click do btnModalOpcoesRelatorios -->
+                    <input type="hidden" name="loteItens" id="loteItens"/>
+
+                    <div class="form-group">
+                        <select class="autoSelect2" id="tipoRelatorio" name="tipoRelatorio">
+                            <option value="Relatório de Corte">Relatório de Corte</option>
+                            <option value="Relatório de Insumos">Relatório de Insumos</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <fieldset class="form-group pre-scrollable" style="height: 150px">
+                            <legend>Tipos de Insumos</legend>
+                            {% for tipoInsumo in tiposInsumos %}
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="{{ tipoInsumo.id }}" checked
+                                           name="tiposInsumos[]"/>
+                                    <label class="form-check-label">
+                                        {{ tipoInsumo.descricao }}
+                                    </label>
+                                </div>
+                            {% endfor %}
+                        </fieldset>
+                    </div>
+
+                    <div class="form-group">
+
+
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="tipoImpressao"
+                                   id="inlineRadio1"
+                                   value="PDF"/>
+                            <label class="form-check-label" for="inlineRadio1">PDF</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="tipoImpressao"
+                                   id="inlineRadio2"
+                                   value="HTML" checked/>
+                            <label class="form-check-label" for="inlineRadio2">HTML</label>
+                        </div>
+
+                    </div>
+
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" id="btnConfirmationModalNo" data-dismiss="modal">
+                        <i class="fa fa-ban" aria-hidden="true"></i> Cancelar
+                    </button>
+                    <button type="submit" class="btn btn-danger" name="btnGerarRelatorio" id="btnGerarRelatorio">
+                        <i class="fa fa-print" aria-hidden="true"></i> OK
+                    </button>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+</form>
+
+
 
 
 

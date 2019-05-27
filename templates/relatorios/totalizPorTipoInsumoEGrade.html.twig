@@ -78,8 +78,8 @@
                                                  width="200px"/></td>
             <td style="text-align: right;">
                 <span style="font-size: x-large; font-weight: bolder">Lote de Produção</span><br/>
-                <span style="font-size: small;">{{ loteProducao.codigo }} - {{ loteProducao.descricao }}</span><br/>
-                <span style="font-size: x-small;">{{ loteProducao.dtLote|date('d/m/Y') }}</span>
+                <span style="font-size: small;">{{ dados.loteProducao.codigo }} - {{ dados.loteProducao.descricao }}</span><br/>
+                <span style="font-size: x-small;">{{ dados.loteProducao.dtLote|date('d/m/Y') }}</span>
             </td>
         </tr>
         </tbody>
@@ -95,33 +95,41 @@
 
     <table class="table table-sm table-striped">
 
+        <tr>
+            <th style="text-align: right">Qtde de Itens no Lote:</th>
+            {% for tamanho in dados.tamanhos %}
+                <th style="text-align: center;">{{ dados.totalItensPorTamanho[tamanho.tamanho] }}</th>
+            {% endfor %}
+            <th style="background-color: gray; text-align: center;">{{ dados.totalItensGeral }}</th>
+        </tr>
+
         {% for item in dados.itens %}
 
             <tbody>
 
             <tr>
-                <th colspan="{{ tamanhos|length + 2 }}" style="background-color: darkblue; color: white; text-align: center; font-size: medium; padding: 8px">
+                <th colspan="{{ dados.tamanhos|length + 2 }}" style="background-color: darkblue; color: white; text-align: center; font-size: medium; padding: 8px">
                     {{ item.item.descricao }}
                 </th>
             </tr>
             <tr>
                 <th></th>
-                {% for tamanho in tamanhos %}
+                {% for tamanho in dados.tamanhos %}
                     <th style="text-align: center;">{{ tamanho.tamanho }}</th>
                 {% endfor %}
                 <th>Total</th>
             </tr>
             <tr>
-                <th style="text-align: right">Qtde de Itens no Lote:</th>
-                {% for tamanho in tamanhos %}
-                    <th style="text-align: center;">{{ dados.totalItensPorTamanho[tamanho.tamanho] }}</th>
+                <th style="text-align: right">Qtde de Itens:</th>
+                {% for tamanho in dados.tamanhos %}
+                    <th style="text-align: center;">{{ item.totalItensLoteItemPorTamanho[tamanho.tamanho] }}</th>
                 {% endfor %}
-                <th style="background-color: gray">{{ dados.totalItensGeral }}</th>
+                <th style="background-color: gray; text-align: center;">{{ item.totalItensLoteItem }}</th>
             </tr>
 
             {% for tipoInsumo, insumos in item.tiposInsumos %}
                 <tr>
-                    <th colspan="7" style="background-color: darkgray">
+                    <th colspan="{{ dados.tamanhos|length + 2 }}" style="background-color: darkgray">
                         {{ tipoInsumo }}
                     </th>
                 </tr>
@@ -129,20 +137,22 @@
                 {% for insumo in insumos %}
                     <tr>
                         <td>{{ insumo.insumo.descricao }}</td>
-                        {% for tamanho in tamanhos %}
+                        {% for tamanho in dados.tamanhos %}
                             <td style="text-align: center;">
                                 {% if insumo.totaisPorTamanho[tamanho.tamanho]|default(0) > 0 %}
                                     {{ insumo.totaisPorTamanho[tamanho.tamanho]|default(0)|number_format(insumo.insumo.casas_decimais,',','.') }}
                                 {% endif %}
                             </td>
                         {% endfor %}
-                        <td style="text-align: right;">0.000</td>
+                        <td style="text-align: right;">
+                            {{ insumo.totalInsumo|default(0)|number_format(insumo.insumo.casas_decimais,',','.') }}
+                        </td>
                     </tr>
                 {% endfor %}
 
             {% endfor %}
 
-            <tr><td colspan="7">nbsp;</td></tr>
+            <tr><td colspan="{{ dados.tamanhos|length + 2 }}">&nbsp;</td></tr>
 
             </tbody>
 

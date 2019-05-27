@@ -5,6 +5,7 @@ namespace App\Repository;
 
 use App\Entity\LoteProducao;
 use App\Entity\LoteProducaoItem;
+use App\Entity\TipoInsumo;
 use CrosierSource\CrosierLibBaseBundle\Repository\FilterRepository;
 use Doctrine\ORM\Query\ResultSetMapping;
 
@@ -152,11 +153,9 @@ ORDER BY i.descricao;
      * @param LoteProducao $loteProducao
      * @return array
      */
-    public function buildTotalizPorTipoInsumo(LoteProducao $loteProducao): array
+    public function buildRelatorioDeInsumos(array $loteProducaoItensIds, array $tiposInsumosIds): array
     {
         $dados = [];
-
-        $tiposInsumos = $this->getTiposInsumosPorLote($loteProducao);
 
         $sqlTotalInsumo =
             'select i.id, i.descricao, sum(fiq.qtde * liq.qtde) as qtde_total, ip.preco_custo, ((sum(fiq.qtde * liq.qtde)) * ip.preco_custo) as total
@@ -177,7 +176,7 @@ ORDER BY i.descricao;
                 fiq.fichatecnica_item_id = fi.id and
                 fi.insumo_id = i.id and
                 liq.grade_tamanho_id = fiq.grade_tamanho_id and
-                l.id = :loteProducaoId and
+                li.id in (:loteProducaoItensIds) and
                 i.tipo_insumo_id = :tipoInsumoId and 
                 ip.insumo_id = i.id and
                 ip.atual is true
@@ -185,9 +184,12 @@ ORDER BY i.descricao;
             ORDER BY i.descricao
             ';
 
-        foreach ($tiposInsumos as $tipoInsumo) {
-            $tipoInsumoId = $tipoInsumo['tipo_insumo_id'];
-            $tipoInsumoDescricao = $tipoInsumo['descricao'];
+        $repoTipoInsumo = $this->getEntityManager()->getRepository(TipoInsumo::class);
+
+        foreach ($tiposInsumosIds as $tipoInsumoId) {
+            $tipoInsumo = $repoTipoInsumo->find($tipoInsumoId);
+            $tipoInsumoId = $tipoInsumo->getId();
+            $tipoInsumoDescricao = $tipoInsumo->getDescricao();
             $rsm = new ResultSetMapping();
             $rsm->addScalarResult('id', 'id');
             $rsm->addScalarResult('descricao', 'descricao');
@@ -195,7 +197,7 @@ ORDER BY i.descricao;
             $rsm->addScalarResult('preco_custo', 'preco_custo');
             $rsm->addScalarResult('total', 'total');
             $query = $this->getEntityManager()->createNativeQuery($sqlTotalInsumo, $rsm);
-            $query->setParameter('loteProducaoId', $loteProducao->getId());
+            $query->setParameter('loteProducaoItensIds', $loteProducaoItensIds);
             $query->setParameter('tipoInsumoId', $tipoInsumoId);
 
             $r = $query->getResult();
@@ -216,7 +218,7 @@ ORDER BY i.descricao;
      * @param LoteProducao $loteProducao
      * @return mixed
      */
-    public function getTotalItensPorTamanho(LoteProducao $loteProducao)
+    public function getTotalItensLotePorTamanho(LoteProducao $loteProducao)
     {
         $sql = '
         select 	
@@ -242,6 +244,42 @@ ORDER BY i.descricao;
         $query = $this->getEntityManager()->createNativeQuery($sql, $rsm);
         $query->setParameter('loteProducaoId', $loteProducao->getId());
         return $query->getResult();
+    }
+
+
+    /**
+     * @param LoteProducaoItem $loteProducaoItem
+     * @param int $gradeTamanhoId
+     * @return mixed
+     */
+    public function getTotalItensLoteItemPorTamanho(LoteProducaoItem $loteProducaoItem, int $gradeTamanhoId)
+    {
+        $sql = '
+        select 	
+            gt.tamanho,
+            sum(liq.qtde) as total
+        from 
+            prod_lote_producao l, 
+            prod_lote_producao_item li,
+            prod_lote_producao_item_qtde liq,
+            est_grade_tamanho gt
+        where 
+            l.id = li.lote_producao_id and
+            liq.lote_producao_item_id = li.id and
+            gt.id = liq.grade_tamanho_id and
+            li.id = :loteProducaoItemId and
+            gt.id = :gradeTamanhoId
+        GROUP BY gt.id
+        ';
+
+
+        $rsm = new ResultSetMapping();
+        $rsm->addScalarResult('tamanho', 'tamanho');
+        $rsm->addScalarResult('total', 'total');
+        $query = $this->getEntityManager()->createNativeQuery($sql, $rsm);
+        $query->setParameter('loteProducaoItemId', $loteProducaoItem->getId());
+        $query->setParameter('gradeTamanhoId', $gradeTamanhoId);
+        return $query->getResult()[0] ?? 0.0;
     }
 
 
@@ -300,16 +338,32 @@ where
      * @param LoteProducao $loteProducao
      * @return array
      */
-    public function buildTotalizPorItemETipoInsumoEGrade(LoteProducao $loteProducao): array
+    public function buildRelatorioDeCorte(LoteProducao $loteProducao, array $loteProducaoItensIds, array $tiposInsumosIds): array
     {
         $dados = [];
 
-        $tiposInsumos = $this->getTiposInsumosPorLote($loteProducao);
+        $itens = [];
+        $repoLoteProducaoItem = $this->getEntityManager()->getRepository(LoteProducaoItem::class);
+        foreach ($loteProducaoItensIds as $loteProducaoItemId) {
+            $itens[] = $repoLoteProducaoItem->find($loteProducaoItemId);
+        }
+
+        $tiposInsumosLote = $this->getTiposInsumosPorLote($loteProducao);
+        if ($tiposInsumosIds) {
+            foreach ($tiposInsumosLote as $tipoInsumoLote) {
+                if (in_array($tipoInsumoLote['id'], $tiposInsumosIds, true)) {
+                    $tiposInsumos[] = $tipoInsumoLote;
+                }
+            }
+        } else {
+            $tiposInsumos = $tiposInsumosLote;
+        }
+
+
         $tamanhos = $this->getTamanhosPorLote($loteProducao);
 
-        $itens = $loteProducao->getItens();
 
-        $totalItensPorTamanho = $this->getTotalItensPorTamanho($loteProducao);
+        $totalItensPorTamanho = $this->getTotalItensLotePorTamanho($loteProducao);
         $totalItensGeral = 0.0;
         foreach ($totalItensPorTamanho as $item) {
             $dados['totalItensPorTamanho'][$item['tamanho']] = $item['total'];
@@ -323,6 +377,17 @@ where
 
             $rPorTipoInsumo = [];
 
+            $totalItensLoteItem = 0.0;
+            $rTotalItensLoteItemPorTamanho = [];
+
+            foreach ($tamanhos as $tamanho) {
+                $r = $this->getTotalItensLoteItemPorTamanho($item, $tamanho['id']);
+                $rTotalItensLoteItemPorTamanho[$tamanho['tamanho']] = $r['total'];
+                $totalItensLoteItem += $r['total'];
+            }
+
+            $dados['totalItensGeral'] = $totalItensGeral;
+
             foreach ($tiposInsumos as $tipoInsumo) {
 
                 $insumos = $this->getInsumosPorLoteItemETipoInsumo($item, $tipoInsumo['id']);
@@ -332,11 +397,14 @@ where
                 foreach ($insumos as $insumo) {
                     $totaisPorTamanho = [];
                     $rInsumo[$insumo['id']]['insumo'] = $insumo;
+                    $totalInsumo = 0;
                     foreach ($tamanhos as $tamanho) {
                         $qtde = $this->getTotalPorLoteItemEInsumoETamanho($item, $insumo['id'], $tamanho['id']);
                         $totaisPorTamanho[$tamanho['tamanho']] = $qtde;
+                        $totalInsumo += $qtde;
                     }
                     $rInsumo[$insumo['id']]['totaisPorTamanho'] = $totaisPorTamanho;
+                    $rInsumo[$insumo['id']]['totalInsumo'] = $totalInsumo;
                 }
 
                 $rPorTipoInsumo[$tipoInsumo['descricao']] = $rInsumo;
@@ -345,10 +413,16 @@ where
 
             $dados['itens'][$item->getId()] = [
                 'item' => ['descricao' => $item->getFichaTecnica()->getDescricao()],
+                'totalItensLoteItemPorTamanho' => $rTotalItensLoteItemPorTamanho,
+                'totalItensLoteItem' => $totalItensLoteItem,
                 'tiposInsumos' => $rPorTipoInsumo
             ];
 
         }
+
+
+        $dados['tamanhos'] = $this->getTamanhosPorLote($loteProducao);
+        $dados['loteProducao'] = $loteProducao;
 
         return $dados;
 
