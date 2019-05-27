@@ -4,7 +4,6 @@ namespace App\Entity;
 
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityId;
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityIdTrait;
-use CrosierSource\CrosierLibBaseBundle\Utils\DateTimeUtils\DateTimeUtils;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -65,7 +64,8 @@ class Insumo implements EntityId
      * @ORM\OneToMany(
      *      targetEntity="InsumoPreco",
      *      mappedBy="insumo",
-     *      orphanRemoval=true
+     *      orphanRemoval=true,
+     *     cascade={"all"}
      * )
      */
     private $precos;
@@ -174,6 +174,17 @@ class Insumo implements EntityId
         $this->precos = $precos;
         return $this;
     }
+
+    /**
+     * @param InsumoPreco $precoAtual
+     * @return Insumo
+     */
+    public function setPrecoAtual(?InsumoPreco $precoAtual): Insumo
+    {
+        $this->precoAtual = $precoAtual;
+        return $this;
+    }
+
 
     /**
      * @return null|InsumoPreco

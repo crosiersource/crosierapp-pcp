@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
 <head>
 
@@ -52,13 +53,25 @@
         tbody:before, tbody:after {
             display: none;
         }
+
+        table {
+            width: 100%;
+        }
+
+        th, td {
+            border-bottom: 1px solid #ddd;
+        }
+
+        tr {
+            font-size: smaller;
+        }
     </style>
 </head>
 <body>
 
 
 <header>
-    <table width="100%">
+    <table>
         <tbody>
         <tr>
             <td style="vertical-align: top"><img src="https://www.casabonsucesso.com.br/img/LOGO_COMPLETO_300px.png"
@@ -82,23 +95,13 @@
 
     <table class="table table-sm table-striped">
 
-
-        <thead class="thead-dark">
-        <tr>
-            <th scope="col">Insumo</th>
-            <th scope="col">Qtde</th>
-            <th scope="col">Preço</th>
-            <th scope="col">Total</th>
-        </tr>
-        </thead>
-
-        {% for item in dados %}
+        {% for item in dados.itens %}
 
             <tbody>
 
             <tr>
-                <th colspan="99" style="background-color: paleturquoise">
-                    <h5>{{ item.item.descricao }}</h5>
+                <th colspan="{{ tamanhos|length + 2 }}" style="background-color: darkblue; color: white; text-align: center; font-size: medium; padding: 8px">
+                    {{ item.item.descricao }}
                 </th>
             </tr>
             <tr>
@@ -106,17 +109,20 @@
                 {% for tamanho in tamanhos %}
                     <th style="text-align: center;">{{ tamanho.tamanho }}</th>
                 {% endfor %}
-                <th></th>
+                <th>Total</th>
+            </tr>
+            <tr>
+                <th style="text-align: right">Qtde de Itens no Lote:</th>
+                {% for tamanho in tamanhos %}
+                    <th style="text-align: center;">{{ dados.totalItensPorTamanho[tamanho.tamanho] }}</th>
+                {% endfor %}
+                <th style="background-color: gray">{{ dados.totalItensGeral }}</th>
             </tr>
 
             {% for tipoInsumo, insumos in item.tiposInsumos %}
-
-
-
-
                 <tr>
-                    <th colspan="99" style="text-align: center; background-color: antiquewhite">
-                        <h6>{{ tipoInsumo }}</h6>
+                    <th colspan="7" style="background-color: darkgray">
+                        {{ tipoInsumo }}
                     </th>
                 </tr>
 
@@ -124,22 +130,19 @@
                     <tr>
                         <td>{{ insumo.insumo.descricao }}</td>
                         {% for tamanho in tamanhos %}
-                            <th style="text-align: center;">
+                            <td style="text-align: center;">
                                 {% if insumo.totaisPorTamanho[tamanho.tamanho]|default(0) > 0 %}
                                     {{ insumo.totaisPorTamanho[tamanho.tamanho]|default(0)|number_format(insumo.insumo.casas_decimais,',','.') }}
                                 {% endif %}
-                            </th>
+                            </td>
                         {% endfor %}
-                        <td style="text-align: right;"></td>
+                        <td style="text-align: right;">0.000</td>
                     </tr>
                 {% endfor %}
 
-
-
-
             {% endfor %}
 
-            <tr><td colspan="999">&nbsp;</td></tr>
+            <tr><td colspan="7">nbsp;</td></tr>
 
             </tbody>
 

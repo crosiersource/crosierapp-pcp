@@ -321,6 +321,9 @@ class LoteProducaoController extends FormListController
      */
     public function totalizPorItemETipoInsumoEGradePDF(LoteProducao $loteProducao): void
     {
+        gc_collect_cycles();
+        gc_disable();
+
         // Configure Dompdf according to your needs
         $pdfOptions = new Options();
         $pdfOptions->set('defaultFont', 'Arial');
@@ -358,6 +361,8 @@ class LoteProducaoController extends FormListController
             'Attachment' => false
         ]);
 
+        gc_enable();
+        gc_collect_cycles();
     }
 
 
@@ -370,8 +375,11 @@ class LoteProducaoController extends FormListController
      */
     public function totalizPorItemETipoInsumoEGradeHTML(LoteProducao $loteProducao): Response
     {
-        $dados = $this->getDoctrine()->getRepository(LoteProducao::class)->buildTotalizPorItemETipoInsumoEGrade($loteProducao);
-        $tamanhos = $this->getDoctrine()->getRepository(LoteProducao::class)->getTamanhosPorLote($loteProducao);
+        /** @var LoteProducaoRepository $loteProducaoRepo */
+        $loteProducaoRepo = $this->getDoctrine()->getRepository(LoteProducao::class);
+
+        $dados = $loteProducaoRepo->buildTotalizPorItemETipoInsumoEGrade($loteProducao);
+        $tamanhos = $loteProducaoRepo->getTamanhosPorLote($loteProducao);
 
         return $this->render('relatorios/totalizPorTipoInsumoEGrade.html.twig',
             [

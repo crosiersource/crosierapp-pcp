@@ -26,7 +26,7 @@ class InsumoController extends FormListController
         [
             'typeClass' => InsumoType::class,
 
-            'formView' => '@CrosierLibBase/form.html.twig',
+            'formView' => 'insumoForm.html.twig',
             'formRoute' => 'insumo_form',
             'formPageTitle' => 'Insumo',
             'form_PROGRAM_UUID' => null,

@@ -132,9 +132,9 @@ class FichaTecnicaBusiness
             $totalGlobal[$i] = 0.0;
         }
 
-        /** @var FichaTecnicaItem $item */
         $c = -1;
 
+        /** @var FichaTecnicaItem $item */
         foreach ($fichaTecnicaItens as $item) {
             if ($item->getInsumo()->getTipoInsumo()->getDescricao() !== $tipoInsumoDescricao_aux) {
                 $tipoInsumoDescricao_aux = $item->getInsumo()->getTipoInsumo()->getDescricao();
@@ -159,6 +159,14 @@ class FichaTecnicaBusiness
 
                 $totalGlobal[$i] = (float)bcadd($totalGlobal[$i], $total, 3);
             }
+        }
+
+        foreach ($insumosArray as &$r) {
+            uasort($r['itens'], function ($a, $b) {
+                /** @var FichaTecnicaItem $a */
+                /** @var FichaTecnicaItem $b */
+                return strcasecmp($a->getInsumo()->getDescricao(), $b->getInsumo()->getDescricao());
+            });
         }
 
         return ['insumos' => $insumosArray, 'totalGlobal' => $totalGlobal];

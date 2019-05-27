@@ -4,10 +4,12 @@ namespace App\Form;
 
 use App\Entity\Insumo;
 use App\Entity\TipoInsumo;
+use CrosierSource\CrosierLibBaseBundle\APIClient\Base\PropAPIClient;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\WhereBuilder;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -21,8 +23,20 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class InsumoType extends AbstractType
 {
 
+    /** @var PropAPIClient */
+    private $propAPIClient;
+
     /** @var RegistryInterface */
     private $doctrine;
+
+    /**
+     * @required
+     * @param PropAPIClient $propAPIClient
+     */
+    public function setPropAPIClient(PropAPIClient $propAPIClient): void
+    {
+        $this->propAPIClient = $propAPIClient;
+    }
 
     /**
      * @required
@@ -32,7 +46,6 @@ class InsumoType extends AbstractType
     {
         $this->doctrine = $doctrine;
     }
-
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -45,11 +58,20 @@ class InsumoType extends AbstractType
             'label' => 'Descrição'
         ));
 
-        $builder->add('unidadeProdutoId', IntegerType::class, array(
-            'label' => 'Unidade'
+        $rUnidades = $this->propAPIClient->findUnidades();
+        $unidades = [];
+        foreach ($rUnidades as $rUnidade) {
+            $unidades[$rUnidade['label']] = $rUnidade['id'];
+        }
+
+        $builder->add('unidadeProdutoId', ChoiceType::class, array(
+            'label' => 'Unidade',
+            'choices' => $unidades,
+            'attr' => ['class' => 'autoSelect2']
         ));
 
         $builder->add('tipoInsumo', EntityType::class, array(
+            'label' => 'Tipo',
             'class' => TipoInsumo::class,
             'choices' => $this->doctrine->getRepository(TipoInsumo::class)->findAll(WhereBuilder::buildOrderBy('descricao')),
             'placeholder' => '...',
@@ -59,6 +81,8 @@ class InsumoType extends AbstractType
             },
             'attr' => ['class' => 'autoSelect2']
         ));
+
+        $builder->add('precoAtual', InsumoPrecoType::class);
 
     }
 
