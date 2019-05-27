@@ -10,6 +10,7 @@ use App\EntityHandler\LoteProducaoEntityHandler;
 use App\EntityHandler\LoteProducaoItemEntityHandler;
 use App\Form\LoteProducaoItemType;
 use App\Form\LoteProducaoType;
+use App\Repository\LoteProducaoRepository;
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibBaseBundle\Utils\ExceptionUtils\ExceptionUtils;
@@ -329,9 +330,11 @@ class LoteProducaoController extends FormListController
         // Instantiate Dompdf with our options
         $dompdf = new Dompdf($pdfOptions);
 
+        /** @var LoteProducaoRepository $loteProducaoRepo */
+        $loteProducaoRepo = $this->getDoctrine()->getRepository(LoteProducao::class);
 
-        $dados = $this->getDoctrine()->getRepository(LoteProducao::class)->buildTotalizPorItemETipoInsumoEGrade($loteProducao);
-        $tamanhos = $this->getDoctrine()->getRepository(LoteProducao::class)->getTamanhosPorLote($loteProducao);
+        $dados = $loteProducaoRepo->buildTotalizPorItemETipoInsumoEGrade($loteProducao);
+        $tamanhos = $loteProducaoRepo->getTamanhosPorLote($loteProducao);
 
         // Retrieve the HTML generated in our twig file
         $html = $this->renderView('relatorios/totalizPorTipoInsumoEGrade.html.twig',

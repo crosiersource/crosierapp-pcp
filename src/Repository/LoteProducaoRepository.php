@@ -92,7 +92,7 @@ where
     l.id = ? and
     ip.atual is true
 GROUP BY gt.id
-ORDER BY gt.tamanho;';
+ORDER BY gt.ordem';
 
         $rsm = new ResultSetMapping();
         $rsm->addScalarResult('id', 'id');
