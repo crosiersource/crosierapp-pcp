@@ -66,6 +66,15 @@
                            id="btnClonar">
                             <i class="fas fa-clone" aria-hidden="true"></i> Clonar</a>
 
+                        {% if fichaTecnica.id is defined %}
+                        <button type="button" value="Deletar" class="btn btn-danger"
+                                data-token="{{ csrf_token('delete') }}"
+                                data-url="{{ url('fichaTecnica_delete', {'fichaTecnica' : fichaTecnica.id}) }}" data-target="#confirmationModal"
+                                data-toggle="modal">
+                            <i class="fas fa-trash" aria-hidden="true"></i>
+                        </button>
+                        {% endif %}
+
                     </div>
                 </div>
             </div>

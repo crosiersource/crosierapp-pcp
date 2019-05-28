@@ -145,6 +145,18 @@ class FichaTecnicaController extends FormListController
 
     /**
      *
+     * @Route("/fichaTecnica/delete/{fichaTecnica}/", name="fichaTecnica_delete", requirements={"fichaTecnica"="\d+"})
+     * @param Request $request
+     * @param FichaTecnica $fichaTecnica
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function delete(Request $request, FichaTecnica $fichaTecnica): \Symfony\Component\HttpFoundation\RedirectResponse
+    {
+        return $this->doDelete($request, $fichaTecnica);
+    }
+
+    /**
+     *
      * @Route("/fichaTecnica/list/", name="fichaTecnica_list")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
@@ -179,6 +191,9 @@ class FichaTecnicaController extends FormListController
      */
     public function builder(Request $request, FichaTecnica $fichaTecnica = null): Response
     {
+        if (!$fichaTecnica) {
+            return $this->redirectToRoute('fichaTecnica_list');
+        }
         // Valores para o select de instituição
         $parameters = [];
         $parameters['instituicoes'] = $this->fichaTecnicaBusiness->buildInstituicoesSelect2();
@@ -273,17 +288,20 @@ class FichaTecnicaController extends FormListController
      *
      * @Route("/fichaTecnica/addItem/{fichaTecnica}", name="fichaTecnica_addItem", requirements={"fichaTecnica"="\d+"})
      * @param Request $request
-     * @param FichaTecnicaItem|null $fichaTecnicaItem
+     * @param FichaTecnica $fichaTecnica
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
-     * @throws \Exception
      */
     public function addItem(Request $request, FichaTecnica $fichaTecnica)
     {
         try {
             $insumoId = $request->get('insumo');
-            /** @var Insumo $insumo */
-            $insumo = $this->getDoctrine()->getRepository(Insumo::class)->find($insumoId);
-            $this->fichaTecnicaBusiness->addInsumo($fichaTecnica, $insumo);
+            if (!$insumoId) {
+                $this->addFlash('info', 'Selecione um insumo para inserir');
+            } else {
+                /** @var Insumo $insumo */
+                $insumo = $this->getDoctrine()->getRepository(Insumo::class)->find($insumoId);
+                $this->fichaTecnicaBusiness->addInsumo($fichaTecnica, $insumo);
+            }
         } catch (\Exception $e) {
             $this->addFlash('error', 'Erro ao inserir insumo');
         }
