@@ -2,11 +2,14 @@
 
 namespace App\Form;
 
+use App\Entity\TipoArtigo;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Choice;
 
 /**
  * Class TipoArtigoType
@@ -26,8 +29,16 @@ class TipoArtigoType extends AbstractType
             'label' => 'Descrição'
         ));
 
-        $builder->add('modoCalculo', IntegerType::class, array(
-            'label' => 'Modo de Cálculo'
+        $builder->add('modoCalculo', ChoiceType::class, array(
+            'label' => 'Modo de Cálculo',
+            'choices' => [
+                'Modo 1' => 'MODO_1',
+                'Modo 2' => 'MODO_2',
+                'Modo 3' => 'MODO_3',
+                'Modo 4' => 'MODO_4',
+            ],
+            'attr' => ['class' => 'autoSelect2']
+
         ));
 
         $builder->add('subdeptoId', IntegerType::class, array(
