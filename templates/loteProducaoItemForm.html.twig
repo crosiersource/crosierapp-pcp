@@ -3,64 +3,70 @@
 
 {% block page_content %}
 
-    <div class="card">
-        <div class="card-header">
+    <div class="container" style="margin-bottom: 50px">
 
-            <div class="row">
-                <div class="col-8">
-                    <h3>{{ formPageTitle }}</h3>
-                </div>
-                <div class="col-4 text-right">
-                    <button type="button" class="btn btn-secondary"
-                            onclick="window.location.href='{{ url(formRoute) }}'">
-                        <i class="fas fa-file" aria-hidden="true"></i> Novo
-                    </button>
-                    <button type="button" class="btn btn-secondary"
-                            onclick="window.location.href='{{ url(listRoute) }}'">
-                        <i class="fas fa-sync" aria-hidden="true"></i> Listar
-                    </button>
-                </div>
-            </div>
+        <div class="card">
+            <div class="card-header">
 
-        </div>
-
-        <div class="card-body">
-
-
-            {% form_theme form 'bootstrap_4_horizontal_layout.html.twig' %}
-
-            {{ form_start(form) }}
-
-            {{ form_widget(form) }}
-
-            {% for i in 1..15 %}
-                {% if loteProducaoItem.fichaTecnica.gradesTamanhosByPosicaoArray[i] != '-' %}
-                <div class="form-group row">
-                    <label class="col-form-label col-sm-2" id="lote_producao_item_qtde_label_{{ i }}"
-                           for="lote_producao_item_qtde_{{ i }}">
-                        {{ loteProducaoItem.fichaTecnica.gradesTamanhosByPosicaoArray[i] }}
-                    </label>
-                    <div class="col-sm-10">
-                        <input type="text" id="lote_producao_item_qtde_{{ i }}" name="lote_producao_item_qtde[{{ i }}]"
-                               class="form-control" value="{{ loteProducaoItem.qtdesTamanhosArray[i] }}"/>
+                <div class="row">
+                    <div class="col-8">
+                        <h3>{{ formPageTitle }}</h3>
+                    </div>
+                    <div class="col-4 text-right">
+                        <button type="button" class="btn btn-secondary"
+                                onclick="window.location.href='{{ url(formRoute) }}'">
+                            <i class="fas fa-file" aria-hidden="true"></i> Novo
+                        </button>
+                        <button type="button" class="btn btn-secondary"
+                                onclick="window.location.href='{{ url(listRoute) }}'">
+                            <i class="fas fa-sync" aria-hidden="true"></i> Listar
+                        </button>
                     </div>
                 </div>
-                {% endif %}
-            {% endfor %}
 
-            <div class="row">
-                <div class="col text-right">
-                    <button type="submit" class="btn btn-primary" value="Salvar">
-                        <i class="fas fa-save" aria-hidden="true"></i> Salvar
-                    </button>
-                </div>
             </div>
 
+            <div class="card-body">
 
-            {{ form_end(form, {'render_rest': false}) }}
+
+                {% form_theme form 'bootstrap_4_horizontal_layout.html.twig' %}
+
+                {{ form_start(form) }}
+
+                {{ form_widget(form) }}
+
+                {% for i in 1..15 %}
+                    {% if loteProducaoItem.fichaTecnica.gradesTamanhosByPosicaoArray[i] != '-' %}
+                        <div class="form-group row">
+                            <label class="col-form-label col-sm-2" id="lote_producao_item_qtde_label_{{ i }}"
+                                   for="lote_producao_item_qtde_{{ i }}">
+                                {{ loteProducaoItem.fichaTecnica.gradesTamanhosByPosicaoArray[i] }}
+                            </label>
+                            <div class="col-sm-10">
+                                <input type="text" id="lote_producao_item_qtde_{{ i }}"
+                                       style="width: 150px"
+                                       name="lote_producao_item_qtde[{{ i }}]"
+                                       class="form-control" value="{{ loteProducaoItem.qtdesTamanhosArray[i] }}"/>
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+
+                <div class="row">
+                    <div class="col text-right">
+                        <button type="submit" class="btn btn-primary" value="Salvar">
+                            <i class="fas fa-save" aria-hidden="true"></i> Salvar
+                        </button>
+                    </div>
+                </div>
 
 
+                {{ form_end(form, {'render_rest': false}) }}
+
+
+            </div>
         </div>
+
     </div>
 
 
