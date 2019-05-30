@@ -32,6 +32,10 @@ function getDatatablesColumns() {
             title: '',
             render: function (data, type, row) {
                 let colHtml = "";
+                colHtml += '<a class="btn btn-info btn-sm" title="Planilha de Insumos" href="' + Routing.generate('fichaTecnica_builder', {id: data.id}) +
+                    '" role="button">' +
+                    '<i class="fas fa-th-list"></i>' +
+                    '</a> ';
                 if ($(listId).data('routeedit')) {
                     let routeedit = $(listId).data('routeedit');
                     let editUrl = routeedit + '/' + data.id;

@@ -134,6 +134,8 @@ class FichaTecnicaBusiness
 
         $c = -1;
 
+        $iCount = 0;
+
         /** @var FichaTecnicaItem $item */
         foreach ($fichaTecnicaItens as $item) {
             if ($item->getInsumo()->getTipoInsumo()->getDescricao() !== $tipoInsumoDescricao_aux) {
@@ -148,6 +150,9 @@ class FichaTecnicaBusiness
                     $insumosArray[$c]['totais'][$i] = 0.0;
                 }
             }
+            $unidade = $this->propAPIClient->findUnidadeById($item->getInsumo()->getUnidadeProdutoId());
+            $item->casasDecimais = $unidade['casasDecimais'];
+            $item->unidade = $unidade['label'];
             $insumosArray[$c]['itens'][] = $item;
             $qtdesTamanhosArray = $item->getQtdesTamanhosArray();
             for ($i = 1; $i <= 15; $i++) {
