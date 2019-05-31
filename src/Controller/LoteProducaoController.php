@@ -161,7 +161,6 @@ class LoteProducaoController extends FormListController
      */
     public function itemForm(Request $request, LoteProducaoItem $loteProducaoItem)
     {
-
         if ($loteProducaoItem) {
             $this->loteProducaoBusiness->buildLoteQtdesTamanhosArray($loteProducaoItem->getLoteProducao());
         }
