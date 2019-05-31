@@ -103,8 +103,6 @@ class FichaTecnicaBusiness
                 if ($posicao === $i) {
                     if ((float)$qtde->getQtde() > 0) {
                         $array[$i] = number_format((float)$qtde->getQtde(), $unidade['casasDecimais'], ',', '.');
-                    } else {
-                        $array[$i] = '-';
                     }
                 }
             }

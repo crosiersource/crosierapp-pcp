@@ -28,8 +28,4 @@ $(document).ready(function () {
         $loteItens.val(ids.substr(0, ids.length - 1));
     });
 
-
-
-
-
 });

@@ -50,7 +50,7 @@
                     {{ item.insumo.precoAtual.precoCusto|number_format(2,',','.') }}
                 </td>
                 {% for i in 1..15 %}
-                    <td class="text-center">{{ item.qtdesTamanhosArray[i] matches '/^[-+]?[0-9]*\\.?[0-9]+$/' ? item.qtdesTamanhosArray[i]|number_format(item.casasDecimais,',','.') : '-' }}</td>
+                    <td class="text-center">{{ item.qtdesTamanhosArray[i] }}</td>
                 {% endfor %}
                 <td class="text-center">
 
