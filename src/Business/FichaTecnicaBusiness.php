@@ -10,6 +10,7 @@ use App\EntityHandler\FichaTecnicaEntityHandler;
 use CrosierSource\CrosierLibBaseBundle\APIClient\Base\PessoaAPIClient;
 use CrosierSource\CrosierLibBaseBundle\APIClient\Base\PropAPIClient;
 use CrosierSource\CrosierLibBaseBundle\APIClient\CrosierEntityIdAPIClient;
+use CrosierSource\CrosierLibBaseBundle\Utils\NumberUtils\DecimalUtils;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Contracts\Cache\ItemInterface;
@@ -94,12 +95,17 @@ class FichaTecnicaBusiness
     public function buildItemQtdesTamanhosByPosicaoArray(FichaTecnicaItem $item): void
     {
         $array = [];
+        $unidade = $this->propAPIClient->findUnidadeById($item->getInsumo()->getUnidadeProdutoId());
         for ($i = 1; $i <= 15; $i++) {
             $array[$i] = '-';
             foreach ($item->getQtdes() as $qtde) {
                 $posicao = $this->propAPIClient->findPosicaoByGradeTamanhoId($qtde->getGradeTamanhoId());
                 if ($posicao === $i) {
-                    $array[$i] = (float)$qtde->getQtde() > 0 ? (float)$qtde->getQtde() : '-';
+                    if ((float)$qtde->getQtde() > 0) {
+                        $array[$i] = number_format((float)$qtde->getQtde(), $unidade['casasDecimais'], ',', '.');
+                    } else {
+                        $array[$i] = '-';
+                    }
                 }
             }
         }
