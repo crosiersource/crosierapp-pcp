@@ -69,7 +69,7 @@
                                            id="ficha_tecnica_item_qtde_{{ i }}"
                                            name="ficha_tecnica_item_qtde[{{ i }}]"
                                            class="form-control {{ unidade.casasDecimais == 3 ? 'crsr-dec3' : '' }} {{ unidade.casasDecimais == 2 ? 'crsr-dec2' : '' }} "
-                                           value="{{ fichaTecnicaItem.qtdesTamanhosArray[i] }}"/>
+                                           value="{{ fichaTecnicaItem.qtdesTamanhosArray[i]['formatado'] }}"/>
                                 </div>
                             </div>
                         {% endif %}

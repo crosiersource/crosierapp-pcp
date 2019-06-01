@@ -50,7 +50,7 @@
                     {{ item.insumo.precoAtual.precoCusto|number_format(2,',','.') }}
                 </td>
                 {% for i in 1..15 %}
-                    <td class="text-center">{{ item.qtdesTamanhosArray[i] }}</td>
+                    <td class="text-center">{{ item.qtdesTamanhosArray[i]['formatado'] }}</td>
                 {% endfor %}
                 <td class="text-center">
 
@@ -75,7 +75,7 @@
             <td></td>
             <td></td>
             {% for total in insumosByTipo.totais %}
-                <td class="text-center">{{ total }}</td>
+                <td class="text-center">{{ total['formatado'] }}</td>
             {% endfor %}
             <td class="text-center"></td>
         </tr>

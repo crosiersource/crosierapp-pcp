@@ -94,15 +94,18 @@ class FichaTecnicaBusiness
      */
     public function buildItemQtdesTamanhosByPosicaoArray(FichaTecnicaItem $item): void
     {
+        $unidade = $this->propAPIClient->findUnidadeById($item->getInsumo()->getUnidadeProdutoId());
         $array = [];
         for ($i = 1; $i <= 15; $i++) {
-            $array[$i] = 0.000;
+            $array[$i]['decimal'] = 0.0;
+            $array[$i]['formatado'] = '-';
             foreach ($item->getQtdes() as $qtde) {
                 $posicao = $this->propAPIClient->findPosicaoByGradeTamanhoId($qtde->getGradeTamanhoId());
                 if ($posicao === $i) {
-                    if ((float)$qtde->getQtde() > 0) {
-                        $array[$i] = $qtde->getQtde();
-                    }
+
+                    $array[$i]['decimal'] = (float)$qtde->getQtde();
+                    $array[$i]['formatado'] = $array[$i]['decimal'] > 0 ? number_format($array[$i]['decimal'], $unidade['casasDecimais'], ',', '.') : '-';
+
                 }
             }
         }
@@ -148,7 +151,7 @@ class FichaTecnicaBusiness
                     'totais' => []
                 ];
                 for ($i = 1; $i <= 15; $i++) {
-                    $insumosArray[$c]['totais'][$i] = 0.0;
+                    $insumosArray[$c]['totais'][$i]['decimal'] = 0.0;
                 }
             }
             $unidade = $this->propAPIClient->findUnidadeById($item->getInsumo()->getUnidadeProdutoId());
@@ -159,11 +162,13 @@ class FichaTecnicaBusiness
             for ($i = 1; $i <= 15; $i++) {
                 $precoCustoAtual = $item->getInsumo()->getPrecoAtual()->getPrecoCusto() ?? 0.0;
 
-                $total = (float)bcmul($qtdesTamanhosArray[$i], $precoCustoAtual, 3);
+                $total = (float)bcmul($qtdesTamanhosArray[$i]['decimal'], $precoCustoAtual, 3);
 
-                $insumosArray[$c]['totais'][$i] = (float) bcadd($insumosArray[$c]['totais'][$i], $total, 3);
+                $insumosArray[$c]['totais'][$i]['decimal'] = (float)bcadd($insumosArray[$c]['totais'][$i]['decimal'], $total, 3);
+                $tSoma = $insumosArray[$c]['totais'][$i]['decimal'];
+                $insumosArray[$c]['totais'][$i]['formatado'] = $tSoma > 0 ? number_format($tSoma, 2, ',', '.') : '-';
 
-                $totalGlobal[$i] = (float) bcadd($totalGlobal[$i], $total, 3);
+                $totalGlobal[$i] = (float)bcadd($totalGlobal[$i], $total, 3);
             }
         }
 
@@ -176,30 +181,30 @@ class FichaTecnicaBusiness
         }
 
         foreach ($totalGlobal as $i => $tg) {
-            $totalGlobal[$i] = $tg > 0 ? number_format($tg, 3, ',', '.') : '-';
+            $totalGlobal[$i] = $tg > 0 ? number_format($tg, 2, ',', '.') : '-';
         }
 
-        $this->formatarDecimaisInsumosArray($insumosArray);
+//        $this->formatarDecimaisInsumosArray($insumosArray);
         return ['insumos' => $insumosArray, 'totalGlobal' => $totalGlobal];
     }
 
-    private function formatarDecimaisInsumosArray(array &$insumosArray) {
-        foreach ($insumosArray as &$item) {
-            foreach ($item['totais'] as &$total) {
-                $total = $total > 0 ? number_format($total, 3, ',', '.') : '-';
-            }
-            /** @var FichaTecnicaItem $fti */
-            foreach ($item['itens'] as &$fti) {
-                $unidade = $this->propAPIClient->findUnidadeById($fti->getInsumo()->getUnidadeProdutoId());
-                $qtdesTamanhosArray = $fti->getQtdesTamanhosArray();
-                foreach ($qtdesTamanhosArray as $i => $iValue) {
-                    $qtdesTamanhosArray[$i] = $iValue > 0 ? number_format($iValue, $unidade['casasDecimais'], ',', '.') : '-';
-                }
-                $fti->setQtdesTamanhosArray($qtdesTamanhosArray);
-            }
-
-        }
-    }
+//    private function formatarDecimaisInsumosArray(array &$insumosArray) {
+//        foreach ($insumosArray as &$item) {
+//            foreach ($item['totais'] as &$total) {
+//                $total = $total > 0 ? number_format($total, 3, ',', '.') : '-';
+//            }
+//            /** @var FichaTecnicaItem $fti */
+//            foreach ($item['itens'] as &$fti) {
+//                $unidade = $this->propAPIClient->findUnidadeById($fti->getInsumo()->getUnidadeProdutoId());
+//                $qtdesTamanhosArray = $fti->getQtdesTamanhosArray();
+//                foreach ($qtdesTamanhosArray as $i => $iValue) {
+//                    $qtdesTamanhosArray[$i] = $iValue > 0 ? number_format($iValue, $unidade['casasDecimais'], ',', '.') : '-';
+//                }
+//                $fti->setQtdesTamanhosArray($qtdesTamanhosArray);
+//            }
+//
+//        }
+//    }
 
     /**
      * @param FichaTecnica $fichaTecnica

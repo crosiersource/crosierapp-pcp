@@ -209,12 +209,6 @@ class FichaTecnicaController extends FormListController
             $parameters['fichasTecnicas'] = $this->doFindByInstituicaoIdAndTipoArtigo($parameters['instituicaoId'], $parameters['tipoArtigo'])->getContent();
             $parameters['fichaTecnica'] = $fichaTecnica;
 
-//            $iterator = $fichaTecnica->getPrecos()->getIterator();
-//            $iterator->uasort(function (FichaTecnicaPreco $a, FichaTecnicaPreco $b) {
-//                return $a->get getFichaTecnica()->getGradeId() >= $b->getFichaTecnica()->getGradeId();
-//            });
-//            $loteProducao->setItens(new ArrayCollection(iterator_to_array($iterator)));
-
             $parameters['insumosArray'] = $this->fichaTecnicaBusiness->buildInsumosArray($fichaTecnica);
         }
 
@@ -268,6 +262,7 @@ class FichaTecnicaController extends FormListController
         if ($fichaTecnicaItem) {
             $this->fichaTecnicaBusiness->buildQtdesTamanhosArray($fichaTecnicaItem->getFichaTecnica());
         }
+
 
         if ($request->get('btnSalvarItemForm')) {
             if ($request->get('ficha_tecnica_item_qtde')) {
