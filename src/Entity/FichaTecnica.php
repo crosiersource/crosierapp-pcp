@@ -160,6 +160,7 @@ class FichaTecnica implements EntityId
      *      orphanRemoval=true,
      *     cascade={"all"}
      * )
+     * @ORM\OrderBy({"id" = "ASC"})
      */
     private $precos;
 

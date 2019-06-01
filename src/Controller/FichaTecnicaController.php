@@ -6,6 +6,7 @@ namespace App\Controller;
 use App\Business\FichaTecnicaBusiness;
 use App\Entity\FichaTecnica;
 use App\Entity\FichaTecnicaItem;
+use App\Entity\FichaTecnicaPreco;
 use App\Entity\Insumo;
 use App\EntityHandler\FichaTecnicaEntityHandler;
 use App\EntityHandler\FichaTecnicaItemEntityHandler;
@@ -207,6 +208,12 @@ class FichaTecnicaController extends FormListController
 
             $parameters['fichasTecnicas'] = $this->doFindByInstituicaoIdAndTipoArtigo($parameters['instituicaoId'], $parameters['tipoArtigo'])->getContent();
             $parameters['fichaTecnica'] = $fichaTecnica;
+
+//            $iterator = $fichaTecnica->getPrecos()->getIterator();
+//            $iterator->uasort(function (FichaTecnicaPreco $a, FichaTecnicaPreco $b) {
+//                return $a->get getFichaTecnica()->getGradeId() >= $b->getFichaTecnica()->getGradeId();
+//            });
+//            $loteProducao->setItens(new ArrayCollection(iterator_to_array($iterator)));
 
             $parameters['insumosArray'] = $this->fichaTecnicaBusiness->buildInsumosArray($fichaTecnica);
         }
