@@ -96,12 +96,12 @@ class FichaTecnicaBusiness
     {
         $array = [];
         for ($i = 1; $i <= 15; $i++) {
-            $array[$i] = '0.000';
+            $array[$i] = 0.000;
             foreach ($item->getQtdes() as $qtde) {
                 $posicao = $this->propAPIClient->findPosicaoByGradeTamanhoId($qtde->getGradeTamanhoId());
                 if ($posicao === $i) {
                     if ((float)$qtde->getQtde() > 0) {
-                        $array[$i] = bcmul($qtde->getQtde(), 1, 3); // deixar com 3 casas decimais
+                        $array[$i] = $qtde->getQtde();
                     }
                 }
             }
@@ -137,8 +137,6 @@ class FichaTecnicaBusiness
 
         $c = -1;
 
-        $iCount = 0;
-
         /** @var FichaTecnicaItem $item */
         foreach ($fichaTecnicaItens as $item) {
             if ($item->getInsumo()->getTipoInsumo()->getDescricao() !== $tipoInsumoDescricao_aux) {
@@ -161,11 +159,11 @@ class FichaTecnicaBusiness
             for ($i = 1; $i <= 15; $i++) {
                 $precoCustoAtual = $item->getInsumo()->getPrecoAtual()->getPrecoCusto() ?? 0.0;
 
-                $total = bcmul($qtdesTamanhosArray[$i], $precoCustoAtual, 3);
+                $total = (float)bcmul($qtdesTamanhosArray[$i], $precoCustoAtual, 3);
 
-                $insumosArray[$c]['totais'][$i] = bcadd($insumosArray[$c]['totais'][$i], $total, 3);
+                $insumosArray[$c]['totais'][$i] = (float) bcadd($insumosArray[$c]['totais'][$i], $total, 3);
 
-                $totalGlobal[$i] = (float)bcadd($totalGlobal[$i], $total, 3);
+                $totalGlobal[$i] = (float) bcadd($totalGlobal[$i], $total, 3);
             }
         }
 
@@ -177,7 +175,30 @@ class FichaTecnicaBusiness
             });
         }
 
+        foreach ($totalGlobal as $i => $tg) {
+            $totalGlobal[$i] = $tg > 0 ? number_format($tg, 3, ',', '.') : '-';
+        }
+
+        $this->formatarDecimaisInsumosArray($insumosArray);
         return ['insumos' => $insumosArray, 'totalGlobal' => $totalGlobal];
+    }
+
+    private function formatarDecimaisInsumosArray(array &$insumosArray) {
+        foreach ($insumosArray as &$item) {
+            foreach ($item['totais'] as &$total) {
+                $total = $total > 0 ? number_format($total, 3, ',', '.') : '-';
+            }
+            /** @var FichaTecnicaItem $fti */
+            foreach ($item['itens'] as &$fti) {
+                $unidade = $this->propAPIClient->findUnidadeById($fti->getInsumo()->getUnidadeProdutoId());
+                $qtdesTamanhosArray = $fti->getQtdesTamanhosArray();
+                foreach ($qtdesTamanhosArray as $i => $iValue) {
+                    $qtdesTamanhosArray[$i] = $iValue > 0 ? number_format($iValue, $unidade['casasDecimais'], ',', '.') : '-';
+                }
+                $fti->setQtdesTamanhosArray($qtdesTamanhosArray);
+            }
+
+        }
     }
 
     /**

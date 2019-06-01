@@ -75,7 +75,7 @@
             <td></td>
             <td></td>
             {% for total in insumosByTipo.totais %}
-                <td class="text-center">{{ total|number_format(2,',','.') }}</td>
+                <td class="text-center">{{ total }}</td>
             {% endfor %}
             <td class="text-center"></td>
         </tr>
@@ -84,7 +84,7 @@
     <tr>
         <td colspan="3" class="text-right">Total</td>
         {% for total in insumosArray.totalGlobal %}
-            <td class="text-center">{{ total|number_format(2,',','.') }}</td>
+            <td class="text-center"><b>{{ total }}</b></td>
         {% endfor %}
         <td class="text-center"></td>
     </tr>
