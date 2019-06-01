@@ -95,14 +95,13 @@ class FichaTecnicaBusiness
     public function buildItemQtdesTamanhosByPosicaoArray(FichaTecnicaItem $item): void
     {
         $array = [];
-        $unidade = $this->propAPIClient->findUnidadeById($item->getInsumo()->getUnidadeProdutoId());
         for ($i = 1; $i <= 15; $i++) {
-            $array[$i] = '-';
+            $array[$i] = '0.000';
             foreach ($item->getQtdes() as $qtde) {
                 $posicao = $this->propAPIClient->findPosicaoByGradeTamanhoId($qtde->getGradeTamanhoId());
                 if ($posicao === $i) {
                     if ((float)$qtde->getQtde() > 0) {
-                        $array[$i] = number_format((float)$qtde->getQtde(), $unidade['casasDecimais'], ',', '.');
+                        $array[$i] = bcmul($qtde->getQtde(), 1, 3); // deixar com 3 casas decimais
                     }
                 }
             }
@@ -180,7 +179,6 @@ class FichaTecnicaBusiness
 
         return ['insumos' => $insumosArray, 'totalGlobal' => $totalGlobal];
     }
-
 
     /**
      * @param FichaTecnica $fichaTecnica

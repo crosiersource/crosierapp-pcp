@@ -3,7 +3,6 @@
 {{ form_start(formItem) }}
 {{ form_widget(formItem) }}
 
-
 <div class="row">
     <div class="col text-right">
         <button type="submit" class="btn btn-primary" value="Inserir">
@@ -22,18 +21,18 @@
 <div class="row">&nbsp;</div>
 
 
-    <table class="table table-sm table-striped table-hover table-bordered" id="header-fixed">
+<table class="table table-sm table-striped table-hover table-bordered">
 
-        {% set gradeId = 0 %}
-        {% for item in e.itens %}
+    {% set gradeId = 0 %}
+    {% for item in e.itens %}
 
         {% if gradeId != item.fichaTecnica.gradeId %}
             {% set gradeId = item.fichaTecnica.gradeId %}
             <thead>
             <tr>
                 <th scope="col"><input type="checkbox" id="selTodosLoteItens" title="Selecionar todos" checked/></th>
-                <th scope="col">Id</th>
-                <th scope="col">Descrição</th>
+                <th scope="col">#</th>
+                <th scope="col">Item</th>
                 {% for i in 1..15 %}
                     <th scope="col" class="text-center">{{ item.fichaTecnica.gradesTamanhosByPosicaoArray[i] }}</th>
                 {% endfor %}
@@ -43,14 +42,15 @@
             </thead>
         {% endif %}
 
+
         <tr>
             <td>
                 <input type="checkbox" value="{{ item.id }}" id="loteItem[]" title="Selecionar" checked>
             </td>
-            <td>{{ item.id }}</td>
+            <td>{{ loop.index }}</td>
             <td>
                 <a href="{{ url('fichaTecnica_builder', {'id': item.fichaTecnica.id}) }}"
-                   target="_blank">{{ item.fichaTecnica.descricao }}</a>
+                   target="_blank">{{ "%06d"|format(item.fichaTecnica.id) }} - {{ item.fichaTecnica.descricao }}</a>
                 {{ item.obs != '' ? (('<br /><i style="font-size:smaller">'|raw) ~ item.obs ~ ("</i>"|raw))|raw : '' }}
             </td>
             {% for i in 1..15 %}
@@ -72,17 +72,18 @@
                 </button>
             </td>
         </tr>
-        {% endfor %}
-        <tr style="background-color: lightgrey">
-            <th scope="row" colspan="17" class="text-right">
-                Total:
-            </th>
-            <td class="text-right"></td>
-            <td class="text-right"></td>
-        </tr>
+
+    {% endfor %}
+    <tr style="background-color: lightgrey">
+        <th scope="row" colspan="17" class="text-right">
+            Total:
+        </th>
+        <td class="text-right"></td>
+        <td class="text-right"></td>
+    </tr>
 
 
-    </table>
+</table>
 
 
 {{ form_end(formItem) }}
