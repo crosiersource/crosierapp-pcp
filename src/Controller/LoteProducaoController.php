@@ -16,6 +16,7 @@ use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibBaseBundle\Utils\ExceptionUtils\ExceptionUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\FilterData;
+use Doctrine\Common\Collections\ArrayCollection;
 use Dompdf\Dompdf;
 use Dompdf\Options;
 use Symfony\Component\HttpFoundation\Request;
@@ -116,6 +117,12 @@ class LoteProducaoController extends FormListController
         if ($loteProducao) {
             $this->loteProducaoBusiness->buildLoteQtdesTamanhosArray($loteProducao);
         }
+
+        $iterator = $loteProducao->getItens()->getIterator();
+        $iterator->uasort(function (LoteProducaoItem $a, LoteProducaoItem $b) {
+            return $a->getFichaTecnica()->getGradeId() >= $b->getFichaTecnica()->getGradeId();
+        });
+        $loteProducao->setItens(new ArrayCollection(iterator_to_array($iterator)));
 
         $formItem = $this->createForm(LoteProducaoItemType::class, $loteProducaoItem);
         $formItem->handleRequest($request);

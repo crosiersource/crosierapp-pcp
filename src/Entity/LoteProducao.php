@@ -128,5 +128,15 @@ class LoteProducao implements EntityId
         return $this->itens;
     }
 
+    /**
+     * @param LoteProducaoItem[]|ArrayCollection $itens
+     * @return LoteProducao
+     */
+    public function setItens($itens)
+    {
+        $this->itens = $itens;
+        return $this;
+    }
+
 
 }

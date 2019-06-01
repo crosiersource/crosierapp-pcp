@@ -29,7 +29,7 @@
         {% if gradeId != item.fichaTecnica.gradeId %}
             {% set gradeId = item.fichaTecnica.gradeId %}
             <thead>
-            <tr>
+            <tr style="background-color: darkcyan">
                 <th scope="col"><input type="checkbox" id="selTodosLoteItens" title="Selecionar todos" checked/></th>
                 <th scope="col">#</th>
                 <th scope="col">Item</th>
@@ -78,6 +78,7 @@
         <th scope="row" colspan="17" class="text-right">
             Total:
         </th>
+        <td class="text-right"></td>
         <td class="text-right"></td>
         <td class="text-right"></td>
     </tr>

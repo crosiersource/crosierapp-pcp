@@ -290,7 +290,7 @@ class FichaTecnicaBusiness
 
             $precoMedio = $vPos3 ?: $vPos2 ?: $vPos1;
 
-            $preco->setPrecoCusto($precoMedio);
+            $preco->setPrecoCusto(DecimalUtils::parseStr($precoMedio));
 
             $fichaTecnica->getPrecos()->add($preco);
         }
@@ -305,7 +305,7 @@ class FichaTecnicaBusiness
             $preco->setDescricao('TAM ' . $tams);
 
             $precoMedio = $vPos5 ?: $vPos4;
-            $preco->setPrecoCusto($precoMedio);
+            $preco->setPrecoCusto(DecimalUtils::parseStr($precoMedio));
 
             $fichaTecnica->getPrecos()->add($preco);
         }
@@ -318,7 +318,7 @@ class FichaTecnicaBusiness
             $preco->setDescricao('TAM ' . $tams);
 
             $precoMedio = $vPos8 ?: $vPos7 ?: $vPos6;
-            $preco->setPrecoCusto($precoMedio);
+            $preco->setPrecoCusto(DecimalUtils::parseStr($precoMedio));
 
             $fichaTecnica->getPrecos()->add($preco);
         }
@@ -333,7 +333,7 @@ class FichaTecnicaBusiness
             // preferencialmente pega o M->-> caso seja nulo, pega o G-> Por último o P->
             $precoMedio = $vPos10 ?: $vPos11 ?: $vPos9;
 
-            $preco->setPrecoCusto($precoMedio);
+            $preco->setPrecoCusto(DecimalUtils::parseStr($precoMedio));
             $fichaTecnica->getPrecos()->add($preco);
         }
         if ($vPos12) {
@@ -341,7 +341,7 @@ class FichaTecnicaBusiness
 
             $preco->setFichaTecnica($fichaTecnica);
             $preco->setDescricao('TAM ' . $pos12);
-            $preco->setPrecoCusto($vPos12);
+            $preco->setPrecoCusto(DecimalUtils::parseStr($vPos12));
             $fichaTecnica->getPrecos()->add($preco);
         }
         if ($vPos13) {
@@ -349,7 +349,7 @@ class FichaTecnicaBusiness
 
             $preco->setFichaTecnica($fichaTecnica);
             $preco->setDescricao('TAM ' . $pos13);
-            $preco->setPrecoCusto($vPos13);
+            $preco->setPrecoCusto(DecimalUtils::parseStr($vPos13));
             $fichaTecnica->getPrecos()->add($preco);
         }
         if ($vPos14) {
@@ -357,7 +357,7 @@ class FichaTecnicaBusiness
 
             $preco->setFichaTecnica($fichaTecnica);
             $preco->setDescricao('TAM ' . $pos14);
-            $preco->setPrecoCusto($vPos14);
+            $preco->setPrecoCusto(DecimalUtils::parseStr($vPos14));
             $fichaTecnica->getPrecos()->add($preco);
         }
 
@@ -397,7 +397,7 @@ class FichaTecnicaBusiness
             $preco->setDescricao('TAM ' . $tams);
 
             $precoMedio = $vPos4 ?: $vPos3 ?: $vPos2 ?: $vPos1;
-            $preco->setPrecoCusto($precoMedio);
+            $preco->setPrecoCusto(DecimalUtils::parseStr($precoMedio));
 
             $fichaTecnica->getPrecos()->add($preco);
         }
@@ -410,7 +410,7 @@ class FichaTecnicaBusiness
             $preco->setDescricao('TAM ' . $tams);
 
             $precoMedio = $vPos8 ?: $vPos7 ?: $vPos6 ?: $vPos5;
-            $preco->setPrecoCusto($precoMedio);
+            $preco->setPrecoCusto(DecimalUtils::parseStr($precoMedio));
 
             $fichaTecnica->getPrecos()->add($preco);
         }
@@ -423,7 +423,7 @@ class FichaTecnicaBusiness
             $preco->setDescricao('TAM ' . $tams);
 
             $precoMedio = $vPos10 ?: $vPos11 ?: $vPos9;
-            $preco->setPrecoCusto($precoMedio);
+            $preco->setPrecoCusto(DecimalUtils::parseStr($precoMedio));
 
             $fichaTecnica->getPrecos()->add($preco);
         }
@@ -432,7 +432,7 @@ class FichaTecnicaBusiness
 
             $preco->setFichaTecnica($fichaTecnica);
             $preco->setDescricao('TAM ' . $pos12);
-            $preco->setPrecoCusto($vPos12);
+            $preco->setPrecoCusto(DecimalUtils::parseStr($vPos12));
             $fichaTecnica->getPrecos()->add($preco);
         }
         if ($vPos13) {
@@ -440,7 +440,7 @@ class FichaTecnicaBusiness
 
             $preco->setFichaTecnica($fichaTecnica);
             $preco->setDescricao('TAM ' . $pos13);
-            $preco->setPrecoCusto($vPos13);
+            $preco->setPrecoCusto(DecimalUtils::parseStr($vPos13));
             $fichaTecnica->getPrecos()->add($preco);
         }
         if ($vPos14) {
@@ -448,7 +448,7 @@ class FichaTecnicaBusiness
 
             $preco->setFichaTecnica($fichaTecnica);
             $preco->setDescricao('TAM ' . $pos14);
-            $preco->setPrecoCusto($vPos14);
+            $preco->setPrecoCusto(DecimalUtils::parseStr($vPos14));
             $fichaTecnica->getPrecos()->add($preco);
         }
 
@@ -485,7 +485,7 @@ class FichaTecnicaBusiness
             $preco->setDescricao('TAM ' . $tams);
 
             $precoMedio = $vPos4 ?: $vPos3 ?: $vPos2 ?: $vPos1;
-            $preco->setPrecoCusto($precoMedio);
+            $preco->setPrecoCusto(DecimalUtils::parseStr($precoMedio));
 
             $fichaTecnica->getPrecos()->add($preco);
         }
@@ -498,7 +498,7 @@ class FichaTecnicaBusiness
             $preco->setDescricao('TAM ' . $tams);
 
             $precoMedio = $vPos7 ?: $vPos6 ?: $vPos5;
-            $preco->setPrecoCusto($precoMedio);
+            $preco->setPrecoCusto(DecimalUtils::parseStr($precoMedio));
 
             $fichaTecnica->getPrecos()->add($preco);
         }
@@ -510,7 +510,7 @@ class FichaTecnicaBusiness
             $preco->setDescricao('TAM ' . $tams);
 
             $precoMedio = $vPos10 ?: $vPos11 ?: $vPos9 ?: $vPos8;
-            $preco->setPrecoCusto($precoMedio);
+            $preco->setPrecoCusto(DecimalUtils::parseStr($precoMedio));
 
             $fichaTecnica->getPrecos()->add($preco);
         }
@@ -537,7 +537,7 @@ class FichaTecnicaBusiness
             $preco->setDescricao('TAM ' . $tams);
 
             $precoMedio = $vPos14 ?: $vPos13 ?: $vPos12;
-            $preco->setPrecoCusto($precoMedio);
+            $preco->setPrecoCusto(DecimalUtils::parseStr($precoMedio));
 
             $fichaTecnica->getPrecos()->add($preco);
         }
