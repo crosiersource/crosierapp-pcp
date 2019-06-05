@@ -216,6 +216,22 @@ class FichaTecnicaController extends FormListController
         return $this->doRender('fichaTecnica.html.twig', $parameters);
     }
 
+
+    /**
+     *
+     * @Route("/fichaTecnica/salvarObs/{fichaTecnica}", name="fichaTecnica_salvarObs", defaults={"fichaTecnica"=null}, requirements={"fichaTecnica"="\d+"})
+     * @param Request $request
+     * @param FichaTecnica|null $fichaTecnica
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @throws \Exception
+     */
+    public function salvarObs(Request $request, FichaTecnica $fichaTecnica)
+    {
+        $fichaTecnica->setObs($request->get('obs'));
+        $this->getEntityHandler()->save($fichaTecnica);
+        return $this->redirectToRoute('fichaTecnica_builder', ['id' => $fichaTecnica->getId()]);
+    }
+
     /**
      *
      * @Route("/fichaTecnica/findByInstituicaoIdAndTipoArtigo", name="fichaTecnica_findByInstituicaoIdAndTipoArtigo")
