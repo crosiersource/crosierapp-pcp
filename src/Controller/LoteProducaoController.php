@@ -114,15 +114,19 @@ class LoteProducaoController extends FormListController
         $loteProducaoItem = new LoteProducaoItem();
         $loteProducaoItem->setLoteProducao($loteProducao);
 
-        if ($loteProducao) {
-            $this->loteProducaoBusiness->buildLoteQtdesTamanhosArray($loteProducao);
+        if (!$loteProducao) {
+            $loteProducao = new LoteProducao();
         }
+        $this->loteProducaoBusiness->buildLoteQtdesTamanhosArray($loteProducao);
 
-        $iterator = $loteProducao->getItens()->getIterator();
-        $iterator->uasort(function (LoteProducaoItem $a, LoteProducaoItem $b) {
-            return $a->getFichaTecnica()->getGradeId() >= $b->getFichaTecnica()->getGradeId();
-        });
-        $loteProducao->setItens(new ArrayCollection(iterator_to_array($iterator)));
+        if ($loteProducao->getItens()) {
+
+            $iterator = $loteProducao->getItens()->getIterator();
+            $iterator->uasort(function (LoteProducaoItem $a, LoteProducaoItem $b) {
+                return $a->getFichaTecnica()->getGradeId() >= $b->getFichaTecnica()->getGradeId();
+            });
+            $loteProducao->setItens(new ArrayCollection(iterator_to_array($iterator)));
+        }
 
         $formItem = $this->createForm(LoteProducaoItemType::class, $loteProducaoItem);
         $formItem->handleRequest($request);
@@ -270,9 +274,12 @@ class LoteProducaoController extends FormListController
     /**
      *
      * @Route("/loteProducao/relatorio/{loteProducao}", name="loteProducao_relatorio", requirements={"loteProducao"="\d+"})
+     * @param LoteProducao $loteProducao
+     * @param Request $request
+     * @return Response
      *
      */
-    public function relatorio(LoteProducao $loteProducao, Request $request)
+    public function relatorio(LoteProducao $loteProducao, Request $request): Response
     {
         $tiposInsumos = $request->get('tiposInsumos');
         $loteItens = explode(',', $request->get('loteItens'));
@@ -299,7 +306,7 @@ class LoteProducaoController extends FormListController
      * @param array $loteProducaoItensIds
      * @param array $tiposInsumos
      */
-    public function relatorioDeInsumosPDF(LoteProducao $loteProducao, array $loteProducaoItensIds, array $tiposInsumos)
+    public function relatorioDeInsumosPDF(LoteProducao $loteProducao, array $loteProducaoItensIds, array $tiposInsumos): void
     {
         $dados = $this->getDoctrine()->getRepository(LoteProducao::class)->buildRelatorioDeInsumos($loteProducaoItensIds, $tiposInsumos);
 
@@ -364,7 +371,7 @@ class LoteProducaoController extends FormListController
      * @param array $loteProducaoItensIds
      * @param array $tiposInsumos
      */
-    private function relatorioDeCortePDF(LoteProducao $loteProducao, array $loteProducaoItensIds, array $tiposInsumos)
+    private function relatorioDeCortePDF(LoteProducao $loteProducao, array $loteProducaoItensIds, array $tiposInsumos): void
     {
         $dados = $this->getDadosRelatorioDeCorte($loteProducao, $loteProducaoItensIds, $tiposInsumos);
 

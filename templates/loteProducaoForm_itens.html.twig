@@ -89,6 +89,8 @@
 
 {{ form_end(formItem) }}
 
+{% if e.id is defined and e.id %}
+
 <form action="{{ url('loteProducao_relatorio', {'loteProducao' : e.id}) }}" method="get" target="_blank">
     <div class="modal fade" id="opcoesRelatoriosModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
@@ -158,7 +160,7 @@
     </div>
 </form>
 
-
+{% endif %}
 
 
 

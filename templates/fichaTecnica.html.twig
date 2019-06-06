@@ -48,13 +48,17 @@
 
             <div class="form-group row">
                 <label class="col-form-label col-sm-2 required" for="fichaTecnica">Ficha Técnica</label>
-                <div class="col-sm-8">
+                <div class="col-sm-1">
+                    <input class="form-control" type="text" disabled value="{{ fichaTecnica.id }}" />
+                </div>
+
+                <div class="col-sm-6">
                     <select id="fichaTecnica" name="fichaTecnica" class="form-control autoSelect2"
                             data-options="{{ fichasTecnicas|default('') }}"
                             data-val="{{ fichaTecnica.id|default('') }}">
                     </select>
                 </div>
-                <div class="col-sm-2 text-right">
+                <div class="col-sm-3 text-right">
                     <div style="display: none" id="divBtns">
 
                         <a class="btn btn-primary" href="{{ url('fichaTecnica_form', {'id' : fichaTecnica.id}) }}"
@@ -67,12 +71,13 @@
                             <i class="fas fa-clone" aria-hidden="true"></i> Clonar</a>
 
                         {% if fichaTecnica.id is defined %}
-                        <button type="button" value="Deletar" class="btn btn-danger"
-                                data-token="{{ csrf_token('delete') }}"
-                                data-url="{{ url('fichaTecnica_delete', {'fichaTecnica' : fichaTecnica.id}) }}" data-target="#confirmationModal"
-                                data-toggle="modal">
-                            <i class="fas fa-trash" aria-hidden="true"></i>
-                        </button>
+                            <button type="button" value="Deletar" class="btn btn-danger"
+                                    data-token="{{ csrf_token('delete') }}"
+                                    data-url="{{ url('fichaTecnica_delete', {'fichaTecnica' : fichaTecnica.id}) }}"
+                                    data-target="#confirmationModal"
+                                    data-toggle="modal">
+                                <i class="fas fa-trash" aria-hidden="true"></i>
+                            </button>
                         {% endif %}
 
                     </div>
@@ -113,7 +118,7 @@
             {% endif %}
 
 
-        </div>
+
     </div>
 
 
