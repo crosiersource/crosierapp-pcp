@@ -148,14 +148,14 @@ class LoteProducaoController extends FormListController
             }
         }
 
-        if ($loteProducao->getItens()) {
-
-            $iterator = $loteProducao->getItens()->getIterator();
-            $iterator->uasort(function (LoteProducaoItem $a, LoteProducaoItem $b) {
-                return $a->getFichaTecnica()->getGradeId() >= $b->getFichaTecnica()->getGradeId();
-            });
-            $loteProducao->setItens(new ArrayCollection(iterator_to_array($iterator)));
-        }
+//        if ($loteProducao->getItens()) {
+//
+//            $iterator = $loteProducao->getItens()->getIterator();
+//            $iterator->uasort(function (LoteProducaoItem $a, LoteProducaoItem $b) {
+//                return $a->getFichaTecnica()->getGradeId() >= $b->getFichaTecnica()->getGradeId();
+//            });
+//            $loteProducao->setItens(new ArrayCollection(iterator_to_array($iterator)));
+//        }
 
         $parameters = [];
         $parameters['formItem'] = $formItem->createView();
