@@ -262,6 +262,19 @@ class FichaTecnicaBusiness
     }
 
     /**
+     * @param array $totalGlobal
+     * @return array
+     */
+    private function totaisAsFloat(array $totalGlobal): array {
+        $totaisAsFloat = [];
+        ksort($totalGlobal);
+        foreach ($totalGlobal as $t) {
+            $totaisAsFloat[] = DecimalUtils::parseStr($t);
+        }
+        return $totaisAsFloat;
+    }
+
+    /**
      * calças, jaquetas, bermudas, etc
      * 02-04-06 >> 06
      * 08-10 >> 10
@@ -284,7 +297,7 @@ class FichaTecnicaBusiness
 
         $totalGlobal[0] = null; //rta para poder usar o list() com array sem indice 0
         [$null, $vPos1, $vPos2, $vPos3, $vPos4, $vPos5, $vPos6, $vPos7, $vPos8, $vPos9, $vPos10, $vPos11, $vPos12, $vPos13, $vPos14, $vPos15]
-            = $totalGlobal;
+            = $this->totaisAsFloat($totalGlobal);
 
         if ($vPos1 || $vPos2 || $vPos3) {
             $preco = new FichaTecnicaPreco();
@@ -295,7 +308,7 @@ class FichaTecnicaBusiness
 
             $precoMedio = $vPos3 ?: $vPos2 ?: $vPos1;
 
-            $preco->setPrecoCusto(DecimalUtils::parseStr($precoMedio));
+            $preco->setPrecoCusto($precoMedio);
 
             $fichaTecnica->getPrecos()->add($preco);
         }
@@ -310,7 +323,7 @@ class FichaTecnicaBusiness
             $preco->setDescricao('TAM ' . $tams);
 
             $precoMedio = $vPos5 ?: $vPos4;
-            $preco->setPrecoCusto(DecimalUtils::parseStr($precoMedio));
+            $preco->setPrecoCusto($precoMedio);
 
             $fichaTecnica->getPrecos()->add($preco);
         }
@@ -323,7 +336,7 @@ class FichaTecnicaBusiness
             $preco->setDescricao('TAM ' . $tams);
 
             $precoMedio = $vPos8 ?: $vPos7 ?: $vPos6;
-            $preco->setPrecoCusto(DecimalUtils::parseStr($precoMedio));
+            $preco->setPrecoCusto($precoMedio);
 
             $fichaTecnica->getPrecos()->add($preco);
         }
@@ -338,7 +351,7 @@ class FichaTecnicaBusiness
             // preferencialmente pega o M->-> caso seja nulo, pega o G-> Por último o P->
             $precoMedio = $vPos10 ?: $vPos11 ?: $vPos9;
 
-            $preco->setPrecoCusto(DecimalUtils::parseStr($precoMedio));
+            $preco->setPrecoCusto($precoMedio);
             $fichaTecnica->getPrecos()->add($preco);
         }
         if ($vPos12) {
@@ -346,7 +359,7 @@ class FichaTecnicaBusiness
 
             $preco->setFichaTecnica($fichaTecnica);
             $preco->setDescricao('TAM ' . $pos12);
-            $preco->setPrecoCusto(DecimalUtils::parseStr($vPos12));
+            $preco->setPrecoCusto($vPos12);
             $fichaTecnica->getPrecos()->add($preco);
         }
         if ($vPos13) {
@@ -354,7 +367,7 @@ class FichaTecnicaBusiness
 
             $preco->setFichaTecnica($fichaTecnica);
             $preco->setDescricao('TAM ' . $pos13);
-            $preco->setPrecoCusto(DecimalUtils::parseStr($vPos13));
+            $preco->setPrecoCusto($vPos13);
             $fichaTecnica->getPrecos()->add($preco);
         }
         if ($vPos14) {
@@ -362,7 +375,7 @@ class FichaTecnicaBusiness
 
             $preco->setFichaTecnica($fichaTecnica);
             $preco->setDescricao('TAM ' . $pos14);
-            $preco->setPrecoCusto(DecimalUtils::parseStr($vPos14));
+            $preco->setPrecoCusto($vPos14);
             $fichaTecnica->getPrecos()->add($preco);
         }
 
@@ -391,7 +404,7 @@ class FichaTecnicaBusiness
 
         $totalGlobal[0] = null; //rta para poder usar o list() com array sem indice 0
         [$null, $vPos1, $vPos2, $vPos3, $vPos4, $vPos5, $vPos6, $vPos7, $vPos8, $vPos9, $vPos10, $vPos11, $vPos12, $vPos13, $vPos14, $vPos15]
-            = $totalGlobal;
+            = $this->totaisAsFloat($totalGlobal);
 
 
         if ($vPos1 || $vPos2 || $vPos3 || $vPos4) {
@@ -402,7 +415,7 @@ class FichaTecnicaBusiness
             $preco->setDescricao('TAM ' . $tams);
 
             $precoMedio = $vPos4 ?: $vPos3 ?: $vPos2 ?: $vPos1;
-            $preco->setPrecoCusto(DecimalUtils::parseStr($precoMedio));
+            $preco->setPrecoCusto($precoMedio);
 
             $fichaTecnica->getPrecos()->add($preco);
         }
@@ -415,7 +428,7 @@ class FichaTecnicaBusiness
             $preco->setDescricao('TAM ' . $tams);
 
             $precoMedio = $vPos8 ?: $vPos7 ?: $vPos6 ?: $vPos5;
-            $preco->setPrecoCusto(DecimalUtils::parseStr($precoMedio));
+            $preco->setPrecoCusto($precoMedio);
 
             $fichaTecnica->getPrecos()->add($preco);
         }
@@ -428,7 +441,7 @@ class FichaTecnicaBusiness
             $preco->setDescricao('TAM ' . $tams);
 
             $precoMedio = $vPos10 ?: $vPos11 ?: $vPos9;
-            $preco->setPrecoCusto(DecimalUtils::parseStr($precoMedio));
+            $preco->setPrecoCusto($precoMedio);
 
             $fichaTecnica->getPrecos()->add($preco);
         }
@@ -437,7 +450,7 @@ class FichaTecnicaBusiness
 
             $preco->setFichaTecnica($fichaTecnica);
             $preco->setDescricao('TAM ' . $pos12);
-            $preco->setPrecoCusto(DecimalUtils::parseStr($vPos12));
+            $preco->setPrecoCusto($vPos12);
             $fichaTecnica->getPrecos()->add($preco);
         }
         if ($vPos13) {
@@ -445,7 +458,7 @@ class FichaTecnicaBusiness
 
             $preco->setFichaTecnica($fichaTecnica);
             $preco->setDescricao('TAM ' . $pos13);
-            $preco->setPrecoCusto(DecimalUtils::parseStr($vPos13));
+            $preco->setPrecoCusto($vPos13);
             $fichaTecnica->getPrecos()->add($preco);
         }
         if ($vPos14) {
@@ -453,7 +466,7 @@ class FichaTecnicaBusiness
 
             $preco->setFichaTecnica($fichaTecnica);
             $preco->setDescricao('TAM ' . $pos14);
-            $preco->setPrecoCusto(DecimalUtils::parseStr($vPos14));
+            $preco->setPrecoCusto($vPos14);
             $fichaTecnica->getPrecos()->add($preco);
         }
 
@@ -475,12 +488,12 @@ class FichaTecnicaBusiness
     {
         $gradesTamanhosByPosicaoArray = $fichaTecnica->getGradesTamanhosByPosicaoArray();
         $gradesTamanhosByPosicaoArray[0] = null; //rta para poder usar o list() com array sem indice 0
-        [$null, $pos1, $pos2, $pos3, $pos4, $pos5, $pos6, $pos7, $pos8, $pos9, $pos10, $pos11, $pos12, $pos13, $pos14, $pos15]
+        [$pos0, $pos1, $pos2, $pos3, $pos4, $pos5, $pos6, $pos7, $pos8, $pos9, $pos10, $pos11, $pos12, $pos13, $pos14, $pos15]
             = $gradesTamanhosByPosicaoArray;
 
         $totalGlobal[0] = null; //rta para poder usar o list() com array sem indice 0
-        [$null, $vPos1, $vPos2, $vPos3, $vPos4, $vPos5, $vPos6, $vPos7, $vPos8, $vPos9, $vPos10, $vPos11, $vPos12, $vPos13, $vPos14, $vPos15]
-            = $totalGlobal;
+        [$vPos0, $vPos1, $vPos2, $vPos3, $vPos4, $vPos5, $vPos6, $vPos7, $vPos8, $vPos9, $vPos10, $vPos11, $vPos12, $vPos13, $vPos14, $vPos15]
+            = $this->totaisAsFloat($totalGlobal);
 
         if ($vPos1 || $vPos2 || $vPos3 || $vPos4) {
             $preco = new FichaTecnicaPreco();
@@ -490,7 +503,7 @@ class FichaTecnicaBusiness
             $preco->setDescricao('TAM ' . $tams);
 
             $precoMedio = $vPos4 ?: $vPos3 ?: $vPos2 ?: $vPos1;
-            $preco->setPrecoCusto(DecimalUtils::parseStr($precoMedio));
+            $preco->setPrecoCusto($precoMedio);
 
             $fichaTecnica->getPrecos()->add($preco);
         }
@@ -503,7 +516,7 @@ class FichaTecnicaBusiness
             $preco->setDescricao('TAM ' . $tams);
 
             $precoMedio = $vPos7 ?: $vPos6 ?: $vPos5;
-            $preco->setPrecoCusto(DecimalUtils::parseStr($precoMedio));
+            $preco->setPrecoCusto($precoMedio);
 
             $fichaTecnica->getPrecos()->add($preco);
         }
@@ -515,7 +528,7 @@ class FichaTecnicaBusiness
             $preco->setDescricao('TAM ' . $tams);
 
             $precoMedio = $vPos10 ?: $vPos11 ?: $vPos9 ?: $vPos8;
-            $preco->setPrecoCusto(DecimalUtils::parseStr($precoMedio));
+            $preco->setPrecoCusto($precoMedio);
 
             $fichaTecnica->getPrecos()->add($preco);
         }
@@ -542,7 +555,7 @@ class FichaTecnicaBusiness
             $preco->setDescricao('TAM ' . $tams);
 
             $precoMedio = $vPos14 ?: $vPos13 ?: $vPos12;
-            $preco->setPrecoCusto(DecimalUtils::parseStr($precoMedio));
+            $preco->setPrecoCusto($precoMedio);
 
             $fichaTecnica->getPrecos()->add($preco);
         }

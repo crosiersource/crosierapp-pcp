@@ -127,7 +127,7 @@ class FichaTecnicaController extends FormListController
     public function getFilterDatas(array $params): array
     {
         return [
-            new FilterData(['descricao'], 'LIKE', 'str', $params)
+            new FilterData(['descricao', 'id'], 'LIKE', 'str', $params)
         ];
     }
 
