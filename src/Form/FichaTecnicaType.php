@@ -76,6 +76,12 @@ class FichaTecnicaType extends AbstractType
             $fichaTecnica = $event->getData();
             $form = $event->getForm();
 
+
+            $form->add('id', IntegerType::class, [
+                'label' => 'Id',
+                'disabled' => true
+            ]);
+
             $form->add('pessoaId', ChoiceType::class, [
                 'label' => 'Instituição',
                 'required' => false,

@@ -55,7 +55,7 @@ class LoteProducaoItemType extends AbstractType
                 'placeholder' => '...',
                 'required' => false,
                 'choice_label' => function (?FichaTecnica $fichaTecnica) {
-                    return $fichaTecnica && $fichaTecnica->getDescricao() ? $fichaTecnica->getDescricao() : '';
+                    return $fichaTecnica && $fichaTecnica->getDescricaoMontada() ? $fichaTecnica->getDescricaoMontada() : '';
                 },
                 'attr' => ['class' => 'autoSelect2']
             ]);

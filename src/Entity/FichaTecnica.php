@@ -217,6 +217,17 @@ class FichaTecnica implements EntityId
     }
 
     /**
+     * @return null|string
+     */
+    public function getDescricaoMontada(): ?string
+    {
+        if ($this->id && $this->descricao) {
+            return str_pad($this->id, 6, '0', STR_PAD_LEFT) . ' - ' . $this->descricao;
+        }
+        return null;
+    }
+
+    /**
      * @param null|string $descricao
      * @return FichaTecnica
      */
