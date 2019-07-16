@@ -7,17 +7,16 @@ framework:
     # Enables session support. Note that the session will ONLY be started if you read or write from it.
     # Remove or comment this section to explicitly disable session support.
     session:
-        name: CRSRSESSCK_%env(CROSIERAPP_ID)%
+        name: CRSRSESSCK
         # handler_id: ~
         handler_id: session.handler.native_file
+        cookie_domain: '%env(CROSIER_MAINDOMAIN)%'
         cookie_secure: true
         cookie_samesite: lax
-        save_path: '%kernel.project_dir%/var/sessions/%kernel.environment%'
+        save_path: "%env(CROSIER_SESSIONS_FOLDER)%"
         cookie_lifetime: 6048000 # 10 semanas
 
     #esi: true
     #fragments: true
     php_errors:
         log: true
-    assets:
-        json_manifest_path: '%kernel.project_dir%/public/build/manifest.json'
