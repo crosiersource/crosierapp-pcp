@@ -1,5 +1,33 @@
 {% form_theme formItem 'bootstrap_4_horizontal_layout.html.twig' %}
 
+<style>
+
+    .tableFixHead {
+        overflow-y: auto;
+        height: 400px;
+    }
+
+    .tableFixHead thead th {
+        position: sticky;
+        top: -1px;
+    }
+
+    /* Just common table stuff. Really. */
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    th, td {
+        padding: 8px 16px;
+    }
+
+    th {
+        background: #eee;
+    }
+
+</style>
+
 {{ form_start(formItem) }}
 {{ form_widget(formItem) }}
 
@@ -20,145 +48,150 @@
 </div>
 <div class="row">&nbsp;</div>
 
+<div class="tableFixHead">
+    <table class="table table-sm table-striped table-hover table-bordered">
 
-<table class="table table-sm table-striped table-hover table-bordered">
+        {% set gradeId = 0 %}
+        {% for item in e.itens %}
 
-    {% set gradeId = 0 %}
-    {% for item in e.itens %}
+            {% if gradeId != item.fichaTecnica.gradeId %}
+                {% set gradeId = item.fichaTecnica.gradeId %}
+                <thead>
+                <tr style="background-color: darkcyan">
+                    <th scope="col"><input type="checkbox" id="selTodosLoteItens" title="Selecionar todos" checked/>
+                    </th>
+                    <th scope="col">#</th>
+                    <th scope="col">Pedido</th>
+                    <th scope="col">Item</th>
+                    {% for i in 1..15 %}
+                        <th scope="col" class="text-center">{{ item.fichaTecnica.gradesTamanhosByPosicaoArray[i] }}</th>
+                    {% endfor %}
+                    <th scope="col">Total</th>
+                    <th scope="col"></th>
+                </tr>
+                </thead>
+            {% endif %}
 
-        {% if gradeId != item.fichaTecnica.gradeId %}
-            {% set gradeId = item.fichaTecnica.gradeId %}
-            <thead>
-            <tr style="background-color: darkcyan">
-                <th scope="col"><input type="checkbox" id="selTodosLoteItens" title="Selecionar todos" checked/></th>
-                <th scope="col">#</th>
-                <th scope="col">Item</th>
+
+            <tr>
+                <td>
+                    <input type="checkbox" value="{{ item.id }}" id="loteItem[]" title="Selecionar" checked>
+                </td>
+                <td>{{ loop.index }}</td>
+                <td>{{ item.pedido }}</td>
+                <td>
+                    <a href="{{ url('fichaTecnica_builder', {'id': item.fichaTecnica.id}) }}"
+                       target="_blank">{{ "%06d"|format(item.fichaTecnica.id) }} - {{ item.fichaTecnica.descricao }}</a>
+                    {{ item.obs != '' ? (('<br /><i style="font-size:smaller">'|raw) ~ item.obs ~ ("</i>"|raw))|raw : '' }}
+                </td>
                 {% for i in 1..15 %}
-                    <th scope="col" class="text-center">{{ item.fichaTecnica.gradesTamanhosByPosicaoArray[i] }}</th>
+                    <td class="text-center">{{ item.qtdesTamanhosArray[i] }}</td>
                 {% endfor %}
-                <th scope="col">Total</th>
-                <th scope="col"></th>
+                <td class="text-right">{{ item.totalQtdes }}</td>
+                <td class="text-center">
+
+                    <a class="btn btn-primary btn-sm"
+                       href="{{ url('loteProducaoItem_form', {'loteProducaoItem': item.id}) }}"
+                       role="button">
+                        <i class="fas fa-wrench" aria-hidden="true"></i></a>
+
+                    <button type="button" class="btn btn-danger btn-sm"
+                            data-url="{{ url('loteProducao_deleteItem', {'loteProducaoItem': item.id}) }}"
+                            data-token="{{ csrf_token('loteProducao_deleteItem') }}" data-target="#confirmationModal"
+                            data-toggle="modal">
+                        <i class="fa fa-trash" aria-hidden="true"></i>
+                    </button>
+                </td>
             </tr>
-            </thead>
-        {% endif %}
 
-
-        <tr>
-            <td>
-                <input type="checkbox" value="{{ item.id }}" id="loteItem[]" title="Selecionar" checked>
-            </td>
-            <td>{{ loop.index }}</td>
-            <td>
-                <a href="{{ url('fichaTecnica_builder', {'id': item.fichaTecnica.id}) }}"
-                   target="_blank">{{ "%06d"|format(item.fichaTecnica.id) }} - {{ item.fichaTecnica.descricao }}</a>
-                {{ item.obs != '' ? (('<br /><i style="font-size:smaller">'|raw) ~ item.obs ~ ("</i>"|raw))|raw : '' }}
-            </td>
-            {% for i in 1..15 %}
-                <td class="text-center">{{ item.qtdesTamanhosArray[i] }}</td>
-            {% endfor %}
-            <td class="text-right">{{ item.totalQtdes }}</td>
-            <td class="text-center">
-
-                <a class="btn btn-primary btn-sm"
-                   href="{{ url('loteProducaoItem_form', {'loteProducaoItem': item.id}) }}"
-                   role="button">
-                    <i class="fas fa-wrench" aria-hidden="true"></i></a>
-
-                <button type="button" class="btn btn-danger btn-sm"
-                        data-url="{{ url('loteProducao_deleteItem', {'loteProducaoItem': item.id}) }}"
-                        data-token="{{ csrf_token('loteProducao_deleteItem') }}" data-target="#confirmationModal"
-                        data-toggle="modal">
-                    <i class="fa fa-trash" aria-hidden="true"></i>
-                </button>
-            </td>
+        {% endfor %}
+        <tr style="background-color: lightgrey">
+            <th scope="row" colspan="18" class="text-right">
+                Total:
+            </th>
+            <td class="text-right"></td>
+            <td class="text-right"></td>
+            <td class="text-right"></td>
         </tr>
 
-    {% endfor %}
-    <tr style="background-color: lightgrey">
-        <th scope="row" colspan="17" class="text-right">
-            Total:
-        </th>
-        <td class="text-right"></td>
-        <td class="text-right"></td>
-        <td class="text-right"></td>
-    </tr>
 
-
-</table>
+    </table>
+</div>
 
 
 {{ form_end(formItem) }}
 
 {% if e.id is defined and e.id %}
 
-<form action="{{ url('loteProducao_relatorio', {'loteProducao' : e.id}) }}" method="get" target="_blank">
-    <div class="modal fade" id="opcoesRelatoriosModal" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
+    <form action="{{ url('loteProducao_relatorio', {'loteProducao' : e.id}) }}" method="get" target="_blank">
+        <div class="modal fade" id="opcoesRelatoriosModal" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
 
-            <div class="modal-content">
-
-
-                <div class="modal-body">
-
-                    <!-- Preenchido no click do btnModalOpcoesRelatorios -->
-                    <input type="hidden" name="loteItens" id="loteItens"/>
-
-                    <div class="form-group">
-                        <select class="autoSelect2" id="tipoRelatorio" name="tipoRelatorio">
-                            <option value="Relatório de Corte">Relatório de Corte</option>
-                            <option value="Relatório de Insumos">Relatório de Insumos</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <fieldset class="form-group pre-scrollable" style="height: 150px">
-                            <legend>Tipos de Insumos</legend>
-                            {% for tipoInsumo in tiposInsumos %}
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="{{ tipoInsumo.id }}" checked
-                                           name="tiposInsumos[]"/>
-                                    <label class="form-check-label">
-                                        {{ tipoInsumo.descricao }}
-                                    </label>
-                                </div>
-                            {% endfor %}
-                        </fieldset>
-                    </div>
-
-                    <div class="form-group">
+                <div class="modal-content">
 
 
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="tipoImpressao"
-                                   id="inlineRadio1"
-                                   value="PDF"/>
-                            <label class="form-check-label" for="inlineRadio1">PDF</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="tipoImpressao"
-                                   id="inlineRadio2"
-                                   value="HTML" checked/>
-                            <label class="form-check-label" for="inlineRadio2">HTML</label>
+                    <div class="modal-body">
+
+                        <!-- Preenchido no click do btnModalOpcoesRelatorios -->
+                        <input type="hidden" name="loteItens" id="loteItens"/>
+
+                        <div class="form-group">
+                            <select class="autoSelect2" id="tipoRelatorio" name="tipoRelatorio">
+                                <option value="Relatório de Corte">Relatório de Corte</option>
+                                <option value="Relatório de Insumos">Relatório de Insumos</option>
+                            </select>
                         </div>
 
+                        <div class="form-group">
+                            <fieldset class="form-group pre-scrollable" style="height: 150px">
+                                <legend>Tipos de Insumos</legend>
+                                {% for tipoInsumo in tiposInsumos %}
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="{{ tipoInsumo.id }}"
+                                               checked
+                                               name="tiposInsumos[]"/>
+                                        <label class="form-check-label">
+                                            {{ tipoInsumo.descricao }}
+                                        </label>
+                                    </div>
+                                {% endfor %}
+                            </fieldset>
+                        </div>
+
+                        <div class="form-group">
+
+
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="tipoImpressao"
+                                       id="inlineRadio1"
+                                       value="PDF"/>
+                                <label class="form-check-label" for="inlineRadio1">PDF</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="tipoImpressao"
+                                       id="inlineRadio2"
+                                       value="HTML" checked/>
+                                <label class="form-check-label" for="inlineRadio2">HTML</label>
+                            </div>
+
+                        </div>
+
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" id="btnConfirmationModalNo" data-dismiss="modal">
+                            <i class="fa fa-ban" aria-hidden="true"></i> Cancelar
+                        </button>
+                        <button type="submit" class="btn btn-danger" name="btnGerarRelatorio" id="btnGerarRelatorio">
+                            <i class="fa fa-print" aria-hidden="true"></i> OK
+                        </button>
                     </div>
 
 
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" id="btnConfirmationModalNo" data-dismiss="modal">
-                        <i class="fa fa-ban" aria-hidden="true"></i> Cancelar
-                    </button>
-                    <button type="submit" class="btn btn-danger" name="btnGerarRelatorio" id="btnGerarRelatorio">
-                        <i class="fa fa-print" aria-hidden="true"></i> OK
-                    </button>
-                </div>
-
-
             </div>
         </div>
-    </div>
-</form>
+    </form>
 
 {% endif %}
 

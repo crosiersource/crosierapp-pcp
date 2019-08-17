@@ -25,6 +25,14 @@ class LoteProducaoItem implements EntityId
     /**
      * @var null|string
      *
+     * @ORM\Column(name="pedido", type="string", length=50, nullable=true)
+     * @Groups("entity")
+     */
+    private $pedido;
+
+    /**
+     * @var null|string
+     *
      * @ORM\Column(name="obs", type="string", length=5000, nullable=true)
      * @Groups("entity")
      */
@@ -92,6 +100,25 @@ class LoteProducaoItem implements EntityId
     {
         $this->qtdes = new ArrayCollection();
     }
+
+    /**
+     * @return string|null
+     */
+    public function getPedido(): ?string
+    {
+        return $this->pedido;
+    }
+
+    /**
+     * @param string|null $pedido
+     * @return LoteProducaoItem
+     */
+    public function setPedido(?string $pedido): LoteProducaoItem
+    {
+        $this->pedido = $pedido;
+        return $this;
+    }
+
 
     /**
      * @return null|string

@@ -121,8 +121,6 @@ class LoteProducaoController extends FormListController
         }
         $this->loteProducaoBusiness->buildLoteQtdesTamanhosArray($loteProducao);
 
-
-
         $formItem = $this->createForm(LoteProducaoItemType::class, $loteProducaoItem);
         $formItem->handleRequest($request);
 
@@ -130,9 +128,9 @@ class LoteProducaoController extends FormListController
             if ($formItem->isValid()) {
                 try {
                     $entity = $formItem->getData();
-                    $this->loteProducaoItemEntityHandler->save($entity);
+                    $item = $this->loteProducaoItemEntityHandler->save($entity);
                     $this->addFlash('success', 'Registro salvo com sucesso!');
-                    return $this->redirectToRoute('loteProducao_form', ['id' => $loteProducao->getId(), '_fragment' => 'itens']);
+                    return $this->redirectToRoute('loteProducaoItem_form', ['loteProducaoItem' => $item->getId()]);
                 } catch (ViewException $e) {
                     $this->addFlash('error', $e->getMessage());
                 } catch (\Exception $e) {

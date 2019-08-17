@@ -60,6 +60,11 @@ class LoteProducaoItemType extends AbstractType
                 'attr' => ['class' => 'autoSelect2']
             ]);
 
+            $form->add('pedido', TextType::class, [
+                'label' => 'Pedido',
+                'required' => false
+            ]);
+
             $form->add('obs', TextType::class, [
                 'label' => 'Obs',
                 'required' => false
