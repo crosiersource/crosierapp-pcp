@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use CrosierSource\CrosierLibBaseBundle\Entity\Base\Pessoa;
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityId;
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityIdTrait;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -119,22 +120,17 @@ class FichaTecnica implements EntityId
      */
     private $oculta;
 
-    /**
-     * @var null|integer
-     * @ORM\Column(name="pessoa_id", type="bigint", nullable=false)
-     * @Groups("entity")
-     *
-     */
-    private $pessoaId;
 
     /**
-     * @var null|string
+     * @var null|Pessoa
      *
-     * @ORM\Column(name="pessoa_nome", type="string", length=300, nullable=false)
+     * @ORM\ManyToOne(targetEntity="CrosierSource\CrosierLibBaseBundle\Entity\Base\Pessoa")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="pessoa_id", referencedColumnName="id")
+     * })
      * @Groups("entity")
      */
-    private $pessoaNome;
-
+    private $instituicao;
 
     /**
      *
@@ -217,6 +213,16 @@ class FichaTecnica implements EntityId
     }
 
     /**
+     * @param null|string $descricao
+     * @return FichaTecnica
+     */
+    public function setDescricao(?string $descricao): FichaTecnica
+    {
+        $this->descricao = $descricao;
+        return $this;
+    }
+
+    /**
      * @return null|string
      */
     public function getDescricaoMontada(): ?string
@@ -225,16 +231,6 @@ class FichaTecnica implements EntityId
             return str_pad($this->id, 6, '0', STR_PAD_LEFT) . ' - ' . $this->descricao;
         }
         return null;
-    }
-
-    /**
-     * @param null|string $descricao
-     * @return FichaTecnica
-     */
-    public function setDescricao(?string $descricao): FichaTecnica
-    {
-        $this->descricao = $descricao;
-        return $this;
     }
 
     /**
@@ -364,38 +360,20 @@ class FichaTecnica implements EntityId
     }
 
     /**
-     * @return int|null
+     * @return Pessoa|null
      */
-    public function getPessoaId(): ?int
+    public function getInstituicao(): ?Pessoa
     {
-        return $this->pessoaId;
+        return $this->instituicao;
     }
 
     /**
-     * @param int|null $pessoaId
+     * @param Pessoa|null $instituicao
      * @return FichaTecnica
      */
-    public function setPessoaId(?int $pessoaId): FichaTecnica
+    public function setInstituicao(?Pessoa $instituicao): FichaTecnica
     {
-        $this->pessoaId = $pessoaId;
-        return $this;
-    }
-
-    /**
-     * @return null|string
-     */
-    public function getPessoaNome(): ?string
-    {
-        return $this->pessoaNome;
-    }
-
-    /**
-     * @param null|string $pessoaNome
-     * @return FichaTecnica
-     */
-    public function setPessoaNome(?string $pessoaNome): FichaTecnica
-    {
-        $this->pessoaNome = $pessoaNome;
+        $this->instituicao = $instituicao;
         return $this;
     }
 
@@ -453,6 +431,33 @@ class FichaTecnica implements EntityId
     }
 
     /**
+     * @return mixed
+     */
+    public function __clone()
+    {
+        if ($this->id) {
+            $this->setId(null);
+            $itens = $this->getItens();
+            $novosItens = new ArrayCollection();
+            foreach ($itens as $item) {
+                $novoItem = clone $item;
+                $novoItem->setFichaTecnica($this);
+                $novosItens->add($novoItem);
+            }
+            $this->itens = $novosItens;
+
+            $precos = $this->getPrecos();
+            $novosPrecos = new ArrayCollection();
+            foreach ($precos as $preco) {
+                $novoPreco = clone $preco;
+                $novoPreco->setFichaTecnica($this);
+                $novosPrecos->add($novoPreco);
+            }
+            $this->precos = $novosPrecos;
+        }
+    }
+
+    /**
      * @return FichaTecnicaItem[]|ArrayCollection
      */
     public function getItens()
@@ -486,33 +491,6 @@ class FichaTecnica implements EntityId
     {
         $this->precos = $precos;
         return $this;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function __clone()
-    {
-        if ($this->id) {
-            $this->setId(null);
-            $itens = $this->getItens();
-            $novosItens = new ArrayCollection();
-            foreach ($itens as $item) {
-                $novoItem = clone $item;
-                $novoItem->setFichaTecnica($this);
-                $novosItens->add($novoItem);
-            }
-            $this->itens = $novosItens;
-
-            $precos = $this->getPrecos();
-            $novosPrecos = new ArrayCollection();
-            foreach ($precos as $preco) {
-                $novoPreco = clone $preco;
-                $novoPreco->setFichaTecnica($this);
-                $novosPrecos->add($novoPreco);
-            }
-            $this->precos = $novosPrecos;
-        }
     }
 
 

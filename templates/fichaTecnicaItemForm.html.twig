@@ -10,13 +10,9 @@
 
                 <div class="row">
                     <div class="col-8">
-                        <h3>{{ formPageTitle }}</h3>
+                        <h3>Item de Ficha Técnica</h3>
                     </div>
                     <div class="col-4 text-right">
-                        <button type="button" class="btn btn-secondary"
-                                onclick="window.location.href='{{ url(formRoute) }}'">
-                            <i class="fas fa-file" aria-hidden="true"></i> Novo
-                        </button>
                         <button type="button" class="btn btn-secondary"
                                 onclick="window.location.href='{{ url('fichaTecnica_builder', {'id':fichaTecnicaItem.fichaTecnica.id}) }}'">
                             <i class="fas fa-backward" aria-hidden="true"></i> Voltar

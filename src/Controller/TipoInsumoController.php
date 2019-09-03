@@ -8,6 +8,7 @@ use App\EntityHandler\TipoInsumoEntityHandler;
 use App\Form\TipoInsumoType;
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\FilterData;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -20,28 +21,6 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class TipoInsumoController extends FormListController
 {
-
-    protected $crudParams =
-        [
-            'typeClass' => TipoInsumoType::class,
-
-            'formView' => '@CrosierLibBase/form.html.twig',
-            'formRoute' => 'tipoInsumo_form',
-            'formPageTitle' => 'Tipo de Insumo',
-            'form_PROGRAM_UUID' => null,
-
-            'listView' => '@CrosierLibBase/list.html.twig',
-            'listRoute' => 'tipoInsumo_list',
-            'listRouteAjax' => 'tipoInsumo_datatablesJsList',
-            'listPageTitle' => 'Tipos de Insumos',
-            'listId' => 'tipoInsumoList',
-            'list_PROGRAM_UUID' => null,
-            'listJS' => 'tipoInsumoList.js',
-
-            'role_access' => 'ROLE_PCP_ADMIN',
-            'role_delete' => 'ROLE_PCP_ADMIN',
-
-        ];
 
     /**
      * @required
@@ -66,10 +45,18 @@ class TipoInsumoController extends FormListController
      * @param TipoInsumo|null $tipoInsumo
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      * @throws \Exception
+     *
+     * @IsGranted({"ROLE_PCP_ADMIN"}, statusCode=403)
      */
     public function form(Request $request, TipoInsumo $tipoInsumo = null)
     {
-        return $this->doForm($request, $tipoInsumo);
+        $params = [
+            'typeClass' => TipoInsumoType::class,
+            'formView' => '@CrosierLibBase/form.html.twig',
+            'formRoute' => 'tipoInsumo_form',
+            'formPageTitle' => 'Tipo de Insumo',
+        ];
+        return $this->doForm($request, $tipoInsumo, $params);
     }
 
     /**
@@ -78,10 +65,22 @@ class TipoInsumoController extends FormListController
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
      * @throws \Exception
+     *
+     * @IsGranted({"ROLE_PCP_ADMIN"}, statusCode=403)
      */
     public function list(Request $request): Response
     {
-        return $this->doList($request);
+        $params = [
+            'formRoute' => 'tipoInsumo_form',
+            'listView' => '@CrosierLibBase/list.html.twig',
+            'listRoute' => 'tipoInsumo_list',
+            'listRouteAjax' => 'tipoInsumo_datatablesJsList',
+            'listPageTitle' => 'Tipos de Insumos',
+            'listId' => 'tipoInsumoList',
+            'list_PROGRAM_UUID' => null,
+            'listJS' => 'tipoInsumoList.js',
+        ];
+        return $this->doList($request, $params);
     }
 
     /**
@@ -90,6 +89,8 @@ class TipoInsumoController extends FormListController
      * @param Request $request
      * @return Response
      * @throws \CrosierSource\CrosierLibBaseBundle\Exception\ViewException
+     *
+     * @IsGranted({"ROLE_PCP_ADMIN"}, statusCode=403)
      */
     public function datatablesJsList(Request $request): Response
     {
@@ -102,6 +103,8 @@ class TipoInsumoController extends FormListController
      * @param Request $request
      * @param TipoInsumo $tipoInsumo
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     *
+     * @IsGranted({"ROLE_PCP_ADMIN"}, statusCode=403)
      */
     public function delete(Request $request, TipoInsumo $tipoInsumo): \Symfony\Component\HttpFoundation\RedirectResponse
     {

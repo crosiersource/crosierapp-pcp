@@ -9,6 +9,7 @@ use App\EntityHandler\InsumoEntityHandler;
 use App\Form\InsumoType;
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\FilterData;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -21,30 +22,6 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class InsumoController extends FormListController
 {
-
-    protected $crudParams =
-        [
-            'typeClass' => InsumoType::class,
-
-            'formView' => 'insumoForm.html.twig',
-            'formRoute' => 'insumo_form',
-            'formPageTitle' => 'Insumo',
-            'form_PROGRAM_UUID' => null,
-
-            'listView' => '@CrosierLibBase/list.html.twig',
-            'listRoute' => 'insumo_list',
-            'listRouteAjax' => 'insumo_datatablesJsList',
-            'listPageTitle' => 'Insumos',
-            'listId' => 'insumoList',
-            'list_PROGRAM_UUID' => null,
-            'listJS' => 'insumoList.js',
-
-            'deleteRoute' => 'insumo_delete',
-
-            'role_access' => 'ROLE_PCP_ADMIN',
-            'role_delete' => 'ROLE_PCP_ADMIN',
-
-        ];
 
     /**
      * @required
@@ -69,22 +46,43 @@ class InsumoController extends FormListController
      * @param Insumo|null $insumo
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      * @throws \Exception
+     *
+     * @IsGranted({"ROLE_PCP_ADMIN"}, statusCode=403)
      */
     public function form(Request $request, Insumo $insumo = null)
     {
-        return $this->doForm($request, $insumo);
+        $params = [
+            'typeClass' => InsumoType::class,
+            'formView' => 'insumoForm.html.twig',
+            'formRoute' => 'insumo_form',
+            'formPageTitle' => 'Insumo',
+        ];
+        return $this->doForm($request, $insumo, $params);
     }
 
     /**
      *
      * @Route("/insumo/list/", name="insumo_list")
      * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      * @throws \Exception
+     *
+     * @IsGranted({"ROLE_PCP_ADMIN"}, statusCode=403)
      */
     public function list(Request $request): Response
     {
-        return $this->doList($request);
+        $params = [
+            'formRoute' => 'insumo_form',
+            'listView' => '@CrosierLibBase/list.html.twig',
+            'listRoute' => 'insumo_list',
+            'listRouteAjax' => 'insumo_datatablesJsList',
+            'listPageTitle' => 'Insumos',
+            'listId' => 'insumoList',
+            'list_PROGRAM_UUID' => null,
+            'listJS' => 'insumoList.js',
+            'deleteRoute' => 'insumo_delete',
+        ];
+        return $this->doList($request, $params);
     }
 
     /**
@@ -93,6 +91,8 @@ class InsumoController extends FormListController
      * @param Request $request
      * @return Response
      * @throws \CrosierSource\CrosierLibBaseBundle\Exception\ViewException
+     *
+     * @IsGranted({"ROLE_PCP_ADMIN"}, statusCode=403)
      */
     public function datatablesJsList(Request $request): Response
     {
@@ -105,19 +105,20 @@ class InsumoController extends FormListController
      * @param Request $request
      * @param Insumo $insumo
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     *
+     * @IsGranted({"ROLE_PCP_ADMIN"}, statusCode=403)
      */
     public function delete(Request $request, Insumo $insumo): \Symfony\Component\HttpFoundation\RedirectResponse
     {
         return $this->doDelete($request, $insumo);
     }
 
-
     /**
      *
      * @Route("/insumo/precos/ajustarAtual", name="insumo_precos_ajustarAtual")
-     * @param Request $request
-     * @param Insumo $insumo
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     *
+     * @IsGranted({"ROLE_PCP_ADMIN"}, statusCode=403)
      */
     public function ajustarAtual(): Response
     {

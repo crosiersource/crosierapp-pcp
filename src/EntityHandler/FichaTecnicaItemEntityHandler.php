@@ -2,9 +2,9 @@
 
 namespace App\EntityHandler;
 
+use App\Business\PropBusiness;
 use App\Entity\FichaTecnicaItem;
 use App\Entity\FichaTecnicaItemQtde;
-use CrosierSource\CrosierLibBaseBundle\APIClient\Base\PropAPIClient;
 use CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler;
 
 /**
@@ -16,16 +16,16 @@ use CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler;
 class FichaTecnicaItemEntityHandler extends EntityHandler
 {
 
-    /** @var PropAPIClient */
-    private $propAPIClient;
+    /** @var PropBusiness */
+    private $propBusiness;
 
     /**
      * @required
-     * @param PropAPIClient $propAPIClient
+     * @param PropBusiness $propBusiness
      */
-    public function setPropAPIClient(PropAPIClient $propAPIClient): void
+    public function setPropBusiness(PropBusiness $propBusiness): void
     {
-        $this->propAPIClient = $propAPIClient;
+        $this->propBusiness = $propBusiness;
     }
 
 
@@ -51,7 +51,7 @@ class FichaTecnicaItemEntityHandler extends EntityHandler
             if (!$qtde) continue;
             $qtde = $formatter->parse($qtde);
 
-            $tamanho = $this->propAPIClient->findTamanhoByGradeIdAndPosicao($item->getFichaTecnica()->getGradeId(), $posicao);
+            $tamanho = $this->propBusiness->findTamanhoByGradeIdAndPosicao($item->getFichaTecnica()->getGradeId(), $posicao);
             $gradeTamanhoId = $tamanho['id'];
             $lpiq = new FichaTecnicaItemQtde();
 

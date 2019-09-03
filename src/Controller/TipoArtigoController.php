@@ -8,6 +8,7 @@ use App\EntityHandler\TipoArtigoEntityHandler;
 use App\Form\TipoArtigoType;
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\FilterData;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -21,30 +22,6 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class TipoArtigoController extends FormListController
 {
-
-    protected $crudParams =
-        [
-            'typeClass' => TipoArtigoType::class,
-
-            'formView' => '@CrosierLibBase/form.html.twig',
-            'formRoute' => 'tipoArtigo_form',
-            'formPageTitle' => 'Tipo de Artigo',
-            'form_PROGRAM_UUID' => null,
-
-            'listView' => '@CrosierLibBase/list.html.twig',
-            'listRoute' => 'tipoArtigo_list',
-            'listRouteAjax' => 'tipoArtigo_datatablesJsList',
-            'listPageTitle' => 'Tipos de Artigos',
-            'listId' => 'tipoArtigoList',
-            'list_PROGRAM_UUID' => null,
-            'listJS' => 'tipoArtigoList.js',
-
-            'deleteRoute' => 'tipoArtigo_delete',
-
-            'role_access' => 'ROLE_PCP_ADMIN',
-            'role_delete' => 'ROLE_PCP_ADMIN',
-
-        ];
 
     /**
      * @required
@@ -69,10 +46,18 @@ class TipoArtigoController extends FormListController
      * @param TipoArtigo|null $tipoArtigo
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      * @throws \Exception
+     *
+     * @IsGranted({"ROLE_PCP_ADMIN"}, statusCode=403)
      */
     public function form(Request $request, TipoArtigo $tipoArtigo = null)
     {
-        return $this->doForm($request, $tipoArtigo);
+        $params = [
+            'typeClass' => TipoArtigoType::class,
+            'formView' => '@CrosierLibBase/form.html.twig',
+            'formRoute' => 'tipoArtigo_form',
+            'formPageTitle' => 'Tipo de Artigo',
+        ];
+        return $this->doForm($request, $tipoArtigo, $params);
     }
 
     /**
@@ -81,10 +66,23 @@ class TipoArtigoController extends FormListController
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
      * @throws \Exception
+     *
+     * @IsGranted({"ROLE_PCP_ADMIN"}, statusCode=403)
      */
     public function list(Request $request): Response
     {
-        return $this->doList($request);
+        $params = [
+            'formRoute' => 'tipoArtigo_form',
+            'listView' => '@CrosierLibBase/list.html.twig',
+            'listRoute' => 'tipoArtigo_list',
+            'listRouteAjax' => 'tipoArtigo_datatablesJsList',
+            'listPageTitle' => 'Tipos de Artigos',
+            'listId' => 'tipoArtigoList',
+            'list_PROGRAM_UUID' => null,
+            'listJS' => 'tipoArtigoList.js',
+            'deleteRoute' => 'tipoArtigo_delete',
+        ];
+        return $this->doList($request, $params);
     }
 
     /**
@@ -93,6 +91,8 @@ class TipoArtigoController extends FormListController
      * @param Request $request
      * @return Response
      * @throws \CrosierSource\CrosierLibBaseBundle\Exception\ViewException
+     *
+     * @IsGranted({"ROLE_PCP_ADMIN"}, statusCode=403)
      */
     public function datatablesJsList(Request $request): Response
     {
@@ -105,6 +105,8 @@ class TipoArtigoController extends FormListController
      * @param Request $request
      * @param TipoArtigo $tipoArtigo
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     *
+     * @IsGranted({"ROLE_PCP_ADMIN"}, statusCode=403)
      */
     public function delete(Request $request, TipoArtigo $tipoArtigo): \Symfony\Component\HttpFoundation\RedirectResponse
     {
@@ -114,7 +116,10 @@ class TipoArtigoController extends FormListController
     /**
      *
      * @Route("/tipoArtigo/findByInstituicaoId/{instituicaoId}", name="tipoArtigo_findByInstituicaoId", requirements={"instituicaoId"="\d+"})
+     * @param int $instituicaoId
      * @return Response
+     *
+     * @IsGranted({"ROLE_PCP_ADMIN"}, statusCode=403)
      */
     public function findByInstituicao(int $instituicaoId): Response
     {

@@ -4,7 +4,6 @@ namespace App\Business;
 
 use App\Entity\LoteProducao;
 use App\Entity\LoteProducaoItem;
-use CrosierSource\CrosierLibBaseBundle\APIClient\Base\PropAPIClient;
 
 /**
  * Class LoteProducaoBusiness
@@ -12,16 +11,16 @@ use CrosierSource\CrosierLibBaseBundle\APIClient\Base\PropAPIClient;
 class LoteProducaoBusiness
 {
 
-    /** @var PropAPIClient */
-    private $propAPIClient;
+    /** @var PropBusiness */
+    private $propBusiness;
 
     /**
      * @required
-     * @param PropAPIClient $propAPIClient
+     * @param PropBusiness $propBusiness
      */
-    public function setPropAPIClient(PropAPIClient $propAPIClient): void
+    public function setPropBusiness(PropBusiness $propBusiness): void
     {
-        $this->propAPIClient = $propAPIClient;
+        $this->propBusiness = $propBusiness;
     }
 
 
@@ -48,14 +47,14 @@ class LoteProducaoBusiness
         for ($i = 1; $i <= 15; $i++) {
             $array[$i] = null;
             foreach ($item->getQtdes() as $qtde) {
-                $posicao = $this->propAPIClient->findPosicaoByGradeTamanhoId($qtde->getGradeTamanhoId());
+                $posicao = $this->propBusiness->findPosicaoByGradeTamanhoId($qtde->getGradeTamanhoId());
                 if ($posicao === $i) {
                     $array[$i] = $qtde->getQtde();
                 }
             }
         }
 
-        $gradesTamanhosByPosicaoArray = $this->propAPIClient->buildGradesTamanhosByPosicaoArray($item->getFichaTecnica()->getGradeId());
+        $gradesTamanhosByPosicaoArray = $this->propBusiness->buildGradesTamanhosByPosicaoArray($item->getFichaTecnica()->getGradeId());
         $item->getFichaTecnica()->setGradesTamanhosByPosicaoArray($gradesTamanhosByPosicaoArray);
 
         $item->setQtdesTamanhosArray($array);
@@ -69,7 +68,6 @@ class LoteProducaoBusiness
     public function buildDadosPorTipoInsumo(LoteProducao $loteProducao): array
     {
         $itens = $loteProducao->getItens()->toArray();
-
 
 
         uasort($itens, function ($a, $b) {

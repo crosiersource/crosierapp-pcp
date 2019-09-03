@@ -4,18 +4,17 @@ namespace App\Controller;
 
 
 use App\Business\FichaTecnicaBusiness;
+use App\Business\PropBusiness;
 use App\Entity\FichaTecnica;
 use App\Entity\FichaTecnicaItem;
-use App\Entity\FichaTecnicaPreco;
 use App\Entity\Insumo;
 use App\EntityHandler\FichaTecnicaEntityHandler;
 use App\EntityHandler\FichaTecnicaItemEntityHandler;
 use App\Form\FichaTecnicaType;
-use CrosierSource\CrosierLibBaseBundle\APIClient\Base\PessoaAPIClient;
-use CrosierSource\CrosierLibBaseBundle\APIClient\Base\PropAPIClient;
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\FilterData;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -32,31 +31,6 @@ use Symfony\Contracts\Cache\ItemInterface;
 class FichaTecnicaController extends FormListController
 {
 
-    protected $crudParams =
-        [
-            'typeClass' => FichaTecnicaType::class,
-
-            'formView' => 'fichaTecnicaForm.html.twig',
-            'formRoute' => 'fichaTecnica_form',
-            'formPageTitle' => 'Ficha Técnica',
-            'form_PROGRAM_UUID' => null,
-
-            'listView' => '@CrosierLibBase/list.html.twig',
-            'listRoute' => 'fichaTecnica_list',
-            'listRouteAjax' => 'fichaTecnica_datatablesJsList',
-            'listPageTitle' => 'Fichas Técnicas',
-            'listId' => 'fichaTecnicaList',
-            'list_PROGRAM_UUID' => null,
-            'listJS' => 'fichaTecnicaList.js',
-
-            'role_access' => 'ROLE_PCP',
-            'role_delete' => 'ROLE_PCP',
-
-        ];
-
-    /** @var PessoaAPIClient */
-    private $pessoaAPIClient;
-
     /** @var TipoArtigoController */
     private $tipoArtigoController;
 
@@ -66,8 +40,8 @@ class FichaTecnicaController extends FormListController
     /** @var FichaTecnicaItemEntityHandler */
     private $fichaTecnicaItemEntityHandler;
 
-    /** @var PropAPIClient */
-    private $propAPIClient;
+    /** @var PropBusiness */
+    private $propBusiness;
 
 
     /**
@@ -77,15 +51,6 @@ class FichaTecnicaController extends FormListController
     public function setEntityHandler(FichaTecnicaEntityHandler $entityHandler): void
     {
         $this->entityHandler = $entityHandler;
-    }
-
-    /**
-     * @required
-     * @param PessoaAPIClient $pessoaAPIClient
-     */
-    public function setPessoaAPIClient(PessoaAPIClient $pessoaAPIClient): void
-    {
-        $this->pessoaAPIClient = $pessoaAPIClient;
     }
 
     /**
@@ -117,12 +82,14 @@ class FichaTecnicaController extends FormListController
 
     /**
      * @required
-     * @param PropAPIClient $propAPIClient
+     * @param PropBusiness $propBusiness
      */
-    public function setPropAPIClient(PropAPIClient $propAPIClient): void
+    public function setPropBusiness(PropBusiness $propBusiness): void
     {
-        $this->propAPIClient = $propAPIClient;
+        $this->propBusiness = $propBusiness;
     }
+
+
 
     public function getFilterDatas(array $params): array
     {
@@ -138,10 +105,28 @@ class FichaTecnicaController extends FormListController
      * @param FichaTecnica|null $fichaTecnica
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      * @throws \Exception
+     *
+     * @IsGranted({"ROLE_PCP"}, statusCode=403)
      */
     public function form(Request $request, FichaTecnica $fichaTecnica = null)
     {
-        return $this->doForm($request, $fichaTecnica);
+        $params = [
+            'typeClass' => FichaTecnicaType::class,
+            'formView' => 'fichaTecnicaForm.html.twig',
+            'formRoute' => 'fichaTecnica_form',
+            'formPageTitle' => 'Ficha Técnica',
+            'listRoute' => 'fichaTecnica_list',
+        ];
+        if (!$fichaTecnica) {
+            $fichaTecnica = new FichaTecnica();
+            $fichaTecnica->setBloqueada(false);
+            $fichaTecnica->setOculta(false);
+            $fichaTecnica->setCustoOperacionalPadrao(0.35);
+            $fichaTecnica->setCustoFinanceiroPadrao(0.15);
+            $fichaTecnica->setMargemPadrao(0.12);
+            $fichaTecnica->setPrazoPadrao(30);
+        }
+        return $this->doForm($request, $fichaTecnica, $params);
     }
 
     /**
@@ -150,6 +135,8 @@ class FichaTecnicaController extends FormListController
      * @param Request $request
      * @param FichaTecnica $fichaTecnica
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     *
+     * @IsGranted({"ROLE_PCP"}, statusCode=403)
      */
     public function delete(Request $request, FichaTecnica $fichaTecnica): \Symfony\Component\HttpFoundation\RedirectResponse
     {
@@ -162,11 +149,22 @@ class FichaTecnicaController extends FormListController
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
      * @throws \Exception
+     *
+     * @IsGranted({"ROLE_PCP"}, statusCode=403)
      */
     public function list(Request $request): Response
     {
-        // $this->crudParams['formRoute'] = 'fichaTecnica_builder';
-        return $this->doList($request);
+        $params = [
+            'formRoute' => 'fichaTecnica_form',
+            'listView' => '@CrosierLibBase/list.html.twig',
+            'listRoute' => 'fichaTecnica_list',
+            'listRouteAjax' => 'fichaTecnica_datatablesJsList',
+            'listPageTitle' => 'Fichas Técnicas',
+            'listId' => 'fichaTecnicaList',
+            'list_PROGRAM_UUID' => null,
+            'listJS' => 'fichaTecnicaList.js',
+        ];
+        return $this->doList($request, $params);
     }
 
     /**
@@ -175,6 +173,8 @@ class FichaTecnicaController extends FormListController
      * @param Request $request
      * @return Response
      * @throws \CrosierSource\CrosierLibBaseBundle\Exception\ViewException
+     *
+     * @IsGranted({"ROLE_PCP"}, statusCode=403)
      */
     public function datatablesJsList(Request $request): Response
     {
@@ -189,6 +189,8 @@ class FichaTecnicaController extends FormListController
      * @param FichaTecnica $fichaTecnica
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      * @throws \Exception
+     *
+     * @IsGranted({"ROLE_PCP"}, statusCode=403)
      */
     public function builder(Request $request, FichaTecnica $fichaTecnica = null): Response
     {
@@ -201,7 +203,7 @@ class FichaTecnicaController extends FormListController
         $parameters['insumos'] = $this->buildInsumosSelect2();
 
         if ($fichaTecnica) {
-            $parameters['instituicaoId'] = $fichaTecnica->getPessoaId();
+            $parameters['instituicaoId'] = $fichaTecnica->getInstituicao()->getId();
 
             $parameters['tiposArtigos'] = $this->tipoArtigoController->findByInstituicao($parameters['instituicaoId'])->getContent();
             $parameters['tipoArtigo'] = $fichaTecnica->getTipoArtigo()->getId();
@@ -212,10 +214,58 @@ class FichaTecnicaController extends FormListController
             $parameters['insumosArray'] = $this->fichaTecnicaBusiness->buildInsumosArray($fichaTecnica);
         }
 
+        $parameters['formRoute'] = 'fichaTecnica_form';
+        $parameters['listRoute'] = 'fichaTecnica_list';
+
 
         return $this->doRender('fichaTecnica.html.twig', $parameters);
     }
 
+    /**
+     * Valores para o select2 de Insumo.
+     *
+     * @return false|string
+     */
+    private function buildInsumosSelect2()
+    {
+        $cache = new FilesystemAdapter($_SERVER['CROSIERAPP_ID'] . '.cache');
+
+        $arrInsumos = $cache->get('buildInsumosSelect2', function (ItemInterface $item) {
+            $insumos = $this->getDoctrine()->getRepository(Insumo::class)->findBy([], ['descricao' => 'ASC']);
+
+            $arrInsumos = [];
+            $arrInsumos[] = ['id' => '', 'text' => '...'];
+            /** @var Insumo $insumo */
+            foreach ($insumos as $insumo) {
+                $arrInsumos[] = ['id' => $insumo->getId(), 'text' => $insumo->getDescricao() . ' (' . number_format($insumo->getPrecoAtual()->getPrecoCusto(), 2, ',', '.') . ')'];
+            }
+
+            return $arrInsumos;
+        });
+
+        return json_encode($arrInsumos);
+
+    }
+
+    /**
+     * @param int $instituicaoId
+     * @param int $tipoArtigoId
+     * @return JsonResponse
+     *
+     * @IsGranted({"ROLE_PCP"}, statusCode=403)
+     */
+    private function doFindByInstituicaoIdAndTipoArtigo(int $instituicaoId, int $tipoArtigoId): JsonResponse
+    {
+        $fichasTecnicas = $this->getDoctrine()->getRepository(FichaTecnica::class)->findBy(['instituicao' => $instituicaoId, 'tipoArtigo' => $tipoArtigoId]);
+        $rs = [];
+        /** @var FichaTecnica $fichaTecnica */
+        foreach ($fichasTecnicas as $fichaTecnica) {
+            $r['id'] = $fichaTecnica->getId();
+            $r['text'] = $fichaTecnica->getDescricao();
+            $rs[] = $r;
+        }
+        return new JsonResponse($rs);
+    }
 
     /**
      *
@@ -224,6 +274,8 @@ class FichaTecnicaController extends FormListController
      * @param FichaTecnica|null $fichaTecnica
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      * @throws \Exception
+     *
+     * @IsGranted({"ROLE_PCP"}, statusCode=403)
      */
     public function salvarObs(Request $request, FichaTecnica $fichaTecnica)
     {
@@ -237,6 +289,8 @@ class FichaTecnicaController extends FormListController
      * @Route("/fichaTecnica/findByInstituicaoIdAndTipoArtigo", name="fichaTecnica_findByInstituicaoIdAndTipoArtigo")
      * @param Request $request
      * @return JsonResponse
+     *
+     * @IsGranted({"ROLE_PCP"}, statusCode=403)
      */
     public function findByInstituicaoIdAndTipoArtigo(Request $request): JsonResponse
     {
@@ -246,31 +300,14 @@ class FichaTecnicaController extends FormListController
     }
 
     /**
-     * @param int $instituicaoId
-     * @param int $tipoArtigoId
-     * @return JsonResponse
-     */
-    private function doFindByInstituicaoIdAndTipoArtigo(int $instituicaoId, int $tipoArtigoId): JsonResponse
-    {
-        $fichasTecnicas = $this->getDoctrine()->getRepository(FichaTecnica::class)->findBy(['pessoaId' => $instituicaoId, 'tipoArtigo' => $tipoArtigoId]);
-        $rs = [];
-        /** @var FichaTecnica $fichaTecnica */
-        foreach ($fichasTecnicas as $fichaTecnica) {
-            $r['id'] = $fichaTecnica->getId();
-            $r['text'] = $fichaTecnica->getDescricao();
-            $rs[] = $r;
-        }
-        return new JsonResponse($rs);
-    }
-
-
-    /**
      *
      * @Route("/fichaTecnicaItem/form/{fichaTecnicaItem}", name="fichaTecnicaItem_form", defaults={"fichaTecnicaItem"=null}, requirements={"fichaTecnicaItem"="\d+"})
      * @param Request $request
      * @param FichaTecnicaItem|null $fichaTecnicaItem
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      * @throws \Exception
+     *
+     * @IsGranted({"ROLE_PCP"}, statusCode=403)
      */
     public function itemForm(Request $request, FichaTecnicaItem $fichaTecnicaItem)
     {
@@ -296,11 +333,10 @@ class FichaTecnicaController extends FormListController
         $parameters = [];
         $parameters['insumos'] = $this->buildInsumosSelect2();
         $parameters['fichaTecnicaItem'] = $fichaTecnicaItem;
-        $parameters['unidade'] = $this->propAPIClient->findUnidadeById($fichaTecnicaItem->getInsumo()->getUnidadeProdutoId());
+        $parameters['unidade'] = $this->propBusiness->findUnidadeById($fichaTecnicaItem->getInsumo()->getUnidadeProdutoId());
 
         return $this->doRender('fichaTecnicaItemForm.html.twig', $parameters);
     }
-
 
     /**
      *
@@ -308,6 +344,8 @@ class FichaTecnicaController extends FormListController
      * @param Request $request
      * @param FichaTecnica $fichaTecnica
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     *
+     * @IsGranted({"ROLE_PCP"}, statusCode=403)
      */
     public function addItem(Request $request, FichaTecnica $fichaTecnica)
     {
@@ -331,6 +369,8 @@ class FichaTecnicaController extends FormListController
      * @param Request $request
      * @param FichaTecnicaItem $fichaTecnicaItem
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     *
+     * @IsGranted({"ROLE_PCP"}, statusCode=403)
      */
     public function deleteItem(Request $request, FichaTecnicaItem $fichaTecnicaItem): \Symfony\Component\HttpFoundation\RedirectResponse
     {
@@ -349,19 +389,19 @@ class FichaTecnicaController extends FormListController
         return $this->redirectToRoute('fichaTecnica_builder', ['id' => $fichaTecnica->getId(), '_fragment' => 'itens']);
     }
 
-
     /**
      * @Route("/fichaTecnica/calcularPrecos/{fichaTecnica}/", name="fichaTecnica_calcularPrecos", requirements={"fichaTecnica"="\d+"})
      * @param FichaTecnica $fichaTecnica
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      * @throws ViewException
+     *
+     * @IsGranted({"ROLE_PCP"}, statusCode=403)
      */
     public function calcularPrecos(FichaTecnica $fichaTecnica): \Symfony\Component\HttpFoundation\RedirectResponse
     {
         $this->fichaTecnicaBusiness->calcularPrecos($fichaTecnica);
         return $this->redirectToRoute('fichaTecnica_builder', ['id' => $fichaTecnica->getId(), '_fragment' => 'precos']);
     }
-
 
     /**
      *
@@ -370,6 +410,8 @@ class FichaTecnicaController extends FormListController
      * @param FichaTecnica $fichaTecnica
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      * @throws \Exception
+     *
+     * @IsGranted({"ROLE_PCP"}, statusCode=403)
      */
     public function clonar(Request $request, FichaTecnica $fichaTecnica): Response
     {
@@ -382,36 +424,11 @@ class FichaTecnicaController extends FormListController
         }
 
         $parameters['instituicoes'] = FichaTecnicaBusiness::buildInstituicoesSelect2();
+        $parameters['instituicaoId'] = $fichaTecnica->getInstituicao()->getId();
         $parameters['fichaTecnicaOrigem'] = $fichaTecnica;
+        $parameters['descricaoSugerida'] = $fichaTecnica->getDescricao() . ' (2)';
 
         return $this->doRender('fichaTecnica_clonar.html.twig', $parameters);
-
-    }
-
-
-    /**
-     * Valores para o select2 de Insumo.
-     *
-     * @return false|string
-     */
-    private function buildInsumosSelect2()
-    {
-        $cache = new FilesystemAdapter($_SERVER['CROSIERAPP_ID'] . '.cache');
-
-        $arrInsumos = $cache->get('buildInsumosSelect2', function (ItemInterface $item) {
-            $insumos = $this->getDoctrine()->getRepository(Insumo::class)->findBy([], ['descricao' => 'ASC']);
-
-            $arrInsumos = [];
-            $arrInsumos[] = ['id' => '', 'text' => '...'];
-            /** @var Insumo $insumo */
-            foreach ($insumos as $insumo) {
-                $arrInsumos[] = ['id' => $insumo->getId(), 'text' => $insumo->getDescricao() . ' (' . number_format($insumo->getPrecoAtual()->getPrecoCusto(), 2, ',', '.') . ')'];
-            }
-
-            return $arrInsumos;
-        });
-
-        return json_encode($arrInsumos);
 
     }
 

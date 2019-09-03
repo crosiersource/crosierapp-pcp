@@ -7,11 +7,12 @@ use App\Entity\FichaTecnicaItem;
 use App\Entity\FichaTecnicaPreco;
 use App\Entity\Insumo;
 use App\EntityHandler\FichaTecnicaEntityHandler;
-use CrosierSource\CrosierLibBaseBundle\APIClient\Base\PessoaAPIClient;
-use CrosierSource\CrosierLibBaseBundle\APIClient\Base\PropAPIClient;
 use CrosierSource\CrosierLibBaseBundle\APIClient\CrosierEntityIdAPIClient;
+use CrosierSource\CrosierLibBaseBundle\Entity\Base\Pessoa;
+use CrosierSource\CrosierLibBaseBundle\Repository\Base\PessoaRepository;
 use CrosierSource\CrosierLibBaseBundle\Utils\NumberUtils\DecimalUtils;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Contracts\Cache\ItemInterface;
 
@@ -23,27 +24,17 @@ use Symfony\Contracts\Cache\ItemInterface;
 class FichaTecnicaBusiness
 {
 
-    /** @var PropAPIClient */
-    private $propAPIClient;
-
     /** @var CrosierEntityIdAPIClient */
     private $crosierEntityIdAPIClient;
 
     /** @var FichaTecnicaEntityHandler */
     private $fichaTecnicaEntityHandler;
 
-    /** @var PessoaAPIClient */
-    private $pessoaAPIClient;
+    /** @var PropBusiness */
+    private $propBusiness;
 
-
-    /**
-     * @required
-     * @param PropAPIClient $propAPIClient
-     */
-    public function setPropAPIClient(PropAPIClient $propAPIClient): void
-    {
-        $this->propAPIClient = $propAPIClient;
-    }
+    /** @var RegistryInterface */
+    private $doctrine;
 
     /**
      * @required
@@ -65,146 +56,21 @@ class FichaTecnicaBusiness
 
     /**
      * @required
-     * @param PessoaAPIClient $pessoaAPIClient
+     * @param PropBusiness $propBusiness
      */
-    public function setPessoaAPIClient(PessoaAPIClient $pessoaAPIClient): void
+    public function setPropBusiness(PropBusiness $propBusiness): void
     {
-        $this->pessoaAPIClient = $pessoaAPIClient;
-    }
-
-
-    /**
-     * Constrói o array de qtdes/tamanhos para todos os itens da fichaTecnica.
-     *
-     * @param FichaTecnica $fichaTecnica
-     */
-    public function buildQtdesTamanhosArray(FichaTecnica $fichaTecnica): void
-    {
-        $gradesTamanhosByPosicaoArray = $this->propAPIClient->buildGradesTamanhosByPosicaoArray($fichaTecnica->getGradeId());
-        $fichaTecnica->setGradesTamanhosByPosicaoArray($gradesTamanhosByPosicaoArray);
-        foreach ($fichaTecnica->getItens() as $item) {
-            $this->buildItemQtdesTamanhosByPosicaoArray($item);
-        }
+        $this->propBusiness = $propBusiness;
     }
 
     /**
-     * Constrói o array de qtdes/tamanhos para o item.
-     *
-     * @param FichaTecnicaItem $item
+     * @required
+     * @param RegistryInterface $doctrine
      */
-    public function buildItemQtdesTamanhosByPosicaoArray(FichaTecnicaItem $item): void
+    public function setDoctrine(RegistryInterface $doctrine): void
     {
-        $unidade = $this->propAPIClient->findUnidadeById($item->getInsumo()->getUnidadeProdutoId());
-        $array = [];
-        for ($i = 1; $i <= 15; $i++) {
-            $array[$i]['decimal'] = 0.0;
-            $array[$i]['formatado'] = '-';
-            foreach ($item->getQtdes() as $qtde) {
-                $posicao = $this->propAPIClient->findPosicaoByGradeTamanhoId($qtde->getGradeTamanhoId());
-                if ($posicao === $i) {
-
-                    $array[$i]['decimal'] = (float)$qtde->getQtde();
-                    $array[$i]['formatado'] = $array[$i]['decimal'] > 0 ? number_format($array[$i]['decimal'], $unidade['casasDecimais'], ',', '.') : '-';
-
-                }
-            }
-        }
-        $item->setQtdesTamanhosArray($array);
+        $this->doctrine = $doctrine;
     }
-
-
-    /**
-     * @param FichaTecnica $fichaTecnica
-     * @return array
-     */
-    public function buildInsumosArray(FichaTecnica $fichaTecnica): array
-    {
-        $this->buildQtdesTamanhosArray($fichaTecnica);
-        $itens = $fichaTecnica->getItens();
-
-        $iterator = $itens->getIterator();
-        $iterator->uasort(function (FichaTecnicaItem $a, FichaTecnicaItem $b) {
-            return strcasecmp($a->getInsumo()->getTipoInsumo()->getDescricao(), $b->getInsumo()->getTipoInsumo()->getDescricao());
-        });
-
-        $fichaTecnicaItens = new ArrayCollection(iterator_to_array($iterator));
-
-
-        $insumosArray = [];
-        $tipoInsumoDescricao_aux = null;
-
-        $totalGlobal = [];
-        for ($i = 1; $i <= 15; $i++) {
-            $totalGlobal[$i] = 0.0;
-        }
-
-        $c = -1;
-
-        /** @var FichaTecnicaItem $item */
-        foreach ($fichaTecnicaItens as $item) {
-            if ($item->getInsumo()->getTipoInsumo()->getDescricao() !== $tipoInsumoDescricao_aux) {
-                $tipoInsumoDescricao_aux = $item->getInsumo()->getTipoInsumo()->getDescricao();
-
-                $insumosArray[++$c] = [
-                    'tipoInsumo' => $tipoInsumoDescricao_aux,
-                    'itens' => [],
-                    'totais' => []
-                ];
-                for ($i = 1; $i <= 15; $i++) {
-                    $insumosArray[$c]['totais'][$i]['decimal'] = 0.0;
-                }
-            }
-            $unidade = $this->propAPIClient->findUnidadeById($item->getInsumo()->getUnidadeProdutoId());
-            $item->casasDecimais = $unidade['casasDecimais'];
-            $item->unidade = $unidade['label'];
-            $insumosArray[$c]['itens'][] = $item;
-            $qtdesTamanhosArray = $item->getQtdesTamanhosArray();
-            for ($i = 1; $i <= 15; $i++) {
-                $precoCustoAtual = $item->getInsumo()->getPrecoAtual()->getPrecoCusto() ?? 0.0;
-
-                $total = (float)bcmul($qtdesTamanhosArray[$i]['decimal'], $precoCustoAtual, 3);
-
-                $insumosArray[$c]['totais'][$i]['decimal'] = (float)bcadd($insumosArray[$c]['totais'][$i]['decimal'], $total, 3);
-                $tSoma = $insumosArray[$c]['totais'][$i]['decimal'];
-                $insumosArray[$c]['totais'][$i]['formatado'] = $tSoma > 0 ? number_format($tSoma, 2, ',', '.') : '-';
-
-                $totalGlobal[$i] = (float)bcadd($totalGlobal[$i], $total, 3);
-            }
-        }
-
-        foreach ($insumosArray as &$r) {
-            uasort($r['itens'], function ($a, $b) {
-                /** @var FichaTecnicaItem $a */
-                /** @var FichaTecnicaItem $b */
-                return strcasecmp($a->getInsumo()->getDescricao(), $b->getInsumo()->getDescricao());
-            });
-        }
-
-        foreach ($totalGlobal as $i => $tg) {
-            $totalGlobal[$i] = $tg > 0 ? number_format($tg, 2, ',', '.') : '-';
-        }
-
-//        $this->formatarDecimaisInsumosArray($insumosArray);
-        return ['insumos' => $insumosArray, 'totalGlobal' => $totalGlobal];
-    }
-
-//    private function formatarDecimaisInsumosArray(array &$insumosArray) {
-//        foreach ($insumosArray as &$item) {
-//            foreach ($item['totais'] as &$total) {
-//                $total = $total > 0 ? number_format($total, 3, ',', '.') : '-';
-//            }
-//            /** @var FichaTecnicaItem $fti */
-//            foreach ($item['itens'] as &$fti) {
-//                $unidade = $this->propAPIClient->findUnidadeById($fti->getInsumo()->getUnidadeProdutoId());
-//                $qtdesTamanhosArray = $fti->getQtdesTamanhosArray();
-//                foreach ($qtdesTamanhosArray as $i => $iValue) {
-//                    $qtdesTamanhosArray[$i] = $iValue > 0 ? number_format($iValue, $unidade['casasDecimais'], ',', '.') : '-';
-//                }
-//                $fti->setQtdesTamanhosArray($qtdesTamanhosArray);
-//            }
-//
-//        }
-//    }
 
     /**
      * @param FichaTecnica $fichaTecnica
@@ -262,16 +128,135 @@ class FichaTecnicaBusiness
     }
 
     /**
-     * @param array $totalGlobal
+     * @param FichaTecnica $fichaTecnica
      * @return array
      */
-    private function totaisAsFloat(array $totalGlobal): array {
-        $totaisAsFloat = [];
-        ksort($totalGlobal);
-        foreach ($totalGlobal as $t) {
-            $totaisAsFloat[] = DecimalUtils::parseStr($t);
+    public function buildInsumosArray(FichaTecnica $fichaTecnica): array
+    {
+        $this->buildQtdesTamanhosArray($fichaTecnica);
+        $itens = $fichaTecnica->getItens();
+
+        $iterator = $itens->getIterator();
+        $iterator->uasort(function (FichaTecnicaItem $a, FichaTecnicaItem $b) {
+            return strcasecmp($a->getInsumo()->getTipoInsumo()->getDescricao(), $b->getInsumo()->getTipoInsumo()->getDescricao());
+        });
+
+        $fichaTecnicaItens = new ArrayCollection(iterator_to_array($iterator));
+
+
+        $insumosArray = [];
+        $tipoInsumoDescricao_aux = null;
+
+        $totalGlobal = [];
+        for ($i = 1; $i <= 15; $i++) {
+            $totalGlobal[$i] = 0.0;
         }
-        return $totaisAsFloat;
+
+        $c = -1;
+
+        /** @var FichaTecnicaItem $item */
+        foreach ($fichaTecnicaItens as $item) {
+            if ($item->getInsumo()->getTipoInsumo()->getDescricao() !== $tipoInsumoDescricao_aux) {
+                $tipoInsumoDescricao_aux = $item->getInsumo()->getTipoInsumo()->getDescricao();
+
+                $insumosArray[++$c] = [
+                    'tipoInsumo' => $tipoInsumoDescricao_aux,
+                    'itens' => [],
+                    'totais' => []
+                ];
+                for ($i = 1; $i <= 15; $i++) {
+                    $insumosArray[$c]['totais'][$i]['decimal'] = 0.0;
+                }
+            }
+            $unidade = $this->propBusiness->findUnidadeById($item->getInsumo()->getUnidadeProdutoId());
+            $item->casasDecimais = $unidade['casasDecimais'];
+            $item->unidade = $unidade['label'];
+            $insumosArray[$c]['itens'][] = $item;
+            $qtdesTamanhosArray = $item->getQtdesTamanhosArray();
+            for ($i = 1; $i <= 15; $i++) {
+                $precoCustoAtual = $item->getInsumo()->getPrecoAtual()->getPrecoCusto() ?? 0.0;
+
+                $total = (float)bcmul($qtdesTamanhosArray[$i]['decimal'], $precoCustoAtual, 3);
+
+                $insumosArray[$c]['totais'][$i]['decimal'] = (float)bcadd($insumosArray[$c]['totais'][$i]['decimal'], $total, 3);
+                $tSoma = $insumosArray[$c]['totais'][$i]['decimal'];
+                $insumosArray[$c]['totais'][$i]['formatado'] = $tSoma > 0 ? number_format($tSoma, 2, ',', '.') : '-';
+
+                $totalGlobal[$i] = (float)bcadd($totalGlobal[$i], $total, 3);
+            }
+        }
+
+        foreach ($insumosArray as &$r) {
+            uasort($r['itens'], function ($a, $b) {
+                /** @var FichaTecnicaItem $a */
+                /** @var FichaTecnicaItem $b */
+                return strcasecmp($a->getInsumo()->getDescricao(), $b->getInsumo()->getDescricao());
+            });
+        }
+
+        foreach ($totalGlobal as $i => $tg) {
+            $totalGlobal[$i] = $tg > 0 ? number_format($tg, 2, ',', '.') : '-';
+        }
+
+//        $this->formatarDecimaisInsumosArray($insumosArray);
+        return ['insumos' => $insumosArray, 'totalGlobal' => $totalGlobal];
+    }
+
+    /**
+     * Constrói o array de qtdes/tamanhos para todos os itens da fichaTecnica.
+     *
+     * @param FichaTecnica $fichaTecnica
+     */
+    public function buildQtdesTamanhosArray(FichaTecnica $fichaTecnica): void
+    {
+        $gradesTamanhosByPosicaoArray = $this->propBusiness->buildGradesTamanhosByPosicaoArray($fichaTecnica->getGradeId());
+        $fichaTecnica->setGradesTamanhosByPosicaoArray($gradesTamanhosByPosicaoArray);
+        foreach ($fichaTecnica->getItens() as $item) {
+            $this->buildItemQtdesTamanhosByPosicaoArray($item);
+        }
+    }
+
+//    private function formatarDecimaisInsumosArray(array &$insumosArray) {
+//        foreach ($insumosArray as &$item) {
+//            foreach ($item['totais'] as &$total) {
+//                $total = $total > 0 ? number_format($total, 3, ',', '.') : '-';
+//            }
+//            /** @var FichaTecnicaItem $fti */
+//            foreach ($item['itens'] as &$fti) {
+//                $unidade = $this->propBusiness->findUnidadeById($fti->getInsumo()->getUnidadeProdutoId());
+//                $qtdesTamanhosArray = $fti->getQtdesTamanhosArray();
+//                foreach ($qtdesTamanhosArray as $i => $iValue) {
+//                    $qtdesTamanhosArray[$i] = $iValue > 0 ? number_format($iValue, $unidade['casasDecimais'], ',', '.') : '-';
+//                }
+//                $fti->setQtdesTamanhosArray($qtdesTamanhosArray);
+//            }
+//
+//        }
+//    }
+
+    /**
+     * Constrói o array de qtdes/tamanhos para o item.
+     *
+     * @param FichaTecnicaItem $item
+     */
+    public function buildItemQtdesTamanhosByPosicaoArray(FichaTecnicaItem $item): void
+    {
+        $unidade = $this->propBusiness->findUnidadeById($item->getInsumo()->getUnidadeProdutoId());
+        $array = [];
+        for ($i = 1; $i <= 15; $i++) {
+            $array[$i]['decimal'] = 0.0;
+            $array[$i]['formatado'] = '-';
+            foreach ($item->getQtdes() as $qtde) {
+                $posicao = $this->propBusiness->findPosicaoByGradeTamanhoId($qtde->getGradeTamanhoId());
+                if ($posicao === $i) {
+
+                    $array[$i]['decimal'] = (float)$qtde->getQtde();
+                    $array[$i]['formatado'] = $array[$i]['decimal'] > 0 ? number_format($array[$i]['decimal'], $unidade['casasDecimais'], ',', '.') : '-';
+
+                }
+            }
+        }
+        $item->setQtdesTamanhosArray($array);
     }
 
     /**
@@ -380,6 +365,20 @@ class FichaTecnicaBusiness
         }
 
         return $fichaTecnica;
+    }
+
+    /**
+     * @param array $totalGlobal
+     * @return array
+     */
+    private function totaisAsFloat(array $totalGlobal): array
+    {
+        $totaisAsFloat = [];
+        ksort($totalGlobal);
+        foreach ($totalGlobal as $t) {
+            $totaisAsFloat[] = DecimalUtils::parseStr($t);
+        }
+        return $totaisAsFloat;
     }
 
     /**
@@ -566,18 +565,25 @@ class FichaTecnicaBusiness
 
     /**
      * @param FichaTecnica $fichaTecnicaOrigem
-     * @param int $instituicao
+     * @param int $instituicaoId
+     * @param string $novaDescricao
      * @return FichaTecnica
      * @throws \CrosierSource\CrosierLibBaseBundle\Exception\ViewException
      */
-    public function clonar(FichaTecnica $fichaTecnicaOrigem, int $instituicao, string $novaDescricao): FichaTecnica
+    public function clonar(FichaTecnica $fichaTecnicaOrigem, int $instituicaoId, string $novaDescricao): FichaTecnica
     {
 
         $this->fichaTecnicaEntityHandler->getDoctrine()->getEntityManager()->beginTransaction();
 
         $novaFichaTecnica = clone $fichaTecnicaOrigem;
         $novaFichaTecnica->setDescricao($novaDescricao);
-        $novaFichaTecnica->setPessoaId($instituicao);
+
+        /** @var PessoaRepository $repoPessoa */
+        $repoPessoa = $this->doctrine->getRepository(Pessoa::class);
+        /** @var Pessoa $instituicao */
+        $instituicao = $repoPessoa->find($instituicaoId);
+
+        $novaFichaTecnica->setInstituicao($instituicao);
 
         /** @var FichaTecnica $novaFichaTecnica */
         $novaFichaTecnica = $this->fichaTecnicaEntityHandler->save($novaFichaTecnica);
@@ -618,23 +624,27 @@ class FichaTecnicaBusiness
     }
 
 
-    /**
-     * @return false|string
-     */
     public function buildInstituicoesSelect2()
     {
         $cache = new FilesystemAdapter($_SERVER['CROSIERAPP_ID'] . '.cache');
 
         $arrInstituicoes = $cache->get('buildInstituicoesSelect2', function (ItemInterface $item) {
-            $instituicoes = $this->pessoaAPIClient->findByFilters([['categ.descricao', 'LIKE', 'CLIENTE_PCP']], 0, 99999999)['results'];
+
+            /** @var PessoaRepository $repoPessoa */
+            $repoPessoa = $this->doctrine->getRepository(Pessoa::class);
+
+            $instituicoes = $repoPessoa->findByFiltersSimpl([['categ.descricao', 'LIKE', 'CLIENTE_PCP']], null, 0, -1);
 
             uasort($instituicoes, function ($a, $b) {
-                return strcasecmp($a['nomeMontado'], $b['nomeMontado']);
+                /** @var Pessoa $a */
+                /** @var Pessoa $b */
+                return strcasecmp(trim($a->getNomeMontado()), trim($b->getNomeMontado()));
             });
             $arrInstituicoes = [];
             $arrInstituicoes[] = ['id' => '', 'text' => '...'];
+            /** @var Pessoa $instituicao */
             foreach ($instituicoes as $instituicao) {
-                $arrInstituicoes[] = ['id' => $instituicao['id'], 'text' => $instituicao['nomeMontado']];
+                $arrInstituicoes[] = ['id' => $instituicao->getId(), 'text' => $instituicao->getNomeMontado()];
             }
             return $arrInstituicoes;
         });

@@ -3,9 +3,11 @@
 namespace App\Form;
 
 use App\Business\FichaTecnicaBusiness;
+use App\Business\PropBusiness;
 use App\Entity\FichaTecnica;
 use App\Entity\TipoArtigo;
-use CrosierSource\CrosierLibBaseBundle\APIClient\Base\PropAPIClient;
+use CrosierSource\CrosierLibBaseBundle\Entity\Base\Pessoa;
+use CrosierSource\CrosierLibBaseBundle\Repository\Base\PessoaRepository;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\WhereBuilder;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bridge\Doctrine\RegistryInterface;
@@ -13,6 +15,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\PercentType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -31,11 +34,11 @@ class FichaTecnicaType extends AbstractType
     /** @var RegistryInterface */
     private $doctrine;
 
-    /** @var PropAPIClient */
-    private $propAPIClient;
-
     /** @var FichaTecnicaBusiness */
     private $fichaTecnicaBusiness;
+
+    /** @var PropBusiness */
+    private $propBusiness;
 
     /**
      * @required
@@ -46,16 +49,6 @@ class FichaTecnicaType extends AbstractType
         $this->doctrine = $doctrine;
     }
 
-    /**
-     * @required
-     * @param PropAPIClient $propAPIClient
-     * @return FichaTecnicaType
-     */
-    public function setPropAPIClient(PropAPIClient $propAPIClient): FichaTecnicaType
-    {
-        $this->propAPIClient = $propAPIClient;
-        return $this;
-    }
 
     /**
      * @required
@@ -64,6 +57,15 @@ class FichaTecnicaType extends AbstractType
     public function setFichaTecnicaBusiness(FichaTecnicaBusiness $fichaTecnicaBusiness): void
     {
         $this->fichaTecnicaBusiness = $fichaTecnicaBusiness;
+    }
+
+    /**
+     * @required
+     * @param PropBusiness $propBusiness
+     */
+    public function setPropBusiness(PropBusiness $propBusiness): void
+    {
+        $this->propBusiness = $propBusiness;
     }
 
 
@@ -82,13 +84,24 @@ class FichaTecnicaType extends AbstractType
                 'disabled' => true
             ]);
 
-            $form->add('pessoaId', ChoiceType::class, [
-                'label' => 'Instituição',
+            $instituicaoChoices = [];
+            if ($fichaTecnica->getInstituicao()) {
+                $instituicaoChoices = [$fichaTecnica->getInstituicao()];
+            }
+            $form->add('instituicao', EntityType::class, [
+                'class' => Pessoa::class,
+                'choices' => $instituicaoChoices,
+                'label' => 'Instituicao',
                 'required' => false,
+                'choice_label' => function (?Pessoa $pessoa) {
+                    return $pessoa ? $pessoa->getNomeMontado() : '';
+                },
                 'attr' => [
-                    'data-options' => $this->fichaTecnicaBusiness->buildInstituicoesSelect2(),
-                    'data-val' => $fichaTecnica && $fichaTecnica->getPessoaId() ? $fichaTecnica->getPessoaId() : '',
-                    'class' => 'autoSelect2'
+                    'data-val' => $fichaTecnica->getInstituicao() ? $fichaTecnica->getInstituicao()->getId() : '',
+                    'data-id-route-url' => $fichaTecnica->getInstituicao() ? '/base/pessoa/findById/?id=' . $fichaTecnica->getInstituicao()->getId() : '',
+                    'data-route-url' => '/base/pessoa/findByStr/?categ=CLIENTE_PCP',
+                    'data-text-format' => '%(nomeMontado)s',
+                    'class' => 'autoSelect2 focusOnReady'
                 ]
             ]);
 
@@ -104,26 +117,29 @@ class FichaTecnicaType extends AbstractType
             ]);
 
             $form->add('descricao', TextType::class, [
-                'label' => 'Descrição'
+                'label' => 'Descrição',
+                'attr' => ['autocomplete' => 'off']
+
             ]);
 
             $form->add('bloqueada', ChoiceType::class, [
                 'choices' => [
                     'Sim' => true,
                     'Não' => false
-                ]
+                ],
+                'attr' => ['class' => 'autoSelect2']
             ]);
 
             $form->add('oculta', ChoiceType::class, [
                 'choices' => [
                     'Sim' => true,
                     'Não' => false
-                ]
+                ],
+                'attr' => ['class' => 'autoSelect2']
             ]);
 
-            $form->add('custoOperacionalPadrao', NumberType::class, [
+            $form->add('custoOperacionalPadrao', PercentType::class, [
                 'label' => 'Cto Op Padrão',
-                'grouping' => 'true',
                 'scale' => 3,
                 'required' => false,
                 'attr' => [
@@ -132,9 +148,8 @@ class FichaTecnicaType extends AbstractType
             ]);
 
 
-            $form->add('margemPadrao', NumberType::class, [
+            $form->add('margemPadrao', PercentType::class, [
                 'label' => 'Margem Padrão',
-                'grouping' => 'true',
                 'scale' => 3,
                 'required' => false,
                 'attr' => [
@@ -146,9 +161,8 @@ class FichaTecnicaType extends AbstractType
                 'label' => 'Prazo Padrão'
             ]);
 
-            $form->add('custoFinanceiroPadrao', NumberType::class, [
+            $form->add('custoFinanceiroPadrao', PercentType::class, [
                 'label' => 'Cto Fin Padrão',
-                'grouping' => 'true',
                 'scale' => 3,
                 'required' => false,
                 'attr' => [
@@ -162,10 +176,11 @@ class FichaTecnicaType extends AbstractType
                     'MODO 2' => 'MODO_2',
                     'MODO 3' => 'MODO_3',
                     'MODO 4' => 'MODO_4',
-                ]
+                ],
+                'attr' => ['class' => 'autoSelect2']
             ]);
 
-            $grades = array_flip($this->propAPIClient->findGrades());
+            $grades = array_flip($this->propBusiness->findGrades());
             $form->add('gradeId', ChoiceType::class, [
                 'label' => 'Grade',
                 'required' => false,
@@ -175,7 +190,6 @@ class FichaTecnicaType extends AbstractType
                 ]
             ]);
 
-
             $form->add('obs', TextareaType::class, [
                 'label' => 'Obs',
                 'required' => false
@@ -183,21 +197,41 @@ class FichaTecnicaType extends AbstractType
 
         });
 
+
         $builder->addEventListener(
             FormEvents::PRE_SUBMIT,
             function (FormEvent $event) {
                 $form = $event->getForm();
+                /** @var FichaTecnica $fichaTecnica */
+                $fichaTecnica = $event->getData();
 
-                $instituicao = $event->getData()['pessoaId'] ?: null;
-                $form->remove('pessoaId');
-                $form->add('pessoaId', ChoiceType::class, array(
-                    'label' => 'Instituição',
+                $form->remove('instituicao');
+
+                $instituicaoChoices = [];
+                if ($fichaTecnica['instituicao']) {
+                    /** @var PessoaRepository $repoPessoa */
+                    $repoPessoa = $this->doctrine->getRepository(Pessoa::class);
+                    $instituicao = $repoPessoa->find($fichaTecnica['instituicao']);
+                    $instituicaoChoices = [$instituicao];
+                }
+                $form->add('instituicao', EntityType::class, [
+                    'class' => Pessoa::class,
+                    'choices' => $instituicaoChoices,
+                    'label' => 'Instituicao',
                     'required' => false,
-                    'choices' => [$instituicao]
-                ));
+                    'choice_label' => function (?Pessoa $pessoa) {
+                        return $pessoa ? $pessoa->getNomeMontado() : '';
+                    },
+                    'attr' => [
+                        'data-val' => $fichaTecnica['instituicao'] ?? null,
+                        'data-id-route-url' => isset($fichaTecnica['instituicao']) ? '/base/pessoa/findById/?id=' . $fichaTecnica['instituicao'] : '',
+                        'data-route-url' => '/base/pessoa/findByStr/?categ=CLIENTE_PCP',
+                        'data-text-format' => '%(nomeMontado)s',
+                        'class' => 'autoSelect2'
+                    ]
+                ]);
             }
         );
-
 
     }
 

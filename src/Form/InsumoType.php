@@ -2,9 +2,9 @@
 
 namespace App\Form;
 
+use App\Business\PropBusiness;
 use App\Entity\Insumo;
 use App\Entity\TipoInsumo;
-use CrosierSource\CrosierLibBaseBundle\APIClient\Base\PropAPIClient;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\WhereBuilder;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bridge\Doctrine\RegistryInterface;
@@ -23,20 +23,11 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class InsumoType extends AbstractType
 {
 
-    /** @var PropAPIClient */
-    private $propAPIClient;
-
     /** @var RegistryInterface */
     private $doctrine;
 
-    /**
-     * @required
-     * @param PropAPIClient $propAPIClient
-     */
-    public function setPropAPIClient(PropAPIClient $propAPIClient): void
-    {
-        $this->propAPIClient = $propAPIClient;
-    }
+    /** @var PropBusiness */
+    private $propBusiness;
 
     /**
      * @required
@@ -46,6 +37,17 @@ class InsumoType extends AbstractType
     {
         $this->doctrine = $doctrine;
     }
+
+    /**
+     * @required
+     * @param PropBusiness $propBusiness
+     */
+    public function setPropBusiness(PropBusiness $propBusiness): void
+    {
+        $this->propBusiness = $propBusiness;
+    }
+
+
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -58,7 +60,7 @@ class InsumoType extends AbstractType
             'label' => 'Descrição'
         ));
 
-        $rUnidades = $this->propAPIClient->findUnidades();
+        $rUnidades = $this->propBusiness->findUnidades();
         $unidades = [];
         foreach ($rUnidades as $rUnidade) {
             $unidades[$rUnidade['label']] = $rUnidade['id'];

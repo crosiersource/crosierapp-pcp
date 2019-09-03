@@ -36,11 +36,14 @@ class LoteProducaoType extends AbstractType
     {
         $builder->add('codigo', IntegerType::class, array(
             'label' => 'Código',
-            'required' => false
+            'required' => false,
         ));
 
         $builder->add('descricao', TextType::class, array(
-            'label' => 'Descrição'
+            'label' => 'Descrição',
+            'attr' => [
+                'class' => 'focusOnReady'
+            ]
         ));
 
         $builder->add('dtLote', DateType::class, [

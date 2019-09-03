@@ -2,9 +2,9 @@
 
 namespace App\EntityHandler;
 
+use App\Business\PropBusiness;
 use App\Entity\LoteProducaoItem;
 use App\Entity\LoteProducaoItemQtde;
-use CrosierSource\CrosierLibBaseBundle\APIClient\Base\PropAPIClient;
 use CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler;
 
 /**
@@ -16,16 +16,16 @@ use CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler;
 class LoteProducaoItemEntityHandler extends EntityHandler
 {
 
-    /** @var PropAPIClient */
-    private $propAPIClient;
+    /** @var PropBusiness */
+    private $propBusiness;
 
     /**
      * @required
-     * @param PropAPIClient $propAPIClient
+     * @param PropBusiness $propBusiness
      */
-    public function setPropAPIClient(PropAPIClient $propAPIClient): void
+    public function setPropBusiness(PropBusiness $propBusiness): void
     {
-        $this->propAPIClient = $propAPIClient;
+        $this->propBusiness = $propBusiness;
     }
 
 
@@ -61,7 +61,7 @@ class LoteProducaoItemEntityHandler extends EntityHandler
         foreach ($qtdes as $posicao => $qtde) {
             $qtde = (int)$qtde;
             if (!$qtde) continue;
-            $tamanho = $this->propAPIClient->findTamanhoByGradeIdAndPosicao($item->getFichaTecnica()->getGradeId(), $posicao);
+            $tamanho = $this->propBusiness->findTamanhoByGradeIdAndPosicao($item->getFichaTecnica()->getGradeId(), $posicao);
             $gradeTamanhoId = $tamanho['id'];
             $lpiq = new LoteProducaoItemQtde();
 

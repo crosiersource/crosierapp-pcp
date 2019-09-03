@@ -53,6 +53,14 @@ class TipoArtigo implements EntityId
      */
     private $subdeptoId;
 
+    /**
+     * @return string
+     * @Groups("entity")
+     */
+    public function getDescricaoMontada(): string
+    {
+        return $this->getCodigo(true) . ' - ' . $this->getDescricao();
+    }
 
     public function getCodigo($format = false)
     {
@@ -64,20 +72,21 @@ class TipoArtigo implements EntityId
     }
 
     /**
+     * @param int|null $codigo
+     * @return TipoArtigo
+     */
+    public function setCodigo(?int $codigo): TipoArtigo
+    {
+        $this->codigo = $codigo;
+        return $this;
+    }
+
+    /**
      * @return null|string
      */
     public function getDescricao(): ?string
     {
         return $this->descricao;
-    }
-
-    /**
-     * @return string
-     * @Groups("entity")
-     */
-    public function getDescricaoMontada(): string
-    {
-        return $this->getCodigo(true) . ' - ' . $this->getDescricao();
     }
 
     /**

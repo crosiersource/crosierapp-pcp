@@ -9,7 +9,6 @@ use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints\Choice;
 
 /**
  * Class TipoArtigoType
@@ -22,11 +21,13 @@ class TipoArtigoType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('codigo', IntegerType::class, array(
-            'label' => 'Código'
+            'label' => 'Código',
+            'required' => false
         ));
 
         $builder->add('descricao', TextType::class, array(
-            'label' => 'Descrição'
+            'label' => 'Descrição',
+            'attr' => ['class' => 'focusOnReady']
         ));
 
         $builder->add('modoCalculo', ChoiceType::class, array(
