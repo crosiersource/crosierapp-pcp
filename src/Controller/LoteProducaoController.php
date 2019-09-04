@@ -105,27 +105,16 @@ class LoteProducaoController extends FormListController
         }
         $this->loteProducaoBusiness->buildLoteQtdesTamanhosArray($loteProducao);
 
-<<<<<<< HEAD
-
-=======
->>>>>>> b48ab1e155a6391bed4662e9c1f1831e31961d29
         $formItem = $this->createForm(LoteProducaoItemType::class, $loteProducaoItem);
         $formItem->handleRequest($request);
 
         if ($formItem->isSubmitted()) {
             if ($formItem->isValid()) {
                 try {
-<<<<<<< HEAD
-                    $loteProducaoItem = $formItem->getData();
-                    $this->loteProducaoItemEntityHandler->save($loteProducaoItem);
-                    $this->addFlash('success', 'Registro salvo com sucesso!');
-                    return $this->redirectToRoute('loteProducaoItem_form', ['id' => $loteProducaoItem->getId()]);
-=======
                     $entity = $formItem->getData();
                     $item = $this->loteProducaoItemEntityHandler->save($entity);
                     $this->addFlash('success', 'Registro salvo com sucesso!');
                     return $this->redirectToRoute('loteProducaoItem_form', ['loteProducaoItem' => $item->getId()]);
->>>>>>> b48ab1e155a6391bed4662e9c1f1831e31961d29
                 } catch (ViewException $e) {
                     $this->addFlash('error', $e->getMessage());
                 } catch (\Exception $e) {
