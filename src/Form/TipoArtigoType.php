@@ -22,7 +22,7 @@ class TipoArtigoType extends AbstractType
     {
         $builder->add('codigo', IntegerType::class, array(
             'label' => 'Código',
-            'required' => false
+            'required' => false,
         ));
 
         $builder->add('descricao', TextType::class, array(
