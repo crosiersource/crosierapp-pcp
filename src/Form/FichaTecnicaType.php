@@ -147,7 +147,6 @@ class FichaTecnicaType extends AbstractType
                 ]
             ]);
 
-
             $form->add('margemPadrao', NumberType::class, [
                 'label' => 'Margem Padrão',
                 'scale' => 3,

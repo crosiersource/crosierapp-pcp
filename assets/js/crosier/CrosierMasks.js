@@ -81,7 +81,7 @@ class CrosierMasks {
     }
 
     static maskCEP() {
-        $('.cep').mask('00000-000', {
+        $('.cep, .cepComBtnConsulta').mask('00000-000', {
             clearIfNotMatch: true,
             selectOnFocus: true
         });
