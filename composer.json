@@ -1,7 +1,7 @@
 {
-    "name": "crosiersource/crosierapp-helloworld",
+    "name": "crosiersource/crosierapp-pcp",
     "type": "project",
-    "description": "CrosierApp de exemplos",
+    "description": "crosierapp-pcp",
     "homepage": "https://www.crosier.com.br",
     "license": "MIT",
     "authors": [
@@ -50,6 +50,7 @@
         "symfony/maker-bundle": "^1.0",
         "symfony/profiler-pack": "*",
         "symfony/test-pack": "*",
+        "symfony/phpunit-bridge": "^4.0",
         "symfony/web-server-bundle": "^4.0"
     },
     "config": {
