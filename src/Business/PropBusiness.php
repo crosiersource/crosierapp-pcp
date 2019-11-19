@@ -5,7 +5,7 @@ namespace App\Business;
 
 use CrosierSource\CrosierLibBaseBundle\Entity\Base\Prop;
 use CrosierSource\CrosierLibBaseBundle\Repository\Base\PropRepository;
-use Symfony\Bridge\Doctrine\RegistryInterface;
+use Doctrine\Common\Persistence\ManagerRegistry;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Contracts\Cache\ItemInterface;
 
@@ -16,13 +16,13 @@ use Symfony\Contracts\Cache\ItemInterface;
 class PropBusiness
 {
 
-    /** @var RegistryInterface */
+    /** @var ManagerRegistry */
     private $doctrine;
 
     /**
-     * @param RegistryInterface $doctrine
+     * @param ManagerRegistry $doctrine
      */
-    public function __construct(RegistryInterface $doctrine)
+    public function __construct(ManagerRegistry $doctrine)
     {
         $this->doctrine = $doctrine;
     }
