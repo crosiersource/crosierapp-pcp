@@ -6,7 +6,7 @@ use App\Entity\FichaTecnica;
 use App\Entity\LoteProducaoItem;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\WhereBuilder;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
-use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -23,14 +23,14 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class LoteProducaoItemType extends AbstractType
 {
 
-    /** @var ManagerRegistry */
+    /** @var EntityManagerInterface */
     private $doctrine;
 
     /**
      * @required
-     * @param ManagerRegistry $doctrine
+     * @param EntityManagerInterface $doctrine
      */
-    public function setDoctrine(ManagerRegistry $doctrine): void
+    public function setDoctrine(EntityManagerInterface $doctrine): void
     {
         $this->doctrine = $doctrine;
     }

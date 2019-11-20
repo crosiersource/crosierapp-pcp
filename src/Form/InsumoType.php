@@ -7,7 +7,7 @@ use App\Entity\Insumo;
 use App\Entity\TipoInsumo;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\WhereBuilder;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
-use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
@@ -23,7 +23,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class InsumoType extends AbstractType
 {
 
-    /** @var ManagerRegistry */
+    /** @var EntityManagerInterface */
     private $doctrine;
 
     /** @var PropBusiness */
@@ -31,9 +31,9 @@ class InsumoType extends AbstractType
 
     /**
      * @required
-     * @param ManagerRegistry $doctrine
+     * @param EntityManagerInterface $doctrine
      */
-    public function setDoctrine(ManagerRegistry $doctrine): void
+    public function setDoctrine(EntityManagerInterface $doctrine): void
     {
         $this->doctrine = $doctrine;
     }

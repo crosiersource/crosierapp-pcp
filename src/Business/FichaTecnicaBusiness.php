@@ -12,7 +12,7 @@ use CrosierSource\CrosierLibBaseBundle\Entity\Base\Pessoa;
 use CrosierSource\CrosierLibBaseBundle\Repository\Base\PessoaRepository;
 use CrosierSource\CrosierLibBaseBundle\Utils\NumberUtils\DecimalUtils;
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Contracts\Cache\ItemInterface;
 
@@ -33,7 +33,7 @@ class FichaTecnicaBusiness
     /** @var PropBusiness */
     private $propBusiness;
 
-    /** @var ManagerRegistry */
+    /** @var EntityManagerInterface */
     private $doctrine;
 
     /**
@@ -65,9 +65,9 @@ class FichaTecnicaBusiness
 
     /**
      * @required
-     * @param ManagerRegistry $doctrine
+     * @param EntityManagerInterface $doctrine
      */
-    public function setDoctrine(ManagerRegistry $doctrine): void
+    public function setDoctrine(EntityManagerInterface $doctrine): void
     {
         $this->doctrine = $doctrine;
     }

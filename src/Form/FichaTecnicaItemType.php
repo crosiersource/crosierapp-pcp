@@ -6,7 +6,7 @@ use App\Entity\FichaTecnicaItem;
 use App\Entity\Insumo;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\WhereBuilder;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
-use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -21,14 +21,14 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class FichaTecnicaItemType extends AbstractType
 {
 
-    /** @var ManagerRegistry */
+    /** @var EntityManagerInterface */
     private $doctrine;
 
     /**
      * @required
-     * @param ManagerRegistry $doctrine
+     * @param EntityManagerInterface $doctrine
      */
-    public function setDoctrine(ManagerRegistry $doctrine): void
+    public function setDoctrine(EntityManagerInterface $doctrine): void
     {
         $this->doctrine = $doctrine;
     }
