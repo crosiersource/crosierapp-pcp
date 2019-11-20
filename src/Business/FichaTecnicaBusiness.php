@@ -573,7 +573,7 @@ class FichaTecnicaBusiness
     public function clonar(FichaTecnica $fichaTecnicaOrigem, int $instituicaoId, string $novaDescricao): FichaTecnica
     {
 
-        $this->fichaTecnicaEntityHandler->getDoctrine()->getEntityManager()->beginTransaction();
+        $this->fichaTecnicaEntityHandler->getDoctrine()->beginTransaction();
 
         $novaFichaTecnica = clone $fichaTecnicaOrigem;
         $novaFichaTecnica->setDescricao($novaDescricao);
@@ -588,7 +588,7 @@ class FichaTecnicaBusiness
         /** @var FichaTecnica $novaFichaTecnica */
         $novaFichaTecnica = $this->fichaTecnicaEntityHandler->save($novaFichaTecnica);
 
-        $this->fichaTecnicaEntityHandler->getDoctrine()->getEntityManager()->commit();
+        $this->fichaTecnicaEntityHandler->getDoctrine()->commit();
 
         return $novaFichaTecnica;
 

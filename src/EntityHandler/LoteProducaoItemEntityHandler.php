@@ -52,10 +52,10 @@ class LoteProducaoItemEntityHandler extends EntityHandler
 
         foreach ($item->getQtdes() as $qtde) {
             $qtde->setLoteProducaoItem(null);
-            $this->getDoctrine()->getEntityManager()->remove($qtde);
+            $this->getDoctrine()->remove($qtde);
         }
         $item->getQtdes()->clear();
-        $this->getDoctrine()->getEntityManager()->flush();
+        $this->getDoctrine()->flush();
 
 
         foreach ($qtdes as $posicao => $qtde) {

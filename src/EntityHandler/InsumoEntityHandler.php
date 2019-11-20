@@ -39,7 +39,7 @@ class InsumoEntityHandler extends EntityHandler
             $rsm = new ResultSetMapping();
             $rsm->addScalarResult('dt_custo', 'dt_custo');
             $rsm->addScalarResult('preco_custo', 'preco_custo');
-            $query = $this->getDoctrine()->getEntityManager()->createNativeQuery($sql, $rsm);
+            $query = $this->getDoctrine()->createNativeQuery($sql, $rsm);
             $query->setParameter('insumoId', $insumo->getId());
             $precoAtual = $query->getResult()[0] ?? null;
 

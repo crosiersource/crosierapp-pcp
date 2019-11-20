@@ -39,10 +39,10 @@ class FichaTecnicaItemEntityHandler extends EntityHandler
 
         foreach ($item->getQtdes() as $qtde) {
             $qtde->setFichaTecnicaItem(null);
-            $this->getDoctrine()->getEntityManager()->remove($qtde);
+            $this->getDoctrine()->remove($qtde);
         }
         $item->getQtdes()->clear();
-        $this->getDoctrine()->getEntityManager()->flush();
+        $this->getDoctrine()->flush();
 
         $formatter = new \NumberFormatter(\Locale::getDefault(), \NumberFormatter::DECIMAL);
         $formatter->setAttribute(\NumberFormatter::FRACTION_DIGITS, 3);
