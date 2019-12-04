@@ -99,9 +99,6 @@
     "egulias/email-validator": {
         "version": "2.1.7"
     },
-    "fig/link-util": {
-        "version": "1.0.0"
-    },
     "friendsofsymfony/jsrouting-bundle": {
         "version": "2.3",
         "recipe": {
@@ -188,6 +185,9 @@
     },
     "ralouphie/getallheaders": {
         "version": "2.0.5"
+    },
+    "roave/security-advisories": {
+        "version": "dev-master"
     },
     "sabberworm/php-css-parser": {
         "version": "8.1.0"
@@ -279,6 +279,9 @@
     },
     "symfony/dotenv": {
         "version": "v4.2.3"
+    },
+    "symfony/error-handler": {
+        "version": "v4.4.1"
     },
     "symfony/event-dispatcher": {
         "version": "v4.2.3"
