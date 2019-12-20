@@ -13,7 +13,7 @@
     "fstream": "^1.0.12",
     "jquery": "^3.4.0",
     "jquery-mask-plugin": "^1.14.15",
-    "jquery-maskmoney": "^3.0.2",
+    "jquery-maskmoney": "https://github.com/plentz/jquery-maskmoney",
     "js-yaml": "^3.13.1",
     "lodash": "^4.17.13",
     "lodash.merge": "^4.6.2",
