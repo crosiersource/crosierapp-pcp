@@ -5,7 +5,6 @@ import $ from "jquery";
 
 import Numeral from 'numeral';
 import 'numeral/locales/pt-br.js';
-import CrosierMasks from "./crosier/CrosierMasks";
 Numeral.locale('pt-br');
 
 window.igualarValores = function () {
