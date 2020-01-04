@@ -47,7 +47,7 @@ class TipoArtigoController extends FormListController
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      * @throws \Exception
      *
-     * @IsGranted({"ROLE_PCP_ADMIN"}, statusCode=403)
+     * @IsGranted("ROLE_PCP_ADMIN", statusCode=403)
      */
     public function form(Request $request, TipoArtigo $tipoArtigo = null)
     {
@@ -67,7 +67,7 @@ class TipoArtigoController extends FormListController
      * @return \Symfony\Component\HttpFoundation\Response
      * @throws \Exception
      *
-     * @IsGranted({"ROLE_PCP_ADMIN"}, statusCode=403)
+     * @IsGranted("ROLE_PCP_ADMIN", statusCode=403)
      */
     public function list(Request $request): Response
     {
@@ -92,7 +92,7 @@ class TipoArtigoController extends FormListController
      * @return Response
      * @throws \CrosierSource\CrosierLibBaseBundle\Exception\ViewException
      *
-     * @IsGranted({"ROLE_PCP_ADMIN"}, statusCode=403)
+     * @IsGranted("ROLE_PCP_ADMIN", statusCode=403)
      */
     public function datatablesJsList(Request $request): Response
     {
@@ -106,7 +106,7 @@ class TipoArtigoController extends FormListController
      * @param TipoArtigo $tipoArtigo
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      *
-     * @IsGranted({"ROLE_PCP_ADMIN"}, statusCode=403)
+     * @IsGranted("ROLE_PCP_ADMIN", statusCode=403)
      */
     public function delete(Request $request, TipoArtigo $tipoArtigo): \Symfony\Component\HttpFoundation\RedirectResponse
     {
@@ -119,7 +119,7 @@ class TipoArtigoController extends FormListController
      * @param int $instituicaoId
      * @return Response
      *
-     * @IsGranted({"ROLE_PCP_ADMIN"}, statusCode=403)
+     * @IsGranted("ROLE_PCP_ADMIN", statusCode=403)
      */
     public function findByInstituicao(int $instituicaoId): Response
     {

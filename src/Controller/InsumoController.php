@@ -47,7 +47,7 @@ class InsumoController extends FormListController
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      * @throws \Exception
      *
-     * @IsGranted({"ROLE_PCP_ADMIN"}, statusCode=403)
+     * @IsGranted("ROLE_PCP_ADMIN", statusCode=403)
      */
     public function form(Request $request, Insumo $insumo = null)
     {
@@ -67,7 +67,7 @@ class InsumoController extends FormListController
      * @return Response
      * @throws \Exception
      *
-     * @IsGranted({"ROLE_PCP_ADMIN"}, statusCode=403)
+     * @IsGranted("ROLE_PCP_ADMIN", statusCode=403)
      */
     public function list(Request $request): Response
     {
@@ -92,7 +92,7 @@ class InsumoController extends FormListController
      * @return Response
      * @throws \CrosierSource\CrosierLibBaseBundle\Exception\ViewException
      *
-     * @IsGranted({"ROLE_PCP_ADMIN"}, statusCode=403)
+     * @IsGranted("ROLE_PCP_ADMIN", statusCode=403)
      */
     public function datatablesJsList(Request $request): Response
     {
@@ -106,7 +106,7 @@ class InsumoController extends FormListController
      * @param Insumo $insumo
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      *
-     * @IsGranted({"ROLE_PCP_ADMIN"}, statusCode=403)
+     * @IsGranted("ROLE_PCP_ADMIN", statusCode=403)
      */
     public function delete(Request $request, Insumo $insumo): \Symfony\Component\HttpFoundation\RedirectResponse
     {
@@ -118,7 +118,7 @@ class InsumoController extends FormListController
      * @Route("/insumo/precos/ajustarAtual", name="insumo_precos_ajustarAtual")
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      *
-     * @IsGranted({"ROLE_PCP_ADMIN"}, statusCode=403)
+     * @IsGranted("ROLE_PCP_ADMIN", statusCode=403)
      */
     public function ajustarAtual(): Response
     {

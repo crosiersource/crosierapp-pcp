@@ -46,7 +46,7 @@ class TipoInsumoController extends FormListController
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      * @throws \Exception
      *
-     * @IsGranted({"ROLE_PCP_ADMIN"}, statusCode=403)
+     * @IsGranted("ROLE_PCP_ADMIN", statusCode=403)
      */
     public function form(Request $request, TipoInsumo $tipoInsumo = null)
     {
@@ -66,7 +66,7 @@ class TipoInsumoController extends FormListController
      * @return \Symfony\Component\HttpFoundation\Response
      * @throws \Exception
      *
-     * @IsGranted({"ROLE_PCP_ADMIN"}, statusCode=403)
+     * @IsGranted("ROLE_PCP_ADMIN", statusCode=403)
      */
     public function list(Request $request): Response
     {
@@ -90,7 +90,7 @@ class TipoInsumoController extends FormListController
      * @return Response
      * @throws \CrosierSource\CrosierLibBaseBundle\Exception\ViewException
      *
-     * @IsGranted({"ROLE_PCP_ADMIN"}, statusCode=403)
+     * @IsGranted("ROLE_PCP_ADMIN", statusCode=403)
      */
     public function datatablesJsList(Request $request): Response
     {
@@ -104,7 +104,7 @@ class TipoInsumoController extends FormListController
      * @param TipoInsumo $tipoInsumo
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      *
-     * @IsGranted({"ROLE_PCP_ADMIN"}, statusCode=403)
+     * @IsGranted("ROLE_PCP_ADMIN", statusCode=403)
      */
     public function delete(Request $request, TipoInsumo $tipoInsumo): \Symfony\Component\HttpFoundation\RedirectResponse
     {

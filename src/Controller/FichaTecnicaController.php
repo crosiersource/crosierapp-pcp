@@ -106,7 +106,7 @@ class FichaTecnicaController extends FormListController
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      * @throws \Exception
      *
-     * @IsGranted({"ROLE_PCP"}, statusCode=403)
+     * @IsGranted("ROLE_PCP", statusCode=403)
      */
     public function form(Request $request, FichaTecnica $fichaTecnica = null)
     {
@@ -136,7 +136,7 @@ class FichaTecnicaController extends FormListController
      * @param FichaTecnica $fichaTecnica
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      *
-     * @IsGranted({"ROLE_PCP"}, statusCode=403)
+     * @IsGranted("ROLE_PCP", statusCode=403)
      */
     public function delete(Request $request, FichaTecnica $fichaTecnica): \Symfony\Component\HttpFoundation\RedirectResponse
     {
@@ -150,7 +150,7 @@ class FichaTecnicaController extends FormListController
      * @return \Symfony\Component\HttpFoundation\Response
      * @throws \Exception
      *
-     * @IsGranted({"ROLE_PCP"}, statusCode=403)
+     * @IsGranted("ROLE_PCP", statusCode=403)
      */
     public function list(Request $request): Response
     {
@@ -174,7 +174,7 @@ class FichaTecnicaController extends FormListController
      * @return Response
      * @throws \CrosierSource\CrosierLibBaseBundle\Exception\ViewException
      *
-     * @IsGranted({"ROLE_PCP"}, statusCode=403)
+     * @IsGranted("ROLE_PCP", statusCode=403)
      */
     public function datatablesJsList(Request $request): Response
     {
@@ -190,7 +190,7 @@ class FichaTecnicaController extends FormListController
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      * @throws \Exception
      *
-     * @IsGranted({"ROLE_PCP"}, statusCode=403)
+     * @IsGranted("ROLE_PCP", statusCode=403)
      */
     public function builder(Request $request, FichaTecnica $fichaTecnica = null): Response
     {
@@ -252,7 +252,7 @@ class FichaTecnicaController extends FormListController
      * @param int $tipoArtigoId
      * @return JsonResponse
      *
-     * @IsGranted({"ROLE_PCP"}, statusCode=403)
+     * @IsGranted("ROLE_PCP", statusCode=403)
      */
     private function doFindByInstituicaoIdAndTipoArtigo(int $instituicaoId, int $tipoArtigoId): JsonResponse
     {
@@ -275,7 +275,7 @@ class FichaTecnicaController extends FormListController
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      * @throws \Exception
      *
-     * @IsGranted({"ROLE_PCP"}, statusCode=403)
+     * @IsGranted("ROLE_PCP", statusCode=403)
      */
     public function salvarObs(Request $request, FichaTecnica $fichaTecnica)
     {
@@ -290,7 +290,7 @@ class FichaTecnicaController extends FormListController
      * @param Request $request
      * @return JsonResponse
      *
-     * @IsGranted({"ROLE_PCP"}, statusCode=403)
+     * @IsGranted("ROLE_PCP", statusCode=403)
      */
     public function findByInstituicaoIdAndTipoArtigo(Request $request): JsonResponse
     {
@@ -307,7 +307,7 @@ class FichaTecnicaController extends FormListController
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      * @throws \Exception
      *
-     * @IsGranted({"ROLE_PCP"}, statusCode=403)
+     * @IsGranted("ROLE_PCP", statusCode=403)
      */
     public function itemForm(Request $request, FichaTecnicaItem $fichaTecnicaItem)
     {
@@ -345,7 +345,7 @@ class FichaTecnicaController extends FormListController
      * @param FichaTecnica $fichaTecnica
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      *
-     * @IsGranted({"ROLE_PCP"}, statusCode=403)
+     * @IsGranted("ROLE_PCP", statusCode=403)
      */
     public function addItem(Request $request, FichaTecnica $fichaTecnica)
     {
@@ -370,7 +370,7 @@ class FichaTecnicaController extends FormListController
      * @param FichaTecnicaItem $fichaTecnicaItem
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      *
-     * @IsGranted({"ROLE_PCP"}, statusCode=403)
+     * @IsGranted("ROLE_PCP", statusCode=403)
      */
     public function deleteItem(Request $request, FichaTecnicaItem $fichaTecnicaItem): \Symfony\Component\HttpFoundation\RedirectResponse
     {
@@ -395,7 +395,7 @@ class FichaTecnicaController extends FormListController
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      * @throws ViewException
      *
-     * @IsGranted({"ROLE_PCP"}, statusCode=403)
+     * @IsGranted("ROLE_PCP", statusCode=403)
      */
     public function calcularPrecos(FichaTecnica $fichaTecnica): \Symfony\Component\HttpFoundation\RedirectResponse
     {
@@ -411,7 +411,7 @@ class FichaTecnicaController extends FormListController
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      * @throws \Exception
      *
-     * @IsGranted({"ROLE_PCP"}, statusCode=403)
+     * @IsGranted("ROLE_PCP", statusCode=403)
      */
     public function clonar(Request $request, FichaTecnica $fichaTecnica): Response
     {
