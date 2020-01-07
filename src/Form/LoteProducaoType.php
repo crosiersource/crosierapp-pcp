@@ -50,6 +50,7 @@ class LoteProducaoType extends AbstractType
             'label' => 'Dt Lote',
             'widget' => 'single_text',
             'required' => false,
+            'html5' => true,
             'format' => 'dd/MM/yyyy',
             'attr' => [
                 'class' => 'crsr-date'

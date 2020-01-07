@@ -24,6 +24,7 @@ class InsumoPrecoType extends AbstractType
             'label' => 'Dt Custo',
             'widget' => 'single_text',
             'required' => false,
+            'html5' => false,
             'format' => 'dd/MM/yyyy',
             'attr' => [
                 'class' => 'crsr-date'
