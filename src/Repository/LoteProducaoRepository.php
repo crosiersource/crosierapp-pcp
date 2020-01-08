@@ -382,8 +382,8 @@ where
 
             foreach ($tamanhos as $tamanho) {
                 $r = $this->getTotalItensLoteItemPorTamanho($item, $tamanho['id']);
-                $rTotalItensLoteItemPorTamanho[$tamanho['tamanho']] = $r['total'];
-                $totalItensLoteItem += $r['total'];
+                $rTotalItensLoteItemPorTamanho[$tamanho['tamanho']] = $r['total'] ?? 0.0;
+                $totalItensLoteItem += $r['total'] ?? 0.0;
             }
 
             $dados['totalItensGeral'] = $totalItensGeral;
