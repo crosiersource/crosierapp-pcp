@@ -111,14 +111,8 @@
     "jms/metadata": {
         "version": "2.1.0"
     },
-    "justinrainbow/json-schema": {
-        "version": "5.2.9"
-    },
     "laminas/laminas-zendframework-bridge": {
         "version": "1.0.1"
-    },
-    "league/flysystem": {
-        "version": "1.0.63"
     },
     "markbaker/complex": {
         "version": "1.4.7"
@@ -128,9 +122,6 @@
     },
     "monolog/monolog": {
         "version": "2.0.2"
-    },
-    "neitanod/forceutf8": {
-        "version": "v2.0.4"
     },
     "nelmio/cors-bundle": {
         "version": "1.5",
@@ -143,18 +134,6 @@
         "files": [
             "config/packages/nelmio_cors.yaml"
         ]
-    },
-    "nfephp-org/sped-common": {
-        "version": "v5.0.44"
-    },
-    "nfephp-org/sped-da": {
-        "version": "0.2.x-dev"
-    },
-    "nfephp-org/sped-gtin": {
-        "version": "v1.0.7"
-    },
-    "nfephp-org/sped-nfe": {
-        "version": "v5.0.97"
     },
     "nikic/php-parser": {
         "version": "v4.3.0"
@@ -221,6 +200,9 @@
     },
     "sabberworm/php-css-parser": {
         "version": "8.3.0"
+    },
+    "scienta/doctrine-json-functions": {
+        "version": "4.1.2"
     },
     "sensio/framework-extra-bundle": {
         "version": "5.2",
@@ -591,15 +573,6 @@
             "config/routes/dev/web_profiler.yaml"
         ]
     },
-    "symfony/web-server-bundle": {
-        "version": "3.3",
-        "recipe": {
-            "repo": "github.com/symfony/recipes",
-            "branch": "master",
-            "version": "3.3",
-            "ref": "dae9b39fd6717970be7601101ce5aa960bf53d9a"
-        }
-    },
     "symfony/webpack-encore-bundle": {
         "version": "1.6",
         "recipe": {
@@ -621,12 +594,6 @@
     },
     "symfony/yaml": {
         "version": "v5.0.2"
-    },
-    "tecnickcom/tc-lib-barcode": {
-        "version": "1.15.20"
-    },
-    "tecnickcom/tc-lib-color": {
-        "version": "1.12.15"
     },
     "twig/extensions": {
         "version": "1.0",
