@@ -2,6 +2,9 @@
     "crosiersource/crosierlib-base": {
         "version": "dev-master"
     },
+    "crosiersource/crosierlib-radx": {
+        "version": "9999999-dev"
+    },
     "doctrine/annotations": {
         "version": "1.0",
         "recipe": {
@@ -78,8 +81,14 @@
     "doctrine/reflection": {
         "version": "v1.0.0"
     },
+    "doctrine/sql-formatter": {
+        "version": "1.0.1"
+    },
     "dompdf/dompdf": {
         "version": "v0.8.3"
+    },
+    "econea/nusoap": {
+        "version": "v0.9.8"
     },
     "egulias/email-validator": {
         "version": "2.1.13"
@@ -105,14 +114,32 @@
     "guzzlehttp/psr7": {
         "version": "1.6.1"
     },
-    "jdorn/sql-formatter": {
-        "version": "v1.2.17"
-    },
     "jms/metadata": {
         "version": "2.1.0"
     },
+    "justinrainbow/json-schema": {
+        "version": "5.2.9"
+    },
+    "knplabs/knp-snappy": {
+        "version": "v1.2.1"
+    },
+    "knplabs/knp-snappy-bundle": {
+        "version": "1.5",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "master",
+            "version": "1.5",
+            "ref": "c81bdcf4a9d4e7b1959071457f9608631865d381"
+        },
+        "files": [
+            "config/packages/knp_snappy.yaml"
+        ]
+    },
     "laminas/laminas-zendframework-bridge": {
         "version": "1.0.1"
+    },
+    "league/flysystem": {
+        "version": "1.0.69"
     },
     "markbaker/complex": {
         "version": "1.4.7"
@@ -122,6 +149,9 @@
     },
     "monolog/monolog": {
         "version": "2.0.2"
+    },
+    "neitanod/forceutf8": {
+        "version": "v2.0.4"
     },
     "nelmio/cors-bundle": {
         "version": "1.5",
@@ -134,6 +164,18 @@
         "files": [
             "config/packages/nelmio_cors.yaml"
         ]
+    },
+    "nfephp-org/sped-common": {
+        "version": "v5.0.46"
+    },
+    "nfephp-org/sped-da": {
+        "version": "v0.2.3"
+    },
+    "nfephp-org/sped-gtin": {
+        "version": "v1.0.7"
+    },
+    "nfephp-org/sped-nfe": {
+        "version": "v5.0.103"
     },
     "nikic/php-parser": {
         "version": "v4.3.0"
@@ -216,23 +258,14 @@
             "config/packages/sensio_framework_extra.yaml"
         ]
     },
-    "sensiolabs/security-checker": {
-        "version": "4.0",
-        "recipe": {
-            "repo": "github.com/symfony/recipes",
-            "branch": "master",
-            "version": "4.0",
-            "ref": "160c9b600564faa1224e8f387d49ef13ceb8b793"
-        },
-        "files": [
-            "config/packages/security_checker.yaml"
-        ]
-    },
     "swiftmailer/swiftmailer": {
         "version": "v6.2.3"
     },
     "symfony/asset": {
         "version": "v5.0.2"
+    },
+    "symfony/browser-kit": {
+        "version": "v5.0.8"
     },
     "symfony/cache": {
         "version": "v5.0.2"
@@ -256,8 +289,8 @@
             "config/bootstrap.php"
         ]
     },
-    "symfony/debug": {
-        "version": "v4.4.2"
+    "symfony/css-selector": {
+        "version": "v5.0.8"
     },
     "symfony/debug-bundle": {
         "version": "4.1",
@@ -271,11 +304,17 @@
             "config/packages/dev/debug.yaml"
         ]
     },
+    "symfony/debug-pack": {
+        "version": "v1.0.8"
+    },
     "symfony/dependency-injection": {
         "version": "v5.0.2"
     },
     "symfony/doctrine-bridge": {
         "version": "v5.0.2"
+    },
+    "symfony/dom-crawler": {
+        "version": "v5.0.8"
     },
     "symfony/dotenv": {
         "version": "v5.0.2"
@@ -410,6 +449,21 @@
     "symfony/orm-pack": {
         "version": "v1.0.7"
     },
+    "symfony/phpunit-bridge": {
+        "version": "4.3",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "4.3",
+            "ref": "6d0e35f749d5f4bfe1f011762875275cd3f9874f"
+        },
+        "files": [
+            ".env.test",
+            "bin/phpunit",
+            "phpunit.xml.dist",
+            "tests/bootstrap.php"
+        ]
+    },
     "symfony/polyfill-intl-grapheme": {
         "version": "v1.13.1"
     },
@@ -427,6 +481,9 @@
     },
     "symfony/process": {
         "version": "v5.0.2"
+    },
+    "symfony/profiler-pack": {
+        "version": "v1.0.4"
     },
     "symfony/property-access": {
         "version": "v5.0.2"
@@ -500,6 +557,9 @@
             "config/packages/swiftmailer.yaml",
             "config/packages/test/swiftmailer.yaml"
         ]
+    },
+    "symfony/test-pack": {
+        "version": "v1.0.6"
     },
     "symfony/translation": {
         "version": "3.3",
@@ -594,6 +654,12 @@
     },
     "symfony/yaml": {
         "version": "v5.0.2"
+    },
+    "tecnickcom/tc-lib-barcode": {
+        "version": "1.15.20"
+    },
+    "tecnickcom/tc-lib-color": {
+        "version": "1.12.15"
     },
     "twig/extensions": {
         "version": "1.0",
