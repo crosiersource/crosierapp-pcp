@@ -29,6 +29,7 @@ yarn-error.log
 /src/Entity/uppercaseFields.json
 
 
-/assets/static/fos_js_routes.json
-/src/Entity/uppercaseFields.json
+assets/static/fos_js_routes.json
+src/Entity/uppercaseFields.json
+
 
