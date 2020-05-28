@@ -89,9 +89,9 @@ class FichaTecnicaType extends AbstractType
                 $instituicaoChoices = [$fichaTecnica->getInstituicao()];
             }
             $form->add('instituicao', EntityType::class, [
+                'label' => 'Instituição',
                 'class' => Pessoa::class,
                 'choices' => $instituicaoChoices,
-                'label' => 'Instituicao',
                 'required' => false,
                 'choice_label' => function (?Pessoa $pessoa) {
                     return $pessoa ? $pessoa->getNomeMontado() : '';
@@ -182,7 +182,7 @@ class FichaTecnicaType extends AbstractType
             $grades = array_flip($this->propBusiness->findGrades());
             $form->add('gradeId', ChoiceType::class, [
                 'label' => 'Grade',
-                'required' => false,
+                'required' => true,
                 'choices' => $grades,
                 'attr' => [
                     'class' => 'autoSelect2'
