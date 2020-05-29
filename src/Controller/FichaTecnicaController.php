@@ -31,17 +31,13 @@ use Symfony\Contracts\Cache\ItemInterface;
 class FichaTecnicaController extends FormListController
 {
 
-    /** @var TipoArtigoController */
-    private $tipoArtigoController;
+    private TipoArtigoController $tipoArtigoController;
 
-    /** @var FichaTecnicaBusiness */
-    private $fichaTecnicaBusiness;
+    private FichaTecnicaBusiness $fichaTecnicaBusiness;
 
-    /** @var FichaTecnicaItemEntityHandler */
-    private $fichaTecnicaItemEntityHandler;
+    private FichaTecnicaItemEntityHandler $fichaTecnicaItemEntityHandler;
 
-    /** @var PropBusiness */
-    private $propBusiness;
+    private PropBusiness $propBusiness;
 
 
     /**
@@ -88,7 +84,6 @@ class FichaTecnicaController extends FormListController
     {
         $this->propBusiness = $propBusiness;
     }
-
 
 
     public function getFilterDatas(array $params): array
@@ -140,7 +135,7 @@ class FichaTecnicaController extends FormListController
      */
     public function delete(Request $request, FichaTecnica $fichaTecnica): \Symfony\Component\HttpFoundation\RedirectResponse
     {
-        return $this->doDelete($request, $fichaTecnica);
+        return $this->doDelete($request, $fichaTecnica, []);
     }
 
     /**
@@ -185,14 +180,12 @@ class FichaTecnicaController extends FormListController
     /**
      *
      * @Route("/fichaTecnica/builder/{id}", name="fichaTecnica_builder", defaults={"id"=null}, requirements={"id"="\d+"})
-     * @param Request $request
      * @param FichaTecnica $fichaTecnica
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      * @throws \Exception
-     *
      * @IsGranted("ROLE_PCP", statusCode=403)
      */
-    public function builder(Request $request, FichaTecnica $fichaTecnica = null): Response
+    public function builder(FichaTecnica $fichaTecnica = null): Response
     {
         if (!$fichaTecnica) {
             return $this->redirectToRoute('fichaTecnica_list');
@@ -225,6 +218,7 @@ class FichaTecnicaController extends FormListController
      * Valores para o select2 de Insumo.
      *
      * @return false|string
+     * @throws \Psr\Cache\InvalidArgumentException
      */
     private function buildInsumosSelect2()
     {
@@ -417,13 +411,12 @@ class FichaTecnicaController extends FormListController
     {
         $parameters = [];
 
-
         if ($request->get('instituicao')) {
             $novaFichaTecnica = $this->fichaTecnicaBusiness->clonar($fichaTecnica, (int)$request->get('instituicao'), $request->get('descricao'));
             return $this->redirectToRoute('fichaTecnica_builder', ['id' => $novaFichaTecnica->getId()]);
         }
 
-        $parameters['instituicoes'] = FichaTecnicaBusiness::buildInstituicoesSelect2();
+        $parameters['instituicoes'] = $this->fichaTecnicaBusiness->buildInstituicoesSelect2();
         $parameters['instituicaoId'] = $fichaTecnica->getInstituicao()->getId();
         $parameters['fichaTecnicaOrigem'] = $fichaTecnica;
         $parameters['descricaoSugerida'] = $fichaTecnica->getDescricao() . ' (2)';
