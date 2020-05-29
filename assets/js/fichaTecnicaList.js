@@ -16,6 +16,11 @@ function getDatatablesColumns() {
             title: 'Id'
         },
         {
+            name: 'e.instituicao.nome',
+            data: 'e.instituicao.nome',
+            title: 'Instituição'
+        },
+        {
             name: 'e.descricao',
             data: 'e.descricao',
             title: 'Descrição'

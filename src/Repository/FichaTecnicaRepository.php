@@ -5,6 +5,7 @@ namespace App\Repository;
 
 use App\Entity\FichaTecnica;
 use App\Entity\TipoArtigo;
+use CrosierSource\CrosierLibBaseBundle\Entity\Base\Pessoa;
 use CrosierSource\CrosierLibBaseBundle\Repository\FilterRepository;
 use Doctrine\ORM\QueryBuilder;
 
@@ -25,7 +26,8 @@ class FichaTecnicaRepository extends FilterRepository
     public function handleFrombyFilters(QueryBuilder $qb)
     {
         return $qb->from($this->getEntityClass(), 'e')
-            ->leftJoin(TipoArtigo::class, 'ta', 'WITH', 'ta = e.tipoArtigo');
+            ->leftJoin(TipoArtigo::class, 'ta', 'WITH', 'ta = e.tipoArtigo')
+            ->leftJoin(Pessoa::class, 'instituicao', 'WITH', 'instituicao = e.instituicao');
     }
 
 

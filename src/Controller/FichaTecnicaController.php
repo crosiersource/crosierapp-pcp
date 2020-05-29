@@ -89,7 +89,7 @@ class FichaTecnicaController extends FormListController
     public function getFilterDatas(array $params): array
     {
         return [
-            new FilterData(['descricao', 'id'], 'LIKE', 'str', $params)
+            new FilterData(['descricao', 'id', 'instituicao.nome'], 'LIKE', 'str', $params),
         ];
     }
 
@@ -183,6 +183,7 @@ class FichaTecnicaController extends FormListController
      * @param FichaTecnica $fichaTecnica
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      * @throws \Exception
+     * @throws \Psr\Cache\InvalidArgumentException
      * @IsGranted("ROLE_PCP", statusCode=403)
      */
     public function builder(FichaTecnica $fichaTecnica = null): Response
