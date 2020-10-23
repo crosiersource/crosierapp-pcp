@@ -141,6 +141,9 @@
     "league/flysystem": {
         "version": "1.0.69"
     },
+    "league/mime-type-detection": {
+        "version": "1.5.1"
+    },
     "maennchen/zipstream-php": {
         "version": "2.1.0"
     },
@@ -273,6 +276,9 @@
     "swiftmailer/swiftmailer": {
         "version": "v6.2.3"
     },
+    "symfony/amqp-messenger": {
+        "version": "v5.1.7"
+    },
     "symfony/asset": {
         "version": "v5.0.2"
     },
@@ -322,8 +328,14 @@
     "symfony/dependency-injection": {
         "version": "v5.0.2"
     },
+    "symfony/deprecation-contracts": {
+        "version": "v2.2.0"
+    },
     "symfony/doctrine-bridge": {
         "version": "v5.0.2"
+    },
+    "symfony/doctrine-messenger": {
+        "version": "v5.1.7"
     },
     "symfony/dom-crawler": {
         "version": "v5.0.8"
@@ -396,9 +408,6 @@
     "symfony/http-kernel": {
         "version": "v5.0.2"
     },
-    "symfony/inflector": {
-        "version": "v5.0.2"
-    },
     "symfony/intl": {
         "version": "v5.0.2"
     },
@@ -422,6 +431,18 @@
             "version": "1.0",
             "ref": "fadbfe33303a76e25cb63401050439aa9b1a9c7f"
         }
+    },
+    "symfony/messenger": {
+        "version": "4.3",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "4.3",
+            "ref": "8a2675c061737658bed85102e9241c752620e575"
+        },
+        "files": [
+            "config/packages/messenger.yaml"
+        ]
     },
     "symfony/mime": {
         "version": "v5.0.2"
@@ -505,6 +526,9 @@
     },
     "symfony/property-info": {
         "version": "v5.0.2"
+    },
+    "symfony/redis-messenger": {
+        "version": "v5.1.7"
     },
     "symfony/routing": {
         "version": "4.2",
