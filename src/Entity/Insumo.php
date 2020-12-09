@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use CrosierSource\CrosierLibBaseBundle\Doctrine\Annotations\NotUppercase;
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityId;
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityIdTrait;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -56,6 +57,33 @@ class Insumo implements EntityId
      * @Groups("entity")
      */
     private ?TipoInsumo $tipoInsumo;
+
+    /**
+     *
+     * @ORM\Column(name="json_data", type="json")
+     * @var null|array
+     * @NotUppercase()
+     * @Groups("entity")
+     */
+    public ?array $jsonData = null;
+
+    /**
+     * Transient (json_data->>"$.dt_custo")
+     * @var null|\DateTime
+     *
+     * @ORM\Column(name="dt_custo", type="date", nullable=false)
+     * @Groups("entity")
+     */
+    public ?\DateTime $dtCusto;
+
+    /**
+     * Transient (json_data->>"$.preco_custo")
+     * @var null|float
+     *
+     * @ORM\Column(name="preco_custo", type="float", precision=10, scale=0, nullable=false)
+     * @Groups("entity")
+     */
+    public ?float $precoCusto;
 
 
     /**

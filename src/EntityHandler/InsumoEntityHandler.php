@@ -83,7 +83,12 @@ class InsumoEntityHandler extends EntityHandler
             $insumo->getPrecoAtual();
 
 
+
+
         }
+
+        $insumo->jsonData['preco_custo'] = $insumo->getPrecoAtual()->getPrecoCusto();
+        $insumo->jsonData['dt_custo'] = $insumo->getPrecoAtual()->getDtCusto()->format('Y-m-d');
 
     }
 

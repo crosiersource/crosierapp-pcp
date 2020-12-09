@@ -33,8 +33,8 @@ function getDatatablesColumns() {
             title: 'Tipo de Insumo'
         },
         {
-            name: 'e.precoAtual.precoCusto',
-            data: 'e.precoAtual.precoCusto',
+            name: 'e.precoCusto',
+            data: 'e.precoCusto',
             title: 'Custo',
             render: function (data, type, row) {
                 let val = parseFloat(data);
@@ -43,11 +43,11 @@ function getDatatablesColumns() {
             className: 'text-right'
         },
         {
-            name: 'e.precoAtual.dtCusto',
-            data: 'e.precoAtual.dtCusto',
+            name: 'e.dtCusto',
+            data: 'e.dtCusto',
             title: 'Dt Custo',
             render: function (data, type, row) {
-                return Moment(data).format('DD/MM/YYYY')
+                return Moment(data).format('DD/MM/YYYY');
             },
             className: 'text-right'
         },
