@@ -105,7 +105,7 @@ class Insumo implements EntityId
      * @MaxDepth(2)
      * @var InsumoPreco
      */
-    private InsumoPreco $precoAtual;
+    private ?InsumoPreco $precoAtual = null;
 
 
     public function __construct()
