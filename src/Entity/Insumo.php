@@ -7,6 +7,7 @@ use CrosierSource\CrosierLibBaseBundle\Entity\EntityIdTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\MaxDepth;
 
 /**
  * Insumo
@@ -27,7 +28,7 @@ class Insumo implements EntityId
      * @ORM\Column(name="codigo", type="integer", nullable=false)
      * @Groups("entity")
      */
-    private $codigo;
+    private ?int $codigo;
 
     /**
      * @var null|string
@@ -35,7 +36,7 @@ class Insumo implements EntityId
      * @ORM\Column(name="descricao", type="string", length=200, nullable=false)
      * @Groups("entity")
      */
-    private $descricao;
+    private ?string $descricao;
 
     /**
      * @var null|int
@@ -43,7 +44,7 @@ class Insumo implements EntityId
      * @ORM\Column(name="unidade_produto_id", type="bigint", nullable=false)
      * @Groups("entity")
      */
-    private $unidadeProdutoId;
+    private ?int $unidadeProdutoId;
 
     /**
      * @var null|TipoInsumo
@@ -54,7 +55,7 @@ class Insumo implements EntityId
      * })
      * @Groups("entity")
      */
-    private $tipoInsumo;
+    private ?TipoInsumo $tipoInsumo;
 
 
     /**
@@ -72,10 +73,11 @@ class Insumo implements EntityId
 
     /**
      * Transient.
-     *
+     * @Groups("entity")
+     * @MaxDepth(2)
      * @var InsumoPreco
      */
-    private $precoAtual;
+    private InsumoPreco $precoAtual;
 
 
     public function __construct()

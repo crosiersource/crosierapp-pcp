@@ -27,9 +27,8 @@ class InsumoPreco implements EntityId
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="insumo_id", referencedColumnName="id")
      * })
-     * @Groups("entity")
      */
-    private $insumo;
+    private ?Insumo $insumo;
 
     /**
      * @var null|float
@@ -37,7 +36,7 @@ class InsumoPreco implements EntityId
      * @ORM\Column(name="coeficiente", type="float", precision=10, scale=0, nullable=false)
      * @Groups("entity")
      */
-    private $coeficiente;
+    private ?float $coeficiente;
 
     /**
      * @var null|float
@@ -45,7 +44,7 @@ class InsumoPreco implements EntityId
      * @ORM\Column(name="custo_operacional", type="float", precision=10, scale=0, nullable=false)
      * @Groups("entity")
      */
-    private $custoOperacional;
+    private ?float $custoOperacional;
 
     /**
      * @var null|\DateTime
@@ -53,7 +52,7 @@ class InsumoPreco implements EntityId
      * @ORM\Column(name="dt_custo", type="date", nullable=false)
      * @Groups("entity")
      */
-    private $dtCusto;
+    private ?\DateTime $dtCusto;
 
     /**
      * @var null|float
@@ -61,7 +60,7 @@ class InsumoPreco implements EntityId
      * @ORM\Column(name="margem", type="float", precision=10, scale=0, nullable=false)
      * @Groups("entity")
      */
-    private $margem;
+    private ?float $margem;
 
     /**
      * @var null|int
@@ -69,7 +68,7 @@ class InsumoPreco implements EntityId
      * @ORM\Column(name="prazo", type="integer", nullable=false)
      * @Groups("entity")
      */
-    private $prazo;
+    private ?int $prazo;
 
     /**
      * @var null|float
@@ -77,7 +76,7 @@ class InsumoPreco implements EntityId
      * @ORM\Column(name="preco_custo", type="float", precision=10, scale=0, nullable=false)
      * @Groups("entity")
      */
-    private $precoCusto;
+    private ?float $precoCusto;
 
     /**
      * @var null|float
@@ -85,7 +84,7 @@ class InsumoPreco implements EntityId
      * @ORM\Column(name="preco_prazo", type="float", precision=10, scale=0, nullable=false)
      * @Groups("entity")
      */
-    private $precoPrazo;
+    private ?float $precoPrazo;
 
     /**
      * @var null|float
@@ -93,7 +92,7 @@ class InsumoPreco implements EntityId
      * @ORM\Column(name="preco_vista", type="float", precision=10, scale=0, nullable=false)
      * @Groups("entity")
      */
-    private $precoVista;
+    private ?float $precoVista;
 
     /**
      * @var null|int
@@ -101,7 +100,7 @@ class InsumoPreco implements EntityId
      * @ORM\Column(name="fornecedor_id", type="bigint", nullable=true)
      * @Groups("entity")
      */
-    private $fornecedorId;
+    private ?int $fornecedorId;
 
     /**
      * @var null|string
@@ -109,7 +108,7 @@ class InsumoPreco implements EntityId
      * @ORM\Column(name="custo_financeiro", type="decimal", precision=19, scale=2, nullable=false)
      * @Groups("entity")
      */
-    private $custoFinanceiro;
+    private ?string $custoFinanceiro;
 
     /**
      * @var null|bool
@@ -117,7 +116,7 @@ class InsumoPreco implements EntityId
      * @ORM\Column(name="atual", type="boolean", nullable=false)
      * @Groups("entity")
      */
-    private $atual;
+    private ?bool $atual;
 
     /**
      * @return Insumo|null
