@@ -96,7 +96,7 @@ class FichaTecnicaBusiness
             ];
             if ($preco->getPrecoCusto()) {
                 $rPrecoParams = $this->crosierEntityIdAPIClient
-                    ->setBaseURI($_SERVER['CROSIERAPPVENDEST_URL'])
+                    ->setBaseURI($_SERVER['CROSIERAPPRADX_URL'])
                     ->get('/api/est/calcularPreco', $precoParams);
                 $precoParams = json_decode($rPrecoParams, true);
             }
