@@ -100,7 +100,7 @@ class FichaTecnicaType extends AbstractType
                 'choices' => $instituicaoChoices,
                 'required' => false,
                 'choice_label' => function (?Cliente $cliente) {
-                    return $cliente ? $cliente->getNomeMontadoComDocumento() : '';
+                    return $cliente ? $cliente->nome : '';
                 },
                 'attr' => [
                     'class' => 'autoSelect2 focusOnReady'
@@ -221,7 +221,7 @@ class FichaTecnicaType extends AbstractType
                     'label' => 'Instituicao',
                     'required' => false,
                     'choice_label' => function (?Cliente $cliente) {
-                        return $cliente ? $cliente->getNomeMontadoComDocumento() : '';
+                        return $cliente ? $cliente->nome : '';
                     },
                     'attr' => [
                         'class' => 'autoSelect2'
