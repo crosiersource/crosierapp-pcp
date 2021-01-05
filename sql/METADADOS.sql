@@ -158,7 +158,7 @@ CREATE TABLE `prod_fichatecnica` (
   `margem_padrao` double NOT NULL,
   `obs` varchar(5000) COLLATE utf8_swedish_ci DEFAULT NULL,
   `prazo_padrao` int(11) NOT NULL,
-  `cliente_id` bigint(20) NOT NULL,
+  `cliente_id` bigint(20) NOT NULL, -- instituição
   `pessoa_nome` varchar(300) NOT NULL,
   `tipo_artigo_id` bigint(20) NOT NULL,
   `custo_financeiro_padrao` decimal(19,2) NOT NULL,
@@ -170,6 +170,10 @@ CREATE TABLE `prod_fichatecnica` (
   UNIQUE KEY `UK_prod_fichatecnica` (`cliente_id`,`tipo_artigo_id`,`descricao`),
   KEY `K_prod_fichatecnica_tipo_artigo` (`tipo_artigo_id`),
   CONSTRAINT `FK_prod_fichatecnica_tipo_artigo` FOREIGN KEY (`tipo_artigo_id`) REFERENCES `prod_tipo_artigo` (`id`),
+
+-- instituição
+  KEY `K_prod_fichatecnica_cliente` (`cliente_id`),
+  CONSTRAINT `FK_prod_fichatecnica_cliente` FOREIGN KEY (`cliente_id`) REFERENCES `crm_cliente` (`id`),
 
     -- campo de controle
   `inserted` datetime  NOT NULL,

@@ -318,7 +318,7 @@ class FichaTecnicaController extends FormListController
         $parameters = [];
         $parameters['insumos'] = $this->buildInsumosSelect2();
         $parameters['fichaTecnicaItem'] = $fichaTecnicaItem;
-        $parameters['unidade'] = $this->propBusiness->findUnidadeById($fichaTecnicaItem->getInsumo()->getUnidadeProdutoId());
+        $parameters['unidade'] = $this->fichaTecnicaBusiness->findUnidadeById($fichaTecnicaItem->getInsumo()->getUnidadeProdutoId());
 
         return $this->doRender('fichaTecnicaItemForm.html.twig', $parameters);
     }
@@ -450,6 +450,44 @@ class FichaTecnicaController extends FormListController
             $fichaTecnica = $repoFichaTecnica->find($ficha['id']);
             $fichaTecnica->setInstituicao($cliente);
         }
+        return new Response('ok');
+
+    }
+
+    /**
+     *
+     * @Route("/fichaTecnica/corrigirClientesNasFichas", name="fichaTecnica_corrigirClientesNasFichas")
+     * @param ClienteEntityHandler $clienteEntityHandler
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @throws ViewException
+     * @throws \Doctrine\DBAL\Exception
+     */
+    public function corrigirClientesNasFichas(ClienteEntityHandler $clienteEntityHandler): Response
+    {
+        $conn = $this->fichaTecnicaItemEntityHandler->getDoctrine()->getConnection();
+
+        $clientes = $conn->fetchAllAssociative('select count(id) as qt, documento, nome from crm_cliente where nome IS NOT NULL AND json_data->>"$.cliente_pcp" = \'S\' GROUP BY documento, nome HAVING qt > 1');
+
+        $repoFichaTecnica = $this->fichaTecnicaItemEntityHandler->getDoctrine()->getRepository(FichaTecnica::class);
+        $repoCliente = $this->fichaTecnicaItemEntityHandler->getDoctrine()->getRepository(Cliente::class);
+
+        foreach ($clientes as $cliente) {
+            $rsClientesIds = $conn->fetchAllAssociative('SELECT id FROM crm_cliente WHERE json_data->>"$.cliente_pcp" = \'S\' AND nome = :nome', ['nome' => $cliente['nome']]);
+            $primeiroId = $rsClientesIds[0]['id'];
+            $ids = '(';
+
+            foreach ($rsClientesIds as $clienteId) {
+                $ids .= $clienteId['id'] . ',';
+            }
+            $ids = substr($ids, 0, -1) . ')';
+
+            $conn->executeQuery('UPDATE prod_fichatecnica SET cliente_id = :primeiroId WHERE cliente_id IN ' . $ids, ['primeiroId' => $primeiroId]);
+
+            $conn->executeQuery('DELETE FROM crm_cliente WHERE id != :primeiroId AND id IN ' . $ids, ['primeiroId' => $primeiroId]);
+// break;
+        }
+
+
         return new Response('ok');
 
     }
