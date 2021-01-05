@@ -145,7 +145,7 @@ class FichaTecnicaType extends AbstractType
                 'scale' => 2,
                 'required' => false,
                 'attr' => [
-                    'class' => 'crsr-dec3'
+                    'class' => 'crsr-dec2'
                 ]
             ]);
 
@@ -154,7 +154,7 @@ class FichaTecnicaType extends AbstractType
                 'scale' => 2,
                 'required' => false,
                 'attr' => [
-                    'class' => 'crsr-dec3'
+                    'class' => 'crsr-dec2'
                 ]
             ]);
 
@@ -167,7 +167,7 @@ class FichaTecnicaType extends AbstractType
                 'scale' => 2,
                 'required' => false,
                 'attr' => [
-                    'class' => 'crsr-dec3'
+                    'class' => 'crsr-dec2'
                 ]
             ]);
 

@@ -10,6 +10,7 @@ use App\Form\InsumoType;
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\FilterData;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -57,7 +58,13 @@ class InsumoController extends FormListController
             'formRoute' => 'insumo_form',
             'formPageTitle' => 'Insumo',
         ];
-        return $this->doForm($request, $insumo, $params);
+
+        $fnHandleRequestOnValid = function (Request $request, $insumo): void {
+            $cache = new FilesystemAdapter($_SERVER['CROSIERAPP_ID'] . '.cache');
+            $cache->clear();
+        };
+
+        return $this->doForm($request, $insumo, $params, false, $fnHandleRequestOnValid);
     }
 
     /**

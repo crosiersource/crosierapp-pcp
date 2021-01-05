@@ -9,6 +9,7 @@ use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\FilterData;
 use CrosierSource\CrosierLibRadxBundle\Entity\CRM\Cliente;
 use CrosierSource\CrosierLibRadxBundle\EntityHandler\CRM\ClienteEntityHandler;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -57,6 +58,8 @@ class InstituicaoController extends FormListController
 
         $fnHandleRequestOnValid = function (Request $request, /** @var Cliente $cliente */ $cliente): void {
             $cliente->jsonData['cliente_pcp'] = 'S';
+            $cache = new FilesystemAdapter($_SERVER['CROSIERAPP_ID'] . '.cache');
+            $cache->clear();
         };
 
 
