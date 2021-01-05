@@ -100,9 +100,9 @@ class FichaTecnicaBusiness
                     ->get('/api/est/calcularPreco', $precoParams);
                 $precoParams = json_decode($rPrecoParams, true);
             }
-            $preco->setPrecoPrazo((float)$precoParams['precoPrazo']);
-            $preco->setPrecoVista((float)$precoParams['precoVista']);
-            $preco->setCoeficiente((float)$precoParams['coeficiente']);
+            $preco->setPrecoPrazo((float)$precoParams['precoPrazo'] ?? 0.0);
+            $preco->setPrecoVista((float)$precoParams['precoVista'] ?? 0.0);
+            $preco->setCoeficiente((float)$precoParams['coeficiente'] ?? 0.0);
 
             $this->fichaTecnicaEntityHandler->handleSavingEntityId($preco);
         }
