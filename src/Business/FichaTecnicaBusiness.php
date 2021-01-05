@@ -9,6 +9,7 @@ use App\Entity\Insumo;
 use App\EntityHandler\FichaTecnicaEntityHandler;
 use CrosierSource\CrosierLibBaseBundle\APIClient\CrosierEntityIdAPIClient;
 use CrosierSource\CrosierLibBaseBundle\Utils\NumberUtils\DecimalUtils;
+use CrosierSource\CrosierLibRadxBundle\Business\Estoque\CalculoPreco;
 use CrosierSource\CrosierLibRadxBundle\Entity\CRM\Cliente;
 use CrosierSource\CrosierLibRadxBundle\Repository\CRM\ClienteRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -22,11 +23,20 @@ use Symfony\Contracts\Cache\ItemInterface;
 class FichaTecnicaBusiness
 {
 
-    private CrosierEntityIdAPIClient $crosierEntityIdAPIClient;
-
     private FichaTecnicaEntityHandler $fichaTecnicaEntityHandler;
 
     private EntityManagerInterface $doctrine;
+
+    private CalculoPreco $calculoPreco;
+
+    /**
+     * @required
+     * @param CalculoPreco $calculoPreco
+     */
+    public function setCalculoPreco(CalculoPreco $calculoPreco): void
+    {
+        $this->calculoPreco = $calculoPreco;
+    }
 
     /**
      * @required
@@ -79,7 +89,7 @@ class FichaTecnicaBusiness
         foreach ($fichaTecnica->getPrecos() as $preco) {
             $preco->setDtCusto(new \DateTime());
 
-            $preco->setCustoOperacional($fichaTecnica->getCustoOperacionalPadrao());
+            $preco->setCustoOperacional(bcdiv($fichaTecnica->getCustoOperacionalPadrao(), 100, 5));
             $preco->setCustoFinanceiro($fichaTecnica->getCustoFinanceiroPadrao());
             $preco->setMargem($fichaTecnica->getMargemPadrao());
             $preco->setPrazo($fichaTecnica->getPrazoPadrao());
@@ -95,10 +105,7 @@ class FichaTecnicaBusiness
                 'coeficiente' => 0.0,
             ];
             if ($preco->getPrecoCusto()) {
-                $rPrecoParams = $this->crosierEntityIdAPIClient
-                    ->setBaseURI($_SERVER['CROSIERAPPRADX_URL'])
-                    ->get('/api/est/calcularPreco', $precoParams);
-                $precoParams = json_decode($rPrecoParams, true);
+                $this->calculoPreco->calcularPreco($precoParams);
             }
             $preco->setPrecoPrazo((float)($precoParams['precoPrazo'] ?? 0.0));
             $preco->setPrecoVista((float)($precoParams['precoVista'] ?? 0.0));
