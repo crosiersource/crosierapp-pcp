@@ -40,13 +40,13 @@ class InstituicaoController extends FormListController
      *
      * @Route("/instituicao/form/{id}", name="instituicao_form", defaults={"id"=null}, requirements={"id"="\d+"})
      * @param Request $request
-     * @param Cliente|null $instituicao
+     * @param Cliente|null $cliente
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      * @throws \Exception
      *
      * @IsGranted("ROLE_PCP_ADMIN", statusCode=403)
      */
-    public function form(Request $request, Cliente $instituicao = null)
+    public function form(Request $request, Cliente $cliente = null)
     {
         $params = [
             'typeClass' => InstituicaoType::class,
@@ -54,7 +54,13 @@ class InstituicaoController extends FormListController
             'formRoute' => 'instituicao_form',
             'formPageTitle' => 'Instituição',
         ];
-        return $this->doForm($request, $instituicao, $params);
+
+        $fnHandleRequestOnValid = function (Request $request, /** @var Cliente $cliente */ $cliente): void {
+            $cliente->jsonData['cliente_pcp'] = 'S';
+        };
+
+
+        return $this->doForm($request, $cliente, $params, false, $fnHandleRequestOnValid);
     }
 
     /**
