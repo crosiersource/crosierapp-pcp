@@ -89,7 +89,7 @@ class FichaTecnicaBusiness
         foreach ($fichaTecnica->getPrecos() as $preco) {
             $preco->setDtCusto(new \DateTime());
 
-            $preco->setCustoOperacional(bcdiv($fichaTecnica->getCustoOperacionalPadrao(), 100, 5));
+            $preco->setCustoOperacional($fichaTecnica->getCustoOperacionalPadrao());
             $preco->setCustoFinanceiro($fichaTecnica->getCustoFinanceiroPadrao());
             $preco->setMargem($fichaTecnica->getMargemPadrao());
             $preco->setPrazo($fichaTecnica->getPrazoPadrao());

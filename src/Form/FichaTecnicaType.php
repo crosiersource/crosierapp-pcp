@@ -140,7 +140,7 @@ class FichaTecnicaType extends AbstractType
                 'attr' => ['class' => 'autoSelect2']
             ]);
 
-            $form->add('custoOperacionalPadrao', NumberType::class, [
+            $form->add('custoOperacionalPadrao', PercentType::class, [
                 'label' => 'Cto Op Padrão',
                 'scale' => 3,
                 'required' => false,
@@ -149,7 +149,7 @@ class FichaTecnicaType extends AbstractType
                 ]
             ]);
 
-            $form->add('margemPadrao', NumberType::class, [
+            $form->add('margemPadrao', PercentType::class, [
                 'label' => 'Margem Padrão',
                 'scale' => 3,
                 'required' => false,

@@ -106,7 +106,7 @@ class FichaTecnicaController extends FormListController
             $fichaTecnica = new FichaTecnica();
             $fichaTecnica->setBloqueada(false);
             $fichaTecnica->setOculta(false);
-            $fichaTecnica->setCustoOperacionalPadrao(35);
+            $fichaTecnica->setCustoOperacionalPadrao(0.35);
             $fichaTecnica->setCustoFinanceiroPadrao(0.15);
             $fichaTecnica->setMargemPadrao(0.12);
             $fichaTecnica->setPrazoPadrao(30);
