@@ -28,7 +28,7 @@ class FichaTecnica implements EntityId
      * @ORM\Column(name="descricao", type="string", length=200, nullable=false)
      * @Groups("entity")
      */
-    private ?string $descricao;
+    private ?string $descricao = null;
 
     /**
      * @var null|TipoArtigo
@@ -39,7 +39,7 @@ class FichaTecnica implements EntityId
      * })
      * @Groups("entity")
      */
-    private ?TipoArtigo $tipoArtigo;
+    private ?TipoArtigo $tipoArtigo = null;
 
     /**
      * @var null|bool
@@ -47,7 +47,7 @@ class FichaTecnica implements EntityId
      * @ORM\Column(name="bloqueada", type="boolean", nullable=false)
      * @Groups("entity")
      */
-    private ?bool $bloqueada;
+    private ?bool $bloqueada = null;
 
     /**
      * @var null|float
@@ -55,7 +55,7 @@ class FichaTecnica implements EntityId
      * @ORM\Column(name="custo_operacional_padrao", type="float", precision=10, scale=3, nullable=false)
      * @Groups("entity")
      */
-    private ?float $custoOperacionalPadrao;
+    private ?float $custoOperacionalPadrao = null;
 
     /**
      * @var null|float
@@ -63,7 +63,7 @@ class FichaTecnica implements EntityId
      * @ORM\Column(name="margem_padrao", type="float", precision=10, scale=3, nullable=false)
      * @Groups("entity")
      */
-    private ?float $margemPadrao;
+    private ?float $margemPadrao = null;
 
     /**
      * @var null|string
@@ -71,7 +71,7 @@ class FichaTecnica implements EntityId
      * @ORM\Column(name="obs", type="string", length=5000, nullable=true)
      * @Groups("entity")
      */
-    private ?string $obs;
+    private ?string $obs = null;
 
     /**
      * @var null|int
@@ -79,7 +79,7 @@ class FichaTecnica implements EntityId
      * @ORM\Column(name="prazo_padrao", type="integer", nullable=false)
      * @Groups("entity")
      */
-    private ?int $prazoPadrao;
+    private ?int $prazoPadrao = null;
 
     /**
      * @var null|string
@@ -87,7 +87,7 @@ class FichaTecnica implements EntityId
      * @ORM\Column(name="custo_financeiro_padrao", type="decimal", precision=19, scale=2, nullable=false)
      * @Groups("entity")
      */
-    private ?string $custoFinanceiroPadrao;
+    private ?string $custoFinanceiroPadrao = null;
 
     /**
      * @var null|string
@@ -95,7 +95,7 @@ class FichaTecnica implements EntityId
      * @ORM\Column(name="modo_calculo", type="string", length=15, nullable=false)
      * @Groups("entity")
      */
-    private ?string $modoCalculo;
+    private ?string $modoCalculo = null;
 
     /**
      * @var null|int
@@ -103,7 +103,7 @@ class FichaTecnica implements EntityId
      * @ORM\Column(name="grade_id", type="bigint", nullable=false)
      * @Groups("entity")
      */
-    private ?int $gradeId;
+    private ?int $gradeId = null;
 
     /**
      * Transient.
@@ -118,7 +118,7 @@ class FichaTecnica implements EntityId
      * @ORM\Column(name="oculta", type="boolean", nullable=false)
      * @Groups("entity")
      */
-    private ?bool $oculta;
+    private ?bool $oculta = null;
 
 
     /**
@@ -130,7 +130,7 @@ class FichaTecnica implements EntityId
      * })
      * @Groups("entity")
      */
-    private ?Cliente $instituicao;
+    private ?Cliente $instituicao = null;
 
     /**
      *
