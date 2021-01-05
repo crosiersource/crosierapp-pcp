@@ -1,10 +1,17 @@
 'use strict';
 
-let listId = "#fichaTecnicaList";
+let listId = "#instituicaoList";
+
+import Moment from 'moment';
+
+import Numeral from 'numeral';
+import 'numeral/locales/pt-br.js';
+import $ from "jquery";
 
 import routes from '../static/fos_js_routes.json';
 import Routing from '../../vendor/friendsofsymfony/jsrouting-bundle/Resources/public/js/router.min.js';
-import Moment from 'moment';
+
+Numeral.locale('pt-br');
 
 Routing.setRoutingData(routes);
 
@@ -16,30 +23,26 @@ function getDatatablesColumns() {
             title: 'Id'
         },
         {
-            name: 'e.instituicao.nome',
-            data: 'e.instituicao.nome',
-            title: 'Instituição'
+            name: 'e.documento',
+            data: 'e.documento',
+            title: 'CPF/CNPJ',
+            render: function (data, type, row) {
+                return data ? (data.length === 14 ?
+                    data.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/g, "\$1.\$2.\$3\/\$4\-\$5") :
+                    data.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/g, "\$1.\$2.\$3\-\$4")) : '';
+            }
         },
         {
-            name: 'e.descricao',
-            data: 'e.descricao',
-            title: 'Descrição'
+            name: 'e.nome',
+            data: 'e.nome',
+            title: 'Nome'
         },
         {
-            name: 'ta.descricao',
-            data: 'e.tipoArtigo.descricaoMontada',
-            title: 'Tipo de Artigo'
-        },
-        {
-            name: 'e.id',
+            name: 'e.updated',
             data: 'e',
             title: '',
             render: function (data, type, row) {
                 let colHtml = "";
-                colHtml += '<a class="btn btn-info btn-sm" title="Planilha de Insumos" href="' + Routing.generate('fichaTecnica_builder', {id: data.id}) +
-                    '" role="button">' +
-                    '<i class="fas fa-th-list"></i>' +
-                    '</a> ';
                 if ($(listId).data('routeedit')) {
                     let routeedit = Routing.generate($(listId).data('routeedit'), {id: data.id});
                     colHtml += DatatablesJs.makeEditButton(routeedit);
@@ -50,7 +53,6 @@ function getDatatablesColumns() {
                     colHtml += DatatablesJs.makeDeleteButton(deleteUrl, csrfTokenDelete);
                 }
                 colHtml += '<br /><span class="badge badge-pill badge-info">' + Moment(data.updated).format('DD/MM/YYYY HH:mm:ss') + '</span> ';
-
                 return colHtml;
             },
             className: 'text-right'

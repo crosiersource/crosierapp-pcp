@@ -3,14 +3,15 @@
 namespace App\Form;
 
 use App\Business\FichaTecnicaBusiness;
-use App\Business\PropBusiness;
 use App\Entity\FichaTecnica;
 use App\Entity\TipoArtigo;
-use CrosierSource\CrosierLibBaseBundle\Entity\Base\Pessoa;
-use CrosierSource\CrosierLibBaseBundle\Repository\Base\PessoaRepository;
+use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
+use CrosierSource\CrosierLibBaseBundle\Utils\ExceptionUtils\ExceptionUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\WhereBuilder;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use CrosierSource\CrosierLibRadxBundle\Entity\CRM\Cliente;
+use CrosierSource\CrosierLibRadxBundle\Repository\CRM\ClienteRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
@@ -31,14 +32,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class FichaTecnicaType extends AbstractType
 {
 
-    /** @var EntityManagerInterface */
-    private $doctrine;
+    private EntityManagerInterface $doctrine;
 
-    /** @var FichaTecnicaBusiness */
-    private $fichaTecnicaBusiness;
-
-    /** @var PropBusiness */
-    private $propBusiness;
+    private FichaTecnicaBusiness $fichaTecnicaBusiness;
 
     /**
      * @required
@@ -59,15 +55,6 @@ class FichaTecnicaType extends AbstractType
         $this->fichaTecnicaBusiness = $fichaTecnicaBusiness;
     }
 
-    /**
-     * @required
-     * @param PropBusiness $propBusiness
-     */
-    public function setPropBusiness(PropBusiness $propBusiness): void
-    {
-        $this->propBusiness = $propBusiness;
-    }
-
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -84,23 +71,38 @@ class FichaTecnicaType extends AbstractType
                 'disabled' => true
             ]);
 
-            $instituicaoChoices = [];
+
             if ($fichaTecnica->getInstituicao()) {
                 $instituicaoChoices = [$fichaTecnica->getInstituicao()];
+            } else {
+                try {
+                    /** @var ClienteRepository $repoCliente */
+                    $repoCliente = $this->doctrine->getRepository(Cliente::class);
+                    $sql = 'SELECT id FROM crm_cliente WHERE json_data->>"$.cliente_pcp" = \'S\'';
+                    $rs = $this->doctrine->getConnection()->fetchAllAssociative($sql);
+                    if (!$rs || count($rs) < 1) {
+                        return null;
+                    }
+                    $instituicaoChoices = [];
+                    foreach ($rs as $r) {
+                        $instituicaoChoices[] = $repoCliente->find($r['id']);
+                    }
+
+                } catch (\Throwable $e) {
+                    $msg = ExceptionUtils::treatException($e);
+                    throw new ViewException('Erro ao pesquisar clientes FILIAL_PROP (' . $msg . ')', 0, $e);
+                }
+
             }
             $form->add('instituicao', EntityType::class, [
                 'label' => 'Instituição',
-                'class' => Pessoa::class,
+                'class' => Cliente::class,
                 'choices' => $instituicaoChoices,
                 'required' => false,
-                'choice_label' => function (?Pessoa $pessoa) {
-                    return $pessoa ? $pessoa->getNomeMontado() : '';
+                'choice_label' => function (?Cliente $cliente) {
+                    return $cliente ? $cliente->getNomeMontadoComDocumento() : '';
                 },
                 'attr' => [
-                    'data-val' => $fichaTecnica->getInstituicao() ? $fichaTecnica->getInstituicao()->getId() : '',
-                    'data-id-route-url' => $fichaTecnica->getInstituicao() ? '/base/pessoa/findById/?id=' . $fichaTecnica->getInstituicao()->getId() : '',
-                    'data-route-url' => '/base/pessoa/findByStr/?categ=CLIENTE_PCP',
-                    'data-text-format' => '%(nomeMontado)s',
                     'class' => 'autoSelect2 focusOnReady'
                 ]
             ]);
@@ -179,7 +181,7 @@ class FichaTecnicaType extends AbstractType
                 'attr' => ['class' => 'autoSelect2']
             ]);
 
-            $grades = array_flip($this->propBusiness->findGrades());
+            $grades = array_flip($this->fichaTecnicaBusiness->findGrades());
             $form->add('gradeId', ChoiceType::class, [
                 'label' => 'Grade',
                 'required' => true,
@@ -208,24 +210,20 @@ class FichaTecnicaType extends AbstractType
 
                 $instituicaoChoices = [];
                 if ($fichaTecnica['instituicao']) {
-                    /** @var PessoaRepository $repoPessoa */
-                    $repoPessoa = $this->doctrine->getRepository(Pessoa::class);
-                    $instituicao = $repoPessoa->find($fichaTecnica['instituicao']);
+                    /** @var ClienteRepository $repoCliente */
+                    $repoCliente = $this->doctrine->getRepository(Cliente::class);
+                    $instituicao = $repoCliente->find($fichaTecnica['instituicao']);
                     $instituicaoChoices = [$instituicao];
                 }
                 $form->add('instituicao', EntityType::class, [
-                    'class' => Pessoa::class,
+                    'class' => Cliente::class,
                     'choices' => $instituicaoChoices,
                     'label' => 'Instituicao',
                     'required' => false,
-                    'choice_label' => function (?Pessoa $pessoa) {
-                        return $pessoa ? $pessoa->getNomeMontado() : '';
+                    'choice_label' => function (?Cliente $cliente) {
+                        return $cliente ? $cliente->getNomeMontadoComDocumento() : '';
                     },
                     'attr' => [
-                        'data-val' => $fichaTecnica['instituicao'] ?? null,
-                        'data-id-route-url' => isset($fichaTecnica['instituicao']) ? '/base/pessoa/findById/?id=' . $fichaTecnica['instituicao'] : '',
-                        'data-route-url' => '/base/pessoa/findByStr/?categ=CLIENTE_PCP',
-                        'data-text-format' => '%(nomeMontado)s',
                         'class' => 'autoSelect2'
                     ]
                 ]);

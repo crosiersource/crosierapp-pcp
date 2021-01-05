@@ -3,9 +3,7 @@
 namespace App\EntityHandler;
 
 use App\Entity\FichaTecnica;
-use CrosierSource\CrosierLibBaseBundle\Entity\Base\Pessoa;
 use CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler;
-use CrosierSource\CrosierLibBaseBundle\Repository\Base\PessoaRepository;
 
 /**
  * EntityHandler para a entidade FichaTecnica.

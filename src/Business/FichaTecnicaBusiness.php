@@ -8,33 +8,25 @@ use App\Entity\FichaTecnicaPreco;
 use App\Entity\Insumo;
 use App\EntityHandler\FichaTecnicaEntityHandler;
 use CrosierSource\CrosierLibBaseBundle\APIClient\CrosierEntityIdAPIClient;
-use CrosierSource\CrosierLibBaseBundle\Entity\Base\Pessoa;
-use CrosierSource\CrosierLibBaseBundle\Repository\Base\PessoaRepository;
 use CrosierSource\CrosierLibBaseBundle\Utils\NumberUtils\DecimalUtils;
+use CrosierSource\CrosierLibRadxBundle\Entity\CRM\Cliente;
+use CrosierSource\CrosierLibRadxBundle\Repository\CRM\ClienteRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Contracts\Cache\ItemInterface;
 
 /**
- * Class FichaTecnicaBusiness
- *
  * @author Carlos Eduardo Pauluk
  */
 class FichaTecnicaBusiness
 {
 
-    /** @var CrosierEntityIdAPIClient */
-    private $crosierEntityIdAPIClient;
+    private CrosierEntityIdAPIClient $crosierEntityIdAPIClient;
 
-    /** @var FichaTecnicaEntityHandler */
-    private $fichaTecnicaEntityHandler;
+    private FichaTecnicaEntityHandler $fichaTecnicaEntityHandler;
 
-    /** @var PropBusiness */
-    private $propBusiness;
-
-    /** @var EntityManagerInterface */
-    private $doctrine;
+    private EntityManagerInterface $doctrine;
 
     /**
      * @required
@@ -52,15 +44,6 @@ class FichaTecnicaBusiness
     public function setFichaTecnicaEntityHandler(FichaTecnicaEntityHandler $fichaTecnicaEntityHandler): void
     {
         $this->fichaTecnicaEntityHandler = $fichaTecnicaEntityHandler;
-    }
-
-    /**
-     * @required
-     * @param PropBusiness $propBusiness
-     */
-    public function setPropBusiness(PropBusiness $propBusiness): void
-    {
-        $this->propBusiness = $propBusiness;
     }
 
     /**
@@ -168,7 +151,7 @@ class FichaTecnicaBusiness
                     $insumosArray[$c]['totais'][$i]['decimal'] = 0.0;
                 }
             }
-            $unidade = $this->propBusiness->findUnidadeById($item->getInsumo()->getUnidadeProdutoId());
+            $unidade = $this->findUnidadeById($item->getInsumo()->getUnidadeProdutoId());
             $item->casasDecimais = $unidade['casasDecimais'];
             $item->unidade = $unidade['label'];
             $insumosArray[$c]['itens'][] = $item;
@@ -209,30 +192,13 @@ class FichaTecnicaBusiness
      */
     public function buildQtdesTamanhosArray(FichaTecnica $fichaTecnica): void
     {
-        $gradesTamanhosByPosicaoArray = $this->propBusiness->buildGradesTamanhosByPosicaoArray($fichaTecnica->getGradeId());
+        $gradesTamanhosByPosicaoArray = $this->buildGradesTamanhosByPosicaoArray($fichaTecnica->getGradeId());
         $fichaTecnica->setGradesTamanhosByPosicaoArray($gradesTamanhosByPosicaoArray);
         foreach ($fichaTecnica->getItens() as $item) {
             $this->buildItemQtdesTamanhosByPosicaoArray($item);
         }
     }
 
-//    private function formatarDecimaisInsumosArray(array &$insumosArray) {
-//        foreach ($insumosArray as &$item) {
-//            foreach ($item['totais'] as &$total) {
-//                $total = $total > 0 ? number_format($total, 3, ',', '.') : '-';
-//            }
-//            /** @var FichaTecnicaItem $fti */
-//            foreach ($item['itens'] as &$fti) {
-//                $unidade = $this->propBusiness->findUnidadeById($fti->getInsumo()->getUnidadeProdutoId());
-//                $qtdesTamanhosArray = $fti->getQtdesTamanhosArray();
-//                foreach ($qtdesTamanhosArray as $i => $iValue) {
-//                    $qtdesTamanhosArray[$i] = $iValue > 0 ? number_format($iValue, $unidade['casasDecimais'], ',', '.') : '-';
-//                }
-//                $fti->setQtdesTamanhosArray($qtdesTamanhosArray);
-//            }
-//
-//        }
-//    }
 
     /**
      * Constrói o array de qtdes/tamanhos para o item.
@@ -241,13 +207,13 @@ class FichaTecnicaBusiness
      */
     public function buildItemQtdesTamanhosByPosicaoArray(FichaTecnicaItem $item): void
     {
-        $unidade = $this->propBusiness->findUnidadeById($item->getInsumo()->getUnidadeProdutoId());
+        $unidade = $this->findUnidadeById($item->getInsumo()->getUnidadeProdutoId());
         $array = [];
         for ($i = 1; $i <= 15; $i++) {
             $array[$i]['decimal'] = 0.0;
             $array[$i]['formatado'] = '-';
             foreach ($item->getQtdes() as $qtde) {
-                $posicao = $this->propBusiness->findPosicaoByGradeTamanhoId($qtde->getGradeTamanhoId());
+                $posicao = $this->findPosicaoByGradeTamanhoId($qtde->getGradeTamanhoId());
                 if ($posicao === $i) {
 
                     $array[$i]['decimal'] = (float)$qtde->getQtde();
@@ -578,10 +544,10 @@ class FichaTecnicaBusiness
         $novaFichaTecnica = clone $fichaTecnicaOrigem;
         $novaFichaTecnica->setDescricao($novaDescricao);
 
-        /** @var PessoaRepository $repoPessoa */
-        $repoPessoa = $this->doctrine->getRepository(Pessoa::class);
-        /** @var Pessoa $instituicao */
-        $instituicao = $repoPessoa->find($instituicaoId);
+        /** @var ClienteRepository $repoCliente */
+        $repoCliente = $this->doctrine->getRepository(Cliente::class);
+        /** @var Cliente $instituicao */
+        $instituicao = $repoCliente->find($instituicaoId);
 
         $novaFichaTecnica->setInstituicao($instituicao);
 
@@ -629,27 +595,261 @@ class FichaTecnicaBusiness
         $cache = new FilesystemAdapter($_SERVER['CROSIERAPP_ID'] . '.cache');
 
         $arrInstituicoes = $cache->get('buildInstituicoesSelect2', function (ItemInterface $item) {
+            $conn = $this->doctrine->getConnection();
+            $rsInstituicoes = $conn->fetchAllAssociative('SELECT id, nome FROM crm_cliente WHERE json_data->>"$.cliente_pcp" = \'S\' ORDER BY nome');
 
-            /** @var PessoaRepository $repoPessoa */
-            $repoPessoa = $this->doctrine->getRepository(Pessoa::class);
-
-            $instituicoes = $repoPessoa->findByFiltersSimpl([['categ.descricao', 'LIKE', 'CLIENTE_PCP']], null, 0, -1);
-
-            uasort($instituicoes, function ($a, $b) {
-                /** @var Pessoa $a */
-                /** @var Pessoa $b */
-                return strcasecmp(trim($a->getNomeMontado()), trim($b->getNomeMontado()));
-            });
             $arrInstituicoes = [];
             $arrInstituicoes[] = ['id' => '', 'text' => '...'];
-            /** @var Pessoa $instituicao */
-            foreach ($instituicoes as $instituicao) {
-                $arrInstituicoes[] = ['id' => $instituicao->getId(), 'text' => $instituicao->getNomeMontado()];
+            foreach ($rsInstituicoes as $instituicao) {
+                $arrInstituicoes[] = [
+                    'id' => $instituicao['id'],
+                    'text' => $instituicao['nome']
+                ];
             }
             return $arrInstituicoes;
         });
 
         return json_encode($arrInstituicoes);
+    }
+
+
+    /**
+     * @return array
+     */
+    public function findGrades(): array
+    {
+
+        $cache = new FilesystemAdapter();
+
+        $rGrades = $cache->get('grades', function (ItemInterface $item) {
+            $item->expiresAfter(3600);
+
+
+            $conn = $this->doctrine->getConnection();
+            $rsGrades = $conn->fetchAssociative('SELECT valor FROM cfg_app_config WHERE app_uuid = :appUUID AND chave = :chave',
+                ['appUUID' => $_SERVER['CROSIERAPP_UUID'], 'chave' => 'grades_tamanhos.json']);
+            $grades = json_decode($rsGrades['valor'], true);
+
+            $rGrades = [];
+
+            foreach ($grades as $grade) {
+                $gradeId = $grade['gradeId'];
+                $tamanhosArr = [];
+                $tamanhos = $this->findTamanhosByGradeId($gradeId);
+                foreach ($tamanhos as $tamanho) {
+                    $tamanhosArr[] = $tamanho['tamanho'];
+                }
+                $tamanhosStr = str_pad($gradeId, 3, '0', STR_PAD_LEFT) . ' (' . implode('-', $tamanhosArr) . ')';
+                $rGrades[$gradeId] = $tamanhosStr;
+            }
+
+            return $rGrades;
+        });
+
+
+        return $rGrades;
+    }
+
+    /**
+     * @param int $gradeId
+     * @return array|null
+     * @throws \Psr\Cache\InvalidArgumentException
+     */
+    public function findTamanhosByGradeId(int $gradeId): ?array
+    {
+        $cache = new FilesystemAdapter();
+
+        $grades = $cache->get('findTamanhosByGradeId_' . $gradeId, function (ItemInterface $item) use ($gradeId) {
+            $item->expiresAfter(3600);
+
+            $conn = $this->doctrine->getConnection();
+            $rsGrades = $conn->fetchAssociative('SELECT valor FROM cfg_app_config WHERE app_uuid = :appUUID AND chave = :chave',
+                ['appUUID' => $_SERVER['CROSIERAPP_UUID'], 'chave' => 'grades_tamanhos.json']);
+            $grades = json_decode($rsGrades['valor'], true);
+
+            foreach ($grades as $grade) {
+                if ($grade['gradeId'] === $gradeId) {
+                    return $grade['tamanhos'];
+                }
+            }
+            return false;
+        });
+        return $grades;
+    }
+
+
+    /**
+     * @param int $gradeId
+     * @return array|null
+     */
+    public function findGradeTamanhoById(int $id): ?array
+    {
+        $cache = new FilesystemAdapter();
+
+        $tamanho = $cache->get('findGradeTamanhoById_' . $id, function (ItemInterface $item) use ($id) {
+            $item->expiresAfter(3600);
+
+            $conn = $this->doctrine->getConnection();
+            $rsGrades = $conn->fetchAssociative('SELECT valor FROM cfg_app_config WHERE app_uuid = :appUUID AND chave = :chave',
+                ['appUUID' => $_SERVER['CROSIERAPP_UUID'], 'chave' => 'grades_tamanhos.json']);
+            $grades = json_decode($rsGrades['valor'], true);
+
+            foreach ($grades as $grade) {
+                foreach ($grade['tamanhos'] as $tamanho) {
+                    if ($tamanho['id'] === $id) {
+                        return $tamanho;
+                    }
+                }
+            }
+
+            return null;
+        });
+        return $tamanho;
+    }
+
+
+    /**
+     * @param int $gradeId
+     * @param int $posicao
+     * @return array|null
+     */
+    public function findTamanhoByGradeIdAndPosicao(int $gradeId, int $posicao): ?array
+    {
+
+        $cache = new FilesystemAdapter();
+
+        $tamanho = $cache->get('findTamanhoByGradeIdAndPosicao_' . $gradeId . '-' . $posicao, function (ItemInterface $item) use ($gradeId, $posicao) {
+            $item->expiresAfter(3600);
+
+            $tamanhos = $this->findTamanhosByGradeId($gradeId);
+            foreach ($tamanhos as $tamanho) {
+                if ($tamanho['posicao'] === $posicao) {
+                    return $tamanho;
+                }
+            }
+
+            return null;
+        });
+
+        return $tamanho;
+    }
+
+
+    /**
+     *
+     * @param int $gradeId
+     * @return array
+     */
+    public function buildGradesTamanhosByPosicaoArray(int $gradeId): array
+    {
+        $cache = new FilesystemAdapter();
+
+        $gradesTamanhosByPosicaoArray = $cache->get('buildGradesTamanhosByPosicaoArray_' . $gradeId, function (ItemInterface $item) use ($gradeId) {
+            $item->expiresAfter(3600);
+
+            $tamanhos = $this->findTamanhosByGradeId($gradeId);
+            $gradesTamanhosByPosicaoArray = [];
+
+            for ($i = 1; $i <= 15; $i++) {
+                foreach ($tamanhos as $tamanho) {
+                    $gradesTamanhosByPosicaoArray[$i] = '-';
+                    if ($i === $tamanho['posicao']) {
+                        $gradesTamanhosByPosicaoArray[$tamanho['posicao']] = $tamanho['tamanho'];
+                        break;
+                    }
+                }
+            }
+            return $gradesTamanhosByPosicaoArray;
+        });
+
+        return $gradesTamanhosByPosicaoArray;
+
+    }
+
+    /**
+     *
+     * @param int $gradeTamanhoId
+     * @return int
+     */
+    public function findPosicaoByGradeTamanhoId(int $gradeTamanhoId): int
+    {
+
+        $cache = new FilesystemAdapter();
+
+        $posicao = $cache->get('findPosicaoByGradeTamanhoId' . $gradeTamanhoId, function (ItemInterface $item) use ($gradeTamanhoId) {
+            $item->expiresAfter(3600);
+
+            $conn = $this->doctrine->getConnection();
+            $rsGrades = $conn->fetchAssociative('SELECT valor FROM cfg_app_config WHERE app_uuid = :appUUID AND chave = :chave',
+                ['appUUID' => $_SERVER['CROSIERAPP_UUID'], 'chave' => 'grades_tamanhos.json']);
+            $grades = json_decode($rsGrades['valor'], true);
+
+            foreach ($grades as $grade) {
+                $gradeId = $grade['gradeId'];
+                $tamanhos = $this->findTamanhosByGradeId($gradeId);
+                foreach ($tamanhos as $tamanho) {
+                    if ($tamanho['id'] === $gradeTamanhoId) {
+                        return $tamanho['posicao'];
+                    }
+                }
+            }
+
+            return -1;
+        });
+        return $posicao;
+    }
+
+
+    /**
+     * @return array
+     */
+    public function findUnidades(): array
+    {
+
+        $cache = new FilesystemAdapter();
+
+        $rUnidades = $cache->get('unidades', function (ItemInterface $item) {
+            $item->expiresAfter(3600);
+
+            $conn = $this->doctrine->getConnection();
+            $rsGrades = $conn->fetchAssociative('SELECT valor FROM cfg_app_config WHERE app_uuid = :appUUID AND chave = :chave',
+                ['appUUID' => $_SERVER['CROSIERAPP_UUID'], 'chave' => 'unidades.json']);
+            return json_decode($rsGrades['valor'], true);
+        });
+
+
+        return $rUnidades;
+    }
+
+
+    /**
+     * Encontra uma unidade por seu id no json UNIDADES.
+     *
+     * @param int $unidadeId
+     * @return array|null
+     */
+    public function findUnidadeById(int $unidadeId): ?array
+    {
+        $cache = new FilesystemAdapter();
+
+        $unidade = $cache->get('findUnidadeById' . $unidadeId, function (ItemInterface $item) use ($unidadeId) {
+            $item->expiresAfter(3600);
+
+            $conn = $this->doctrine->getConnection();
+            $rsUnidades = $conn->fetchAssociative('SELECT valor FROM cfg_app_config WHERE app_uuid = :appUUID AND chave = :chave',
+                ['appUUID' => $_SERVER['CROSIERAPP_UUID'], 'chave' => 'unidades.json']);
+            $unidades = json_decode($rsUnidades['valor'], true);
+
+            foreach ($unidades as $unidade) {
+                if ($unidadeId === $unidade['id']) {
+                    return $unidade;
+                }
+
+            }
+
+            return null;
+        });
+        return $unidade;
     }
 
 

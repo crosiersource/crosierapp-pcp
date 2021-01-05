@@ -2,30 +2,26 @@
 
 namespace App\EntityHandler;
 
-use App\Business\PropBusiness;
+use App\Business\FichaTecnicaBusiness;
 use App\Entity\LoteProducaoItem;
 use App\Entity\LoteProducaoItemQtde;
 use CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler;
 
 /**
- * EntityHandler para a entidade LoteProducaoItem.
- *
- * @package App\EntityHandler
  * @author Carlos Eduardo Pauluk
  */
 class LoteProducaoItemEntityHandler extends EntityHandler
 {
 
-    /** @var PropBusiness */
-    private $propBusiness;
+    private FichaTecnicaBusiness $fichaTecnicaBusiness;
 
     /**
      * @required
-     * @param PropBusiness $propBusiness
+     * @param FichaTecnicaBusiness $fichaTecnicaBusiness
      */
-    public function setPropBusiness(PropBusiness $propBusiness): void
+    public function setFichaTecnicaBusiness(FichaTecnicaBusiness $fichaTecnicaBusiness): void
     {
-        $this->propBusiness = $propBusiness;
+        $this->fichaTecnicaBusiness = $fichaTecnicaBusiness;
     }
 
 
@@ -61,7 +57,7 @@ class LoteProducaoItemEntityHandler extends EntityHandler
         foreach ($qtdes as $posicao => $qtde) {
             $qtde = (int)$qtde;
             if (!$qtde) continue;
-            $tamanho = $this->propBusiness->findTamanhoByGradeIdAndPosicao($item->getFichaTecnica()->getGradeId(), $posicao);
+            $tamanho = $this->fichaTecnicaBusiness->findTamanhoByGradeIdAndPosicao($item->getFichaTecnica()->getGradeId(), $posicao);
             $gradeTamanhoId = $tamanho['id'];
             $lpiq = new LoteProducaoItemQtde();
 

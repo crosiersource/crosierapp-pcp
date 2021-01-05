@@ -2,12 +2,12 @@
 
 namespace App\Form;
 
-use App\Business\PropBusiness;
+use App\Business\FichaTecnicaBusiness;
 use App\Entity\Insumo;
 use App\Entity\TipoInsumo;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\WhereBuilder;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
@@ -23,11 +23,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class InsumoType extends AbstractType
 {
 
-    /** @var EntityManagerInterface */
-    private $doctrine;
+    private EntityManagerInterface $doctrine;
 
-    /** @var PropBusiness */
-    private $propBusiness;
+    private FichaTecnicaBusiness $fichaTecnicaBusiness;
 
     /**
      * @required
@@ -40,13 +38,12 @@ class InsumoType extends AbstractType
 
     /**
      * @required
-     * @param PropBusiness $propBusiness
+     * @param FichaTecnicaBusiness $fichaTecnicaBusiness
      */
-    public function setPropBusiness(PropBusiness $propBusiness): void
+    public function setFichaTecnicaBusiness(FichaTecnicaBusiness $fichaTecnicaBusiness): void
     {
-        $this->propBusiness = $propBusiness;
+        $this->fichaTecnicaBusiness = $fichaTecnicaBusiness;
     }
-
 
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -60,7 +57,7 @@ class InsumoType extends AbstractType
             'label' => 'Descrição'
         ));
 
-        $rUnidades = $this->propBusiness->findUnidades();
+        $rUnidades = $this->fichaTecnicaBusiness->findUnidades();
         $unidades = [];
         foreach ($rUnidades as $rUnidade) {
             $unidades[$rUnidade['label']] = $rUnidade['id'];

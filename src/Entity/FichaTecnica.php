@@ -2,9 +2,9 @@
 
 namespace App\Entity;
 
-use CrosierSource\CrosierLibBaseBundle\Entity\Base\Pessoa;
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityId;
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityIdTrait;
+use CrosierSource\CrosierLibRadxBundle\Entity\CRM\Cliente;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -28,7 +28,7 @@ class FichaTecnica implements EntityId
      * @ORM\Column(name="descricao", type="string", length=200, nullable=false)
      * @Groups("entity")
      */
-    private $descricao;
+    private ?string $descricao;
 
     /**
      * @var null|TipoArtigo
@@ -39,7 +39,7 @@ class FichaTecnica implements EntityId
      * })
      * @Groups("entity")
      */
-    private $tipoArtigo;
+    private ?TipoArtigo $tipoArtigo;
 
     /**
      * @var null|bool
@@ -47,7 +47,7 @@ class FichaTecnica implements EntityId
      * @ORM\Column(name="bloqueada", type="boolean", nullable=false)
      * @Groups("entity")
      */
-    private $bloqueada;
+    private ?bool $bloqueada;
 
     /**
      * @var null|float
@@ -55,7 +55,7 @@ class FichaTecnica implements EntityId
      * @ORM\Column(name="custo_operacional_padrao", type="float", precision=10, scale=3, nullable=false)
      * @Groups("entity")
      */
-    private $custoOperacionalPadrao;
+    private ?float $custoOperacionalPadrao;
 
     /**
      * @var null|float
@@ -63,7 +63,7 @@ class FichaTecnica implements EntityId
      * @ORM\Column(name="margem_padrao", type="float", precision=10, scale=3, nullable=false)
      * @Groups("entity")
      */
-    private $margemPadrao;
+    private ?float $margemPadrao;
 
     /**
      * @var null|string
@@ -71,7 +71,7 @@ class FichaTecnica implements EntityId
      * @ORM\Column(name="obs", type="string", length=5000, nullable=true)
      * @Groups("entity")
      */
-    private $obs;
+    private ?string $obs;
 
     /**
      * @var null|int
@@ -79,7 +79,7 @@ class FichaTecnica implements EntityId
      * @ORM\Column(name="prazo_padrao", type="integer", nullable=false)
      * @Groups("entity")
      */
-    private $prazoPadrao;
+    private ?int $prazoPadrao;
 
     /**
      * @var null|string
@@ -87,7 +87,7 @@ class FichaTecnica implements EntityId
      * @ORM\Column(name="custo_financeiro_padrao", type="decimal", precision=19, scale=2, nullable=false)
      * @Groups("entity")
      */
-    private $custoFinanceiroPadrao;
+    private ?string $custoFinanceiroPadrao;
 
     /**
      * @var null|string
@@ -95,7 +95,7 @@ class FichaTecnica implements EntityId
      * @ORM\Column(name="modo_calculo", type="string", length=15, nullable=false)
      * @Groups("entity")
      */
-    private $modoCalculo;
+    private ?string $modoCalculo;
 
     /**
      * @var null|int
@@ -103,14 +103,14 @@ class FichaTecnica implements EntityId
      * @ORM\Column(name="grade_id", type="bigint", nullable=false)
      * @Groups("entity")
      */
-    private $gradeId;
+    private ?int $gradeId;
 
     /**
      * Transient.
      *
      * @var array
      */
-    private $gradesTamanhosByPosicaoArray;
+    private array $gradesTamanhosByPosicaoArray;
 
     /**
      * @var null|bool
@@ -118,19 +118,19 @@ class FichaTecnica implements EntityId
      * @ORM\Column(name="oculta", type="boolean", nullable=false)
      * @Groups("entity")
      */
-    private $oculta;
+    private ?bool $oculta;
 
 
     /**
-     * @var null|Pessoa
+     * @var null|Cliente
      *
-     * @ORM\ManyToOne(targetEntity="CrosierSource\CrosierLibBaseBundle\Entity\Base\Pessoa")
+     * @ORM\ManyToOne(targetEntity="CrosierSource\CrosierLibRadxBundle\Entity\CRM\Cliente")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="pessoa_id", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="cliente_id", referencedColumnName="id")
      * })
      * @Groups("entity")
      */
-    private $instituicao;
+    private ?Cliente $instituicao;
 
     /**
      *
@@ -360,18 +360,18 @@ class FichaTecnica implements EntityId
     }
 
     /**
-     * @return Pessoa|null
+     * @return Cliente|null
      */
-    public function getInstituicao(): ?Pessoa
+    public function getInstituicao(): ?Cliente
     {
         return $this->instituicao;
     }
 
     /**
-     * @param Pessoa|null $instituicao
+     * @param Cliente|null $instituicao
      * @return FichaTecnica
      */
-    public function setInstituicao(?Pessoa $instituicao): FichaTecnica
+    public function setInstituicao(?Cliente $instituicao): FichaTecnica
     {
         $this->instituicao = $instituicao;
         return $this;

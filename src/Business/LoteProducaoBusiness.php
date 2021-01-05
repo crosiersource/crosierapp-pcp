@@ -11,16 +11,15 @@ use App\Entity\LoteProducaoItem;
 class LoteProducaoBusiness
 {
 
-    /** @var PropBusiness */
-    private $propBusiness;
+    private FichaTecnicaBusiness $fichaTecnicaBusiness;
 
     /**
      * @required
-     * @param PropBusiness $propBusiness
+     * @param FichaTecnicaBusiness $fichaTecnicaBusiness
      */
-    public function setPropBusiness(PropBusiness $propBusiness): void
+    public function setFichaTecnicaBusiness(FichaTecnicaBusiness $fichaTecnicaBusiness): void
     {
-        $this->propBusiness = $propBusiness;
+        $this->fichaTecnicaBusiness = $fichaTecnicaBusiness;
     }
 
 
@@ -47,14 +46,14 @@ class LoteProducaoBusiness
         for ($i = 1; $i <= 15; $i++) {
             $array[$i] = null;
             foreach ($item->getQtdes() as $qtde) {
-                $posicao = $this->propBusiness->findPosicaoByGradeTamanhoId($qtde->getGradeTamanhoId());
+                $posicao = $this->fichaTecnicaBusiness->findPosicaoByGradeTamanhoId($qtde->getGradeTamanhoId());
                 if ($posicao === $i) {
                     $array[$i] = $qtde->getQtde();
                 }
             }
         }
 
-        $gradesTamanhosByPosicaoArray = $this->propBusiness->buildGradesTamanhosByPosicaoArray($item->getFichaTecnica()->getGradeId());
+        $gradesTamanhosByPosicaoArray = $this->fichaTecnicaBusiness->buildGradesTamanhosByPosicaoArray($item->getFichaTecnica()->getGradeId());
         $item->getFichaTecnica()->setGradesTamanhosByPosicaoArray($gradesTamanhosByPosicaoArray);
 
         $item->setQtdesTamanhosArray($array);

@@ -37,6 +37,7 @@ Encore
     .addEntry('tipoInsumoList', './assets/js/tipoInsumoList.js')
     .addEntry('tipoArtigoList', './assets/js/tipoArtigoList.js')
     .addEntry('insumoList', './assets/js/insumoList.js')
+    .addEntry('instituicaoList', './assets/js/instituicaoList.js')
     .addEntry('fichaTecnicaList', './assets/js/fichaTecnicaList.js')
     .addEntry('loteProducaoList', './assets/js/loteProducaoList.js')
     .addEntry('loteProducaoForm', './assets/js/loteProducaoForm.js')

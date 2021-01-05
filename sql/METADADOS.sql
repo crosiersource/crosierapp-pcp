@@ -158,7 +158,7 @@ CREATE TABLE `prod_fichatecnica` (
   `margem_padrao` double NOT NULL,
   `obs` varchar(5000) COLLATE utf8_swedish_ci DEFAULT NULL,
   `prazo_padrao` int(11) NOT NULL,
-  `pessoa_id` bigint(20) NOT NULL,
+  `cliente_id` bigint(20) NOT NULL,
   `pessoa_nome` varchar(300) NOT NULL,
   `tipo_artigo_id` bigint(20) NOT NULL,
   `custo_financeiro_padrao` decimal(19,2) NOT NULL,
@@ -167,7 +167,7 @@ CREATE TABLE `prod_fichatecnica` (
   `oculta` bit(1) NOT NULL,
 
   PRIMARY KEY (`id`),
-  UNIQUE KEY `UK_prod_fichatecnica` (`pessoa_id`,`tipo_artigo_id`,`descricao`),
+  UNIQUE KEY `UK_prod_fichatecnica` (`cliente_id`,`tipo_artigo_id`,`descricao`),
   KEY `K_prod_fichatecnica_tipo_artigo` (`tipo_artigo_id`),
   CONSTRAINT `FK_prod_fichatecnica_tipo_artigo` FOREIGN KEY (`tipo_artigo_id`) REFERENCES `prod_tipo_artigo` (`id`),
 
@@ -332,13 +332,13 @@ CREATE TABLE `prod_lote_producao_item` (
   `lote_producao_id` bigint(20) NOT NULL,
   `obs` varchar(5000) COLLATE utf8_swedish_ci DEFAULT NULL,
   `ordem` int(11) NOT NULL,
-  
+
 
   KEY `K_prod_lote_producao_item_lote_producao` (`lote_producao_id`),
   CONSTRAINT `FK_prod_lote_producao_item_lote_producao` FOREIGN KEY (`lote_producao_id`) REFERENCES `prod_lote_producao` (`id`),
   KEY `K_prod_lote_producao_item_fichatecnica` (`fichatecnica_id`),
   CONSTRAINT `FK_prod_lote_producao_item_fichatecnica` FOREIGN KEY (`fichatecnica_id`) REFERENCES `prod_fichatecnica` (`id`),
-  
+
   -- campo de controle
   PRIMARY KEY (`id`),
   `inserted` datetime  NOT NULL,

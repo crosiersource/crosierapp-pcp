@@ -4,7 +4,6 @@ namespace App\Controller;
 
 
 use App\Business\FichaTecnicaBusiness;
-use App\Business\PropBusiness;
 use App\Entity\FichaTecnica;
 use App\Entity\FichaTecnicaItem;
 use App\Entity\Insumo;
@@ -14,6 +13,8 @@ use App\Form\FichaTecnicaType;
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\FilterData;
+use CrosierSource\CrosierLibRadxBundle\Entity\CRM\Cliente;
+use CrosierSource\CrosierLibRadxBundle\EntityHandler\CRM\ClienteEntityHandler;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -36,8 +37,6 @@ class FichaTecnicaController extends FormListController
     private FichaTecnicaBusiness $fichaTecnicaBusiness;
 
     private FichaTecnicaItemEntityHandler $fichaTecnicaItemEntityHandler;
-
-    private PropBusiness $propBusiness;
 
 
     /**
@@ -74,15 +73,6 @@ class FichaTecnicaController extends FormListController
     public function setFichaTecnicaItemEntityHandler(FichaTecnicaItemEntityHandler $fichaTecnicaItemEntityHandler): void
     {
         $this->fichaTecnicaItemEntityHandler = $fichaTecnicaItemEntityHandler;
-    }
-
-    /**
-     * @required
-     * @param PropBusiness $propBusiness
-     */
-    public function setPropBusiness(PropBusiness $propBusiness): void
-    {
-        $this->propBusiness = $propBusiness;
     }
 
 
@@ -423,6 +413,44 @@ class FichaTecnicaController extends FormListController
         $parameters['descricaoSugerida'] = $fichaTecnica->getDescricao() . ' (2)';
 
         return $this->doRender('fichaTecnica_clonar.html.twig', $parameters);
+
+    }
+
+
+    /**
+     *
+     * @Route("/fichaTecnica/corrigirClientes", name="fichaTecnica_corrigirClientes")
+     * @param ClienteEntityHandler $clienteEntityHandler
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @throws ViewException
+     * @throws \Doctrine\DBAL\Exception
+     */
+    public function corrigirClientes(ClienteEntityHandler $clienteEntityHandler): Response
+    {
+        $conn = $this->fichaTecnicaItemEntityHandler->getDoctrine()->getConnection();
+
+        $fichas = $conn->fetchAllAssociative('SELECT * FROM prod_fichatecnica');
+
+        $repoFichaTecnica = $this->fichaTecnicaItemEntityHandler->getDoctrine()->getRepository(FichaTecnica::class);
+        $repoCliente = $this->fichaTecnicaItemEntityHandler->getDoctrine()->getRepository(Cliente::class);
+
+
+        foreach ($fichas as $ficha) {
+            $cliente = $conn->fetchAllAssociative('SELECT * FROM crm_cliente WHERE pessoa_id = ' . $ficha['pessoa_id']);
+            $pessoa = $conn->fetchAssociative('SELECT * FROM bse_pessoa WHERE id = ' . $ficha['pessoa_id']);
+            if (!$cliente) {
+                $cliente = new Cliente();
+            } else {
+                $cliente = $repoCliente->find($cliente[0]['id']);
+            }
+            $cliente->nome = $pessoa['nome'] ?? '';
+            $cliente->jsonData['cliente_pcp'] = 'S';
+            $clienteEntityHandler->save($cliente);
+            /** @var FichaTecnica $fichaTecnica */
+            $fichaTecnica = $repoFichaTecnica->find($ficha['id']);
+            $fichaTecnica->setInstituicao($cliente);
+        }
+        return new Response('ok');
 
     }
 
