@@ -60,7 +60,7 @@ class FichaTecnica implements EntityId
     /**
      * @var null|float
      *
-     * @ORM\Column(name="margem_padrao", type="float", precision=10, scale=3, nullable=false)
+     * @ORM\Column(name="margem_padrao", type="float", precision=10, scale=2, nullable=false)
      * @Groups("entity")
      */
     private ?float $margemPadrao = null;

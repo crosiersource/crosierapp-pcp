@@ -142,7 +142,7 @@ class FichaTecnicaType extends AbstractType
 
             $form->add('custoOperacionalPadrao', PercentType::class, [
                 'label' => 'Cto Op Padrão',
-                'scale' => 3,
+                'scale' => 2,
                 'required' => false,
                 'attr' => [
                     'class' => 'crsr-dec3'
@@ -151,7 +151,7 @@ class FichaTecnicaType extends AbstractType
 
             $form->add('margemPadrao', PercentType::class, [
                 'label' => 'Margem Padrão',
-                'scale' => 3,
+                'scale' => 2,
                 'required' => false,
                 'attr' => [
                     'class' => 'crsr-dec3'
@@ -164,7 +164,7 @@ class FichaTecnicaType extends AbstractType
 
             $form->add('custoFinanceiroPadrao', PercentType::class, [
                 'label' => 'Cto Fin Padrão',
-                'scale' => 3,
+                'scale' => 2,
                 'required' => false,
                 'attr' => [
                     'class' => 'crsr-dec3'

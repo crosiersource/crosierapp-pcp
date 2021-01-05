@@ -35,7 +35,7 @@
             <td>{{ preco.descricao }}</td>
             <td class="text-right">{{ preco.precoCusto|number_format(2,',','.') }}</td>
             <td class="text-center">{{ preco.prazo }}</td>
-            <td class="text-center">{{ preco.margem|number_format(2,',','.') }}%</td>
+            <td class="text-center">{{ (preco.margem|default(0) * 100)|number_format(2,',','.') }}%</td>
             <td class="text-right">{{ preco.precoPrazo|number_format(2,',','.') }}</td>
             <td class="text-right">{{ preco.precoVista|number_format(2,',','.') }}</td>
 
