@@ -78,7 +78,7 @@ class FichaTecnicaType extends AbstractType
                 try {
                     /** @var ClienteRepository $repoCliente */
                     $repoCliente = $this->doctrine->getRepository(Cliente::class);
-                    $sql = 'SELECT id FROM crm_cliente WHERE json_data->>"$.cliente_pcp" = \'S\'';
+                    $sql = 'SELECT id FROM crm_cliente WHERE json_data->>"$.cliente_pcp" = \'S\' ORDER BY nome';
                     $rs = $this->doctrine->getConnection()->fetchAllAssociative($sql);
                     if (!$rs || count($rs) < 1) {
                         return null;
@@ -90,7 +90,7 @@ class FichaTecnicaType extends AbstractType
 
                 } catch (\Throwable $e) {
                     $msg = ExceptionUtils::treatException($e);
-                    throw new ViewException('Erro ao pesquisar clientes FILIAL_PROP (' . $msg . ')', 0, $e);
+                    throw new ViewException('Erro ao pesquisar clientes cliente_pcp (' . $msg . ')', 0, $e);
                 }
 
             }
