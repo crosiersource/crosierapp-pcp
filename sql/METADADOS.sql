@@ -395,5 +395,15 @@ CREATE TABLE `prod_lote_producao_item_qtde` (
 
 
 
-ALTER TABLE prod_insumo ADD `dt_custo` DATE GENERATED ALWAYS AS (IF(json_data->"$.dt_custo" = CAST('null' AS JSON) OR trim(json_data->>"$.dt_custo") = '', NULL, CAST(json_data->>"$.dt_custo" AS DATE)));
+ALTER TABLE prod_insumo ADD `dt_custo` date GENERATED ALWAYS AS
+    (if(
+        (
+            (trim(json_unquote(json_extract(`json_data`,'$.dt_custo'))) IS NULL) OR
+            (json_extract(`json_data`,'$.dt_custo') = cast('null' as json)) OR
+            (trim(json_unquote(json_extract(`json_data`,'$.dt_custo'))) = '')
+        ),
+        NULL,
+        cast(json_unquote(json_extract(`json_data`,'$.dt_custo')) as date)
+        )) VIRTUAL;
+
 ALTER TABLE prod_insumo ADD `preco_custo` DECIMAL(15,2) GENERATED ALWAYS AS (IF(json_data->"$.preco_custo" = CAST('null' AS JSON) OR trim(json_data->>"$.preco_custo") = '', NULL, CAST(json_data->>"$.preco_custo" AS DECIMAL)));

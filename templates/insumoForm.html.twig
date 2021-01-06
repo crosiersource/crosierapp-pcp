@@ -28,13 +28,17 @@
 
                 {{ form_start(form) }}
 
+
+                {{ form_row(form._token) }}
                 {{ form_row(form.tipoInsumo) }}
                 {{ form_row(form.codigo) }}
                 {{ form_row(form.descricao) }}
                 {{ form_row(form.unidadeProdutoId) }}
 
+
                 {{ form_row(form.precoAtual.dtCusto) }}
                 {{ form_row(form.precoAtual.precoCusto) }}
+
 
 
                 <div class="row">
@@ -46,7 +50,7 @@
                 </div>
 
 
-                {{ form_end(form) }}
+                {{ form_end(form, {'render_rest': false}) }}
 
 
             </div>

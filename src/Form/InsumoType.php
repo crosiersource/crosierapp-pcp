@@ -78,7 +78,7 @@ class InsumoType extends AbstractType
             'choice_label' => function (?TipoInsumo $tipoInsumo) {
                 return $tipoInsumo && $tipoInsumo->getDescricaoMontada() ? $tipoInsumo->getDescricaoMontada() : '';
             },
-            'attr' => ['class' => 'autoSelect2']
+            'attr' => ['class' => 'autoSelect2 focusOnReady']
         ));
 
         $builder->add('precoAtual', InsumoPrecoType::class);

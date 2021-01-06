@@ -67,24 +67,6 @@ class Insumo implements EntityId
      */
     public ?array $jsonData = null;
 
-    /**
-     * Transient (json_data->>"$.dt_custo")
-     * @var null|\DateTime
-     *
-     * @ORM\Column(name="dt_custo", type="date", nullable=false)
-     * @Groups("entity")
-     */
-    public ?\DateTime $dtCusto = null;
-
-    /**
-     * Transient (json_data->>"$.preco_custo")
-     * @var null|float
-     *
-     * @ORM\Column(name="preco_custo", type="float", precision=10, scale=0, nullable=false)
-     * @Groups("entity")
-     */
-    public ?float $precoCusto = null;
-
 
     /**
      *
@@ -240,6 +222,7 @@ class Insumo implements EntityId
         }
         return $this->precoAtual;
     }
+
 
 
 }

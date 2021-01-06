@@ -70,8 +70,14 @@ class InsumoEntityHandler extends EntityHandler
             $insumoPreco->setPrazo(0);
             $insumoPreco->setPrecoVista(0);
             $insumoPreco->setPrecoPrazo(0);
-            $insumoPreco->setPrecoCusto($insumo->getPrecoAtual()->getPrecoCusto());
-            $insumoPreco->setDtCusto(clone $insumo->getPrecoAtual()->getDtCusto());
+            if ($insumo->getPrecoAtual()) {
+                if ($insumo->getPrecoAtual()->getPrecoCusto()) {
+                    $insumoPreco->setPrecoCusto($insumo->getPrecoAtual()->getPrecoCusto());
+                }
+                if ($insumo->getPrecoAtual()->getDtCusto()) {
+                    $insumoPreco->setDtCusto(clone $insumo->getPrecoAtual()->getDtCusto());
+                }
+            }
 
 // para resetar o precoAtual
             $insumo->setPrecoAtual(null);
@@ -87,8 +93,14 @@ class InsumoEntityHandler extends EntityHandler
 
         }
 
-        $insumo->jsonData['preco_custo'] = $insumo->getPrecoAtual()->getPrecoCusto();
-        $insumo->jsonData['dt_custo'] = $insumo->getPrecoAtual()->getDtCusto()->format('Y-m-d');
+        if ($insumo->getPrecoAtual()) {
+            if ($insumo->getPrecoAtual()->getPrecoCusto()) {
+                $insumo->jsonData['preco_custo'] = $insumo->getPrecoAtual()->getPrecoCusto();
+            }
+            if ($insumo->getPrecoAtual()->getDtCusto()) {
+                $insumo->jsonData['dt_custo'] = $insumo->getPrecoAtual()->getDtCusto()->format('Y-m-d');
+            }
+        }
 
     }
 
