@@ -18,6 +18,11 @@ Routing.setRoutingData(routes);
 function getDatatablesColumns() {
     return [
         {
+            name: 'e.id',
+            data: 'e.id',
+            title: 'Id'
+        },
+        {
             name: 'e.codigo',
             data: 'e.codigo',
             title: 'Código'
@@ -33,12 +38,12 @@ function getDatatablesColumns() {
             title: 'Tipo de Insumo'
         },
         {
-            name: 'e.precoCusto',
-            data: 'e.precoCusto',
+            name: 'e.jsonData.preco_custo',
+            data: 'e.jsonData.preco_custo',
             title: 'Custo',
             render: function (data, type, row) {
-                let val = parseFloat(data);
-                return 'R$ ' + Numeral(val).format('0.0,[00]');
+                let val = parseFloat(data + 0.0);
+                return Numeral(val).format('$ 0.0,[00]');
             },
             className: 'text-right'
         },
