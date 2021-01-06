@@ -43,8 +43,8 @@ function getDatatablesColumns() {
             className: 'text-right'
         },
         {
-            name: 'e.dtCusto',
-            data: 'e.dtCusto',
+            name: 'e.jsonData.dt_custo',
+            data: 'e.jsonData.dt_custo',
             title: 'Dt Custo',
             render: function (data, type, row) {
                 return Moment(data).format('DD/MM/YYYY');
