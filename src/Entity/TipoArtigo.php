@@ -27,7 +27,7 @@ class TipoArtigo implements EntityId
      * @ORM\Column(name="codigo", type="integer", nullable=false)
      * @Groups("entity")
      */
-    private $codigo;
+    private ?int $codigo = null;
 
     /**
      * @var null|string
@@ -35,7 +35,7 @@ class TipoArtigo implements EntityId
      * @ORM\Column(name="descricao", type="string", length=100, nullable=false)
      * @Groups("entity")
      */
-    private $descricao;
+    private ?string $descricao = null;
 
     /**
      * @var null|string
@@ -43,7 +43,7 @@ class TipoArtigo implements EntityId
      * @ORM\Column(name="modo_calculo", type="string", length=15, nullable=false)
      * @Groups("entity")
      */
-    private $modoCalculo;
+    private ?string $modoCalculo = null;
 
     /**
      * @var null|int
@@ -51,7 +51,7 @@ class TipoArtigo implements EntityId
      * @ORM\Column(name="subdepto_id", type="bigint", nullable=false)
      * @Groups("entity")
      */
-    private $subdeptoId;
+    private ?int $subdeptoId = null;
 
     /**
      * @return string

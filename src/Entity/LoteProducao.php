@@ -28,7 +28,7 @@ class LoteProducao implements EntityId
      * @ORM\Column(name="codigo", type="integer", nullable=false)
      * @Groups("entity")
      */
-    private $codigo;
+    private ?int $codigo = null;
 
     /**
      * @var null|string
@@ -36,7 +36,7 @@ class LoteProducao implements EntityId
      * @ORM\Column(name="descricao", type="string", length=200, nullable=false)
      * @Groups("entity")
      */
-    private $descricao;
+    private ?string $descricao = null;
 
     /**
      * @var null|\DateTime
@@ -44,7 +44,7 @@ class LoteProducao implements EntityId
      * @ORM\Column(name="dt_lote", type="date", nullable=true)
      * @Groups("entity")
      */
-    private $dtLote;
+    private ?\DateTime $dtLote = null;
 
     /**
      *

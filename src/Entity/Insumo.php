@@ -29,7 +29,7 @@ class Insumo implements EntityId
      * @ORM\Column(name="codigo", type="integer", nullable=false)
      * @Groups("entity")
      */
-    private ?int $codigo;
+    private ?int $codigo = null;
 
     /**
      * @var null|string
@@ -37,7 +37,7 @@ class Insumo implements EntityId
      * @ORM\Column(name="descricao", type="string", length=200, nullable=false)
      * @Groups("entity")
      */
-    private ?string $descricao;
+    private ?string $descricao = null;
 
     /**
      * @var null|int
@@ -45,7 +45,7 @@ class Insumo implements EntityId
      * @ORM\Column(name="unidade_produto_id", type="bigint", nullable=false)
      * @Groups("entity")
      */
-    private ?int $unidadeProdutoId;
+    private ?int $unidadeProdutoId = null;
 
     /**
      * @var null|TipoInsumo
@@ -56,7 +56,7 @@ class Insumo implements EntityId
      * })
      * @Groups("entity")
      */
-    private ?TipoInsumo $tipoInsumo;
+    private ?TipoInsumo $tipoInsumo = null;
 
     /**
      *
@@ -74,7 +74,7 @@ class Insumo implements EntityId
      * @ORM\Column(name="dt_custo", type="date", nullable=false)
      * @Groups("entity")
      */
-    public ?\DateTime $dtCusto;
+    public ?\DateTime $dtCusto = null;
 
     /**
      * Transient (json_data->>"$.preco_custo")
@@ -83,7 +83,7 @@ class Insumo implements EntityId
      * @ORM\Column(name="preco_custo", type="float", precision=10, scale=0, nullable=false)
      * @Groups("entity")
      */
-    public ?float $precoCusto;
+    public ?float $precoCusto = null;
 
 
     /**
@@ -103,7 +103,6 @@ class Insumo implements EntityId
      * Transient.
      * @Groups("entity")
      * @MaxDepth(2)
-     * @var InsumoPreco
      */
     private ?InsumoPreco $precoAtual = null;
 

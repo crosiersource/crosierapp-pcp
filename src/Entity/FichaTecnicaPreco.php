@@ -26,7 +26,7 @@ class FichaTecnicaPreco implements EntityId
      * @ORM\Column(name="coeficiente", type="float", precision=10, scale=0, nullable=false)
      * @Groups("entity")
      */
-    private $coeficiente;
+    private ?float $coeficiente = null;
 
     /**
      * @var null|float
@@ -34,7 +34,7 @@ class FichaTecnicaPreco implements EntityId
      * @ORM\Column(name="custo_operacional", type="float", precision=10, scale=0, nullable=false)
      * @Groups("entity")
      */
-    private $custoOperacional;
+    private ?float $custoOperacional = null;
 
     /**
      * @var null|string
@@ -42,7 +42,7 @@ class FichaTecnicaPreco implements EntityId
      * @ORM\Column(name="descricao", type="string", length=200, nullable=false)
      * @Groups("entity")
      */
-    private $descricao;
+    private ?string $descricao = null;
 
     /**
      * @var null|\DateTime
@@ -50,7 +50,7 @@ class FichaTecnicaPreco implements EntityId
      * @ORM\Column(name="dt_custo", type="date", nullable=false)
      * @Groups("entity")
      */
-    private $dtCusto;
+    private ?\DateTime $dtCusto = null;
 
     /**
      * @var null|float
@@ -58,7 +58,7 @@ class FichaTecnicaPreco implements EntityId
      * @ORM\Column(name="margem", type="float", precision=10, scale=0, nullable=false)
      * @Groups("entity")
      */
-    private $margem;
+    private ?float $margem = null;
 
     /**
      * @var null|int
@@ -66,7 +66,7 @@ class FichaTecnicaPreco implements EntityId
      * @ORM\Column(name="prazo", type="integer", nullable=false)
      * @Groups("entity")
      */
-    private $prazo;
+    private ?int $prazo = null;
 
     /**
      * @var null|float
@@ -74,7 +74,7 @@ class FichaTecnicaPreco implements EntityId
      * @ORM\Column(name="preco_custo", type="float", precision=10, scale=0, nullable=false)
      * @Groups("entity")
      */
-    private $precoCusto;
+    private ?float $precoCusto = null;
 
     /**
      * @var null|float
@@ -82,7 +82,7 @@ class FichaTecnicaPreco implements EntityId
      * @ORM\Column(name="preco_prazo", type="float", precision=10, scale=0, nullable=false)
      * @Groups("entity")
      */
-    private $precoPrazo;
+    private ?float $precoPrazo = null;
 
     /**
      * @var null|float
@@ -90,7 +90,7 @@ class FichaTecnicaPreco implements EntityId
      * @ORM\Column(name="preco_vista", type="float", precision=10, scale=0, nullable=false)
      * @Groups("entity")
      */
-    private $precoVista;
+    private ?float $precoVista = null;
 
     /**
      * @var null|string
@@ -98,7 +98,7 @@ class FichaTecnicaPreco implements EntityId
      * @ORM\Column(name="custo_financeiro", type="decimal", precision=19, scale=2, nullable=false)
      * @Groups("entity")
      */
-    private $custoFinanceiro;
+    private ?string $custoFinanceiro = null;
 
     /**
      * @var null|FichaTecnica
@@ -109,7 +109,7 @@ class FichaTecnicaPreco implements EntityId
      * })
      * @Groups("entity")
      */
-    private $fichaTecnica;
+    private ?FichaTecnica $fichaTecnica = null;
 
 
     /**

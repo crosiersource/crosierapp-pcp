@@ -26,7 +26,7 @@ class TipoInsumo implements EntityId
      * @ORM\Column(name="codigo", type="integer", nullable=false)
      * @Groups("entity")
      */
-    private $codigo;
+    private ?int $codigo = null;
 
     /**
      * @var null|string
@@ -34,7 +34,7 @@ class TipoInsumo implements EntityId
      * @ORM\Column(name="descricao", type="string", length=100, nullable=false)
      * @Groups("entity")
      */
-    private $descricao;
+    private ?string $descricao = null;
 
     /**
      * @var null|int
@@ -42,7 +42,7 @@ class TipoInsumo implements EntityId
      * @ORM\Column(name="unidade_produto_id", type="bigint", nullable=false)
      * @Groups("entity")
      */
-    private $unidadeProdutoId;
+    private ?int $unidadeProdutoId = null;
 
 
     public function getCodigo($format = false)

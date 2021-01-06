@@ -31,7 +31,7 @@ class FichaTecnicaItem implements EntityId
      * })
      * @Groups("entity")
      */
-    private $fichaTecnica;
+    private ?FichaTecnica $fichaTecnica = null;
 
     /**
      * @var null|Insumo
@@ -42,7 +42,7 @@ class FichaTecnicaItem implements EntityId
      * })
      * @Groups("entity")
      */
-    private $insumo;
+    private ?Insumo $insumo = null;
 
     /**
      *
@@ -62,14 +62,14 @@ class FichaTecnicaItem implements EntityId
      *
      * @var array
      */
-    private $qtdesTamanhosArray;
+    private array $qtdesTamanhosArray;
 
     /**
      * Transient.
      *
      * @var float
      */
-    private $totalQtdes;
+    private float $totalQtdes;
 
 
     public function __construct()

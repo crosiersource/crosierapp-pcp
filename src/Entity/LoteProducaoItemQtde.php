@@ -26,7 +26,7 @@ class LoteProducaoItemQtde implements EntityId
      * @ORM\Column(name="qtde", type="integer", nullable=false)
      * @Groups("entity")
      */
-    private $qtde;
+    private ?int $qtde = null;
 
     /**
      * @var null|int
@@ -34,7 +34,7 @@ class LoteProducaoItemQtde implements EntityId
      * @ORM\Column(name="grade_tamanho_id", type="bigint", nullable=false)
      * @Groups("entity")
      */
-    private $gradeTamanhoId;
+    private ?int $gradeTamanhoId = null;
 
     /**
      * @var null|LoteProducaoItem
@@ -45,7 +45,7 @@ class LoteProducaoItemQtde implements EntityId
      * })
      * @Groups("entity")
      */
-    private $loteProducaoItem;
+    private ?LoteProducaoItem $loteProducaoItem = null;
 
 
     /**

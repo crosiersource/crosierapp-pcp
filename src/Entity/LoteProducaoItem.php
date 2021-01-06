@@ -28,7 +28,7 @@ class LoteProducaoItem implements EntityId
      * @ORM\Column(name="pedido", type="string", length=50, nullable=true)
      * @Groups("entity")
      */
-    private $pedido;
+    private ?string $pedido = null;
 
     /**
      * @var null|string
@@ -36,7 +36,7 @@ class LoteProducaoItem implements EntityId
      * @ORM\Column(name="obs", type="string", length=5000, nullable=true)
      * @Groups("entity")
      */
-    private $obs;
+    private ?string $obs = null;
 
     /**
      * @var null|int
@@ -44,7 +44,7 @@ class LoteProducaoItem implements EntityId
      * @ORM\Column(name="ordem", type="integer", nullable=false)
      * @Groups("entity")
      */
-    private $ordem;
+    private ?int $ordem = null;
 
     /**
      * @var null|FichaTecnica
@@ -55,7 +55,7 @@ class LoteProducaoItem implements EntityId
      * })
      * @Groups("entity")
      */
-    private $fichaTecnica;
+    private ?FichaTecnica $fichaTecnica = null;
 
     /**
      * @var null|LoteProducao
@@ -66,7 +66,7 @@ class LoteProducaoItem implements EntityId
      * })
      * @Groups("entity")
      */
-    private $loteProducao;
+    private ?LoteProducao $loteProducao = null;
 
     /**
      *
@@ -86,14 +86,14 @@ class LoteProducaoItem implements EntityId
      *
      * @var array
      */
-    private $qtdesTamanhosArray;
+    private array $qtdesTamanhosArray;
 
     /**
      * Transient.
      *
      * @var integer
      */
-    private $totalQtdes;
+    private int $totalQtdes;
 
 
     public function __construct()

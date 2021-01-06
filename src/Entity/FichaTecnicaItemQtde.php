@@ -27,7 +27,7 @@ class FichaTecnicaItemQtde implements EntityId
      * @ORM\Column(name="qtde", type="decimal", precision=15, scale=3, nullable=true)
      * @Groups("entity")
      */
-    private $qtde;
+    private ?string $qtde = null;
 
     /**
      * @var null|int
@@ -35,7 +35,7 @@ class FichaTecnicaItemQtde implements EntityId
      * @ORM\Column(name="grade_tamanho_id", type="bigint", nullable=false)
      * @Groups("entity")
      */
-    private $gradeTamanhoId;
+    private ?int $gradeTamanhoId = null;
 
     /**
      * @var null|FichaTecnicaItem
@@ -46,7 +46,7 @@ class FichaTecnicaItemQtde implements EntityId
      * })
      * @Groups("entity")
      */
-    private $fichaTecnicaItem;
+    private ?FichaTecnicaItem $fichaTecnicaItem = null;
 
 
     /**
