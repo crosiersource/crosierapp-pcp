@@ -14,22 +14,21 @@ security:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
         main:
-            # configuring the maximum login attempts (per minute)
-            login_throttling:
-                max_attempts: 3
 
             entry_point: App\Security\CrosierCoreAuthenticator
 
             lazy: false
 
             remember_me:
-                name: 'RMMBRM'
-                secret: "%env(CROSIERCORE_APPSECRET)%"
+                name: 'CRSRRMMBRM'
+                secure: true
+                secret: "%env(APP_SECRET)%"
                 lifetime: 6048000 # 10 semanas
                 domain: "%env(CROSIER_MAINDOMAIN)%"
                 samesite: lax
                 httponly: false
                 always_remember_me: true
+                path: /
 
             custom_authenticators:
                 - App\Security\CrosierCoreAuthenticator
