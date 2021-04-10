@@ -112,24 +112,8 @@
     },
     "extra": {
         "symfony": {
-            "allow-contrib": false,
+            "allow-contrib": true,
             "require": "5.2.*"
         }
-    },
-    "repositories": [
-        {
-            "type": "path",
-            "url": "../crosierlib-base/",
-            "options": {
-                "symlink": true
-            }
-        },
-        {
-            "type": "path",
-            "url": "../crosierlib-radx/",
-            "options": {
-                "symlink": true
-            }
-        }
-    ]
+    }
 }
