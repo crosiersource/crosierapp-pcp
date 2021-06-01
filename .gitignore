@@ -33,3 +33,7 @@ assets/static/fos_js_routes.json
 src/Entity/uppercaseFields.json
 
 
+
+###> phpunit/phpunit ###
+.phpunit.result.cache
+###< phpunit/phpunit ###
