@@ -7,6 +7,7 @@ use App\Entity\InsumoPreco;
 use App\Repository\InsumoRepository;
 use CrosierSource\CrosierLibBaseBundle\EntityHandler\EntityHandler;
 use Doctrine\ORM\Query\ResultSetMapping;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 
 /**
  * EntityHandler para a entidade Insumo.
@@ -103,6 +104,15 @@ class InsumoEntityHandler extends EntityHandler
     {
         $insumo->jsonData['visivel'] = 'N';
         $this->save($insumo);
+    }
+
+    /**
+     * @param $entityId
+     */
+    public function afterSave($entityId)
+    {
+        $cache = new FilesystemAdapter($_SERVER['CROSIERAPP_ID'] . '.cache', 0, $_SERVER['CROSIER_SESSIONS_FOLDER']);
+        $cache->clear();
     }
 
 
