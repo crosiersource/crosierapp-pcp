@@ -128,7 +128,7 @@ class FichaTecnica implements EntityId
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="cliente_id", referencedColumnName="id")
      * })
-     * @Groups("entity")
+     * @Groups("entity","cliente")
      */
     private ?Cliente $instituicao = null;
 

@@ -599,7 +599,7 @@ class FichaTecnicaBusiness
 
     public function buildInstituicoesSelect2()
     {
-        $cache = new FilesystemAdapter($_SERVER['CROSIERAPP_ID'] . '.cache');
+        $cache = new FilesystemAdapter($_SERVER['CROSIERAPP_ID'] . '.cache', 0, $_SERVER['CROSIER_SESSIONS_FOLDER']);
 
         $arrInstituicoes = $cache->get('buildInstituicoesSelect2', function (ItemInterface $item) {
             $conn = $this->doctrine->getConnection();
@@ -626,7 +626,7 @@ class FichaTecnicaBusiness
     public function findGrades(): array
     {
 
-        $cache = new FilesystemAdapter();
+        $cache = new FilesystemAdapter($_SERVER['CROSIERAPP_ID'] . '.cache', 0, $_SERVER['CROSIER_SESSIONS_FOLDER']);
 
         $rGrades = $cache->get('grades', function (ItemInterface $item) {
             $item->expiresAfter(3600);
@@ -664,7 +664,7 @@ class FichaTecnicaBusiness
      */
     public function findTamanhosByGradeId(int $gradeId): ?array
     {
-        $cache = new FilesystemAdapter();
+        $cache = new FilesystemAdapter($_SERVER['CROSIERAPP_ID'] . '.cache', 0, $_SERVER['CROSIER_SESSIONS_FOLDER']);
 
         $grades = $cache->get('findTamanhosByGradeId_' . $gradeId, function (ItemInterface $item) use ($gradeId) {
             $item->expiresAfter(3600);
@@ -691,7 +691,7 @@ class FichaTecnicaBusiness
      */
     public function findGradeTamanhoById(int $id): ?array
     {
-        $cache = new FilesystemAdapter();
+        $cache = new FilesystemAdapter($_SERVER['CROSIERAPP_ID'] . '.cache', 0, $_SERVER['CROSIER_SESSIONS_FOLDER']);
 
         $tamanho = $cache->get('findGradeTamanhoById_' . $id, function (ItemInterface $item) use ($id) {
             $item->expiresAfter(3600);
@@ -723,7 +723,7 @@ class FichaTecnicaBusiness
     public function findTamanhoByGradeIdAndPosicao(int $gradeId, int $posicao): ?array
     {
 
-        $cache = new FilesystemAdapter();
+        $cache = new FilesystemAdapter($_SERVER['CROSIERAPP_ID'] . '.cache', 0, $_SERVER['CROSIER_SESSIONS_FOLDER']);
 
         $tamanho = $cache->get('findTamanhoByGradeIdAndPosicao_' . $gradeId . '-' . $posicao, function (ItemInterface $item) use ($gradeId, $posicao) {
             $item->expiresAfter(3600);
@@ -749,7 +749,7 @@ class FichaTecnicaBusiness
      */
     public function buildGradesTamanhosByPosicaoArray(int $gradeId): array
     {
-        $cache = new FilesystemAdapter();
+        $cache = new FilesystemAdapter($_SERVER['CROSIERAPP_ID'] . '.cache', 0, $_SERVER['CROSIER_SESSIONS_FOLDER']);
 
         $gradesTamanhosByPosicaoArray = $cache->get('buildGradesTamanhosByPosicaoArray_' . $gradeId, function (ItemInterface $item) use ($gradeId) {
             $item->expiresAfter(3600);
@@ -781,7 +781,7 @@ class FichaTecnicaBusiness
     public function findPosicaoByGradeTamanhoId(int $gradeTamanhoId): int
     {
 
-        $cache = new FilesystemAdapter();
+        $cache = new FilesystemAdapter($_SERVER['CROSIERAPP_ID'] . '.cache', 0, $_SERVER['CROSIER_SESSIONS_FOLDER']);
 
         $posicao = $cache->get('findPosicaoByGradeTamanhoId' . $gradeTamanhoId, function (ItemInterface $item) use ($gradeTamanhoId) {
             $item->expiresAfter(3600);
@@ -813,7 +813,7 @@ class FichaTecnicaBusiness
     public function findUnidades(): array
     {
 
-        $cache = new FilesystemAdapter();
+        $cache = new FilesystemAdapter($_SERVER['CROSIERAPP_ID'] . '.cache', 0, $_SERVER['CROSIER_SESSIONS_FOLDER']);
 
         $rUnidades = $cache->get('unidades', function (ItemInterface $item) {
             $item->expiresAfter(3600);
@@ -837,7 +837,7 @@ class FichaTecnicaBusiness
      */
     public function findUnidadeById(int $unidadeId): ?array
     {
-        $cache = new FilesystemAdapter();
+        $cache = new FilesystemAdapter($_SERVER['CROSIERAPP_ID'] . '.cache', 0, $_SERVER['CROSIER_SESSIONS_FOLDER']);
 
         $unidade = $cache->get('findUnidadeById' . $unidadeId, function (ItemInterface $item) use ($unidadeId) {
             $item->expiresAfter(3600);

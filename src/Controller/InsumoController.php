@@ -36,7 +36,8 @@ class InsumoController extends FormListController
     public function getFilterDatas(array $params): array
     {
         return [
-            new FilterData(['descricao', 'ti.descricao'], 'LIKE', 'str', $params)
+            new FilterData(['descricao', 'ti.descricao'], 'LIKE', 'str', $params),
+            new FilterData(['visivel'], 'NEQ', 'visivel', $params, null, true),
         ];
     }
 
@@ -60,7 +61,7 @@ class InsumoController extends FormListController
         ];
 
         $fnHandleRequestOnValid = function (Request $request, $insumo): void {
-            $cache = new FilesystemAdapter($_SERVER['CROSIERAPP_ID'] . '.cache');
+            $cache = new FilesystemAdapter($_SERVER['CROSIERAPP_ID'] . '.cache', 0, $_SERVER['CROSIER_SESSIONS_FOLDER']);
             $cache->clear();
         };
 
@@ -103,7 +104,8 @@ class InsumoController extends FormListController
      */
     public function datatablesJsList(Request $request): Response
     {
-        return $this->doDatatablesJsList($request);
+        // o filter 'visivel' é NEQ...
+        return $this->doDatatablesJsList($request, ['filter' => ['visivel' => 'N']]);
     }
 
     /**
@@ -117,7 +119,7 @@ class InsumoController extends FormListController
      */
     public function delete(Request $request, Insumo $insumo): \Symfony\Component\HttpFoundation\RedirectResponse
     {
-        return $this->doDelete($request, $insumo);
+        return $this->doDelete($request, $insumo, ['listRoute' => 'insumo_list']);
     }
 
     /**

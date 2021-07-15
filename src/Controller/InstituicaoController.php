@@ -58,7 +58,7 @@ class InstituicaoController extends FormListController
 
         $fnHandleRequestOnValid = function (Request $request, /** @var Cliente $cliente */ $cliente): void {
             $cliente->jsonData['cliente_pcp'] = 'S';
-            $cache = new FilesystemAdapter($_SERVER['CROSIERAPP_ID'] . '.cache');
+            $cache = new FilesystemAdapter($_SERVER['CROSIERAPP_ID'] . '.cache', 0, $_SERVER['CROSIER_SESSIONS_FOLDER']);
             $cache->clear();
         };
 

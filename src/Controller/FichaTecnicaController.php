@@ -163,7 +163,7 @@ class FichaTecnicaController extends FormListController
      */
     public function datatablesJsList(Request $request): Response
     {
-        return $this->doDatatablesJsList($request);
+        return $this->doDatatablesJsList($request, null, null, null, ['outrosGruposSerializ' => ['cliente']]);
     }
 
 
@@ -213,10 +213,12 @@ class FichaTecnicaController extends FormListController
      */
     private function buildInsumosSelect2()
     {
-        $cache = new FilesystemAdapter($_SERVER['CROSIERAPP_ID'] . '.cache');
+        $cache = new FilesystemAdapter($_SERVER['CROSIERAPP_ID'] . '.cache', 0, $_SERVER['CROSIER_SESSIONS_FOLDER']);
 
         $arrInsumos = $cache->get('buildInsumosSelect2', function (ItemInterface $item) {
-            $insumos = $this->getDoctrine()->getRepository(Insumo::class)->findBy([], ['descricao' => 'ASC']);
+            $fd = new FilterData('visivel', 'NEQ', 'visivel', ['filter' => ['visivel' => 'N']], null, true);
+            $insumos = $this->getDoctrine()->getRepository(Insumo::class)
+                ->findByFiltersSimpl([$fd], ['descricao' => 'ASC'], 0, 9999999);
 
             $arrInsumos = [];
             $arrInsumos[] = ['id' => '', 'text' => '...'];

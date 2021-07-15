@@ -17,7 +17,6 @@ use Doctrine\ORM\Query\ResultSetMapping;
 class InsumoEntityHandler extends EntityHandler
 {
 
-
     public function getEntityClass()
     {
         return Insumo::class;
@@ -25,6 +24,9 @@ class InsumoEntityHandler extends EntityHandler
 
     public function beforeSave($insumo)
     {
+        if (!isset($insumo->jsonData['visivel'])) {
+            $insumo->jsonData['visivel'] = 'S';
+        }
         /** @var Insumo $insumo */
         if (!$insumo->getCodigo()) {
             /** @var InsumoRepository $repoInsumo */
@@ -52,7 +54,6 @@ class InsumoEntityHandler extends EntityHandler
             }
         }
 
-
         if ($adicionarPreco) {
             $insumoPrecos = $insumo->getPrecos();
             foreach ($insumoPrecos as $preco) {
@@ -79,18 +80,11 @@ class InsumoEntityHandler extends EntityHandler
                 }
             }
 
-// para resetar o precoAtual
+            // para resetar o precoAtual
             $insumo->setPrecoAtual(null);
-
             $this->handleSavingEntityId($insumoPreco);
-
             $insumo->getPrecos()->add($insumoPreco);
-
             $insumo->getPrecoAtual();
-
-
-
-
         }
 
         if ($insumo->getPrecoAtual()) {
@@ -102,6 +96,13 @@ class InsumoEntityHandler extends EntityHandler
             }
         }
 
+    }
+
+    
+    public function delete($insumo)
+    {
+        $insumo->jsonData['visivel'] = 'N';
+        $this->save($insumo);
     }
 
 

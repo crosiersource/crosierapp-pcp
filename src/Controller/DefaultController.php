@@ -30,7 +30,7 @@ class DefaultController extends BaseController
      */
     public function limparCaches(): \Symfony\Component\HttpFoundation\RedirectResponse
     {
-        $cache = new FilesystemAdapter($_SERVER['CROSIERAPP_ID'] . '.cache');
+        $cache = new FilesystemAdapter($_SERVER['CROSIERAPP_ID'] . '.cache', 0, $_SERVER['CROSIER_SESSIONS_FOLDER']);
         $cache->clear();
         return $this->redirectToRoute('index');
     }
