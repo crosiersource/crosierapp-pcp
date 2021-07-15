@@ -224,7 +224,7 @@ class FichaTecnicaController extends FormListController
             $arrInsumos[] = ['id' => '', 'text' => '...'];
             /** @var Insumo $insumo */
             foreach ($insumos as $insumo) {
-                $arrInsumos[] = ['id' => $insumo->getId(), 'text' => $insumo->getDescricao() . ' (' . number_format($insumo->getPrecoAtual()->getPrecoCusto(), 2, ',', '.') . ')'];
+                $arrInsumos[] = ['id' => $insumo->getId(), 'text' => $insumo->getDescricao() . ' - ' . $insumo->marca . ' (' . number_format($insumo->getPrecoAtual()->getPrecoCusto(), 2, ',', '.') . ')'];
             }
 
             return $arrInsumos;
