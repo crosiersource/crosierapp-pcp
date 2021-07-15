@@ -57,6 +57,10 @@ class InsumoType extends AbstractType
             'label' => 'Descrição'
         ));
 
+        $builder->add('marca', TextType::class, array(
+            'label' => 'Marca'
+        ));
+
         $rUnidades = $this->fichaTecnicaBusiness->findUnidades();
         $unidades = [];
         foreach ($rUnidades as $rUnidade) {

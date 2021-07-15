@@ -29,7 +29,7 @@ class Insumo implements EntityId
      * @ORM\Column(name="codigo", type="integer", nullable=false)
      * @Groups("entity")
      */
-    private ?int $codigo = null;
+    public ?int $codigo = null;
 
     /**
      * @var null|string
@@ -37,7 +37,15 @@ class Insumo implements EntityId
      * @ORM\Column(name="descricao", type="string", length=200, nullable=false)
      * @Groups("entity")
      */
-    private ?string $descricao = null;
+    public ?string $descricao = null;
+
+    /**
+     * @var null|string
+     *
+     * @ORM\Column(name="marca", type="string", length=200, nullable=true)
+     * @Groups("entity")
+     */
+    public ?string $marca = null;
 
     /**
      * @var null|int
@@ -45,7 +53,7 @@ class Insumo implements EntityId
      * @ORM\Column(name="unidade_produto_id", type="bigint", nullable=false)
      * @Groups("entity")
      */
-    private ?int $unidadeProdutoId = null;
+    public ?int $unidadeProdutoId = null;
 
     /**
      * @var null|TipoInsumo
@@ -56,7 +64,7 @@ class Insumo implements EntityId
      * })
      * @Groups("entity")
      */
-    private ?TipoInsumo $tipoInsumo = null;
+    public ?TipoInsumo $tipoInsumo = null;
 
     /**
      *
@@ -79,14 +87,14 @@ class Insumo implements EntityId
      *     cascade={"all"}
      * )
      */
-    private $precos;
+    public $precos;
 
     /**
      * Transient.
      * @Groups("entity")
      * @MaxDepth(2)
      */
-    private ?InsumoPreco $precoAtual = null;
+    public ?InsumoPreco $precoAtual = null;
 
 
     public function __construct()
