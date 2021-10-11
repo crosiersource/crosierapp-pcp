@@ -43,7 +43,7 @@ class TipoInsumoController extends FormListController
      * @Route("/tipoInsumo/form/{id}", name="tipoInsumo_form", defaults={"id"=null}, requirements={"id"="\d+"})
      * @param Request $request
      * @param TipoInsumo|null $tipoInsumo
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
      * @throws \Exception
      *
      * @IsGranted("ROLE_PCP_ADMIN", statusCode=403)
@@ -63,7 +63,7 @@ class TipoInsumoController extends FormListController
      *
      * @Route("/tipoInsumo/list/", name="tipoInsumo_list")
      * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      * @throws \Exception
      *
      * @IsGranted("ROLE_PCP_ADMIN", statusCode=403)

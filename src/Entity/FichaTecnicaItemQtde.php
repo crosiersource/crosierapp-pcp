@@ -2,13 +2,47 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use CrosierSource\CrosierLibBaseBundle\Doctrine\Annotations\EntityHandler;
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityId;
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityIdTrait;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * FichaTecnicaItemQtde
+ * @ApiResource(
+ *     normalizationContext={"groups"={"fichaTecnicaItemQtde","entityId"},"enable_max_depth"=true},
+ *     denormalizationContext={"groups"={"fichaTecnicaItemQtde"},"enable_max_depth"=true},
+ *
+ *     itemOperations={
+ *          "get"={"path"="/pcp/fichaTecnica/{id}", "security"="is_granted('ROLE_PCP')"},
+ *          "put"={"path"="/pcp/fichaTecnica/{id}", "security"="is_granted('ROLE_PCP')"},
+ *          "delete"={"path"="/pcp/fichaTecnica/{id}", "security"="is_granted('ROLE_PCP_ADMIN')"},
+ *     },
+ *     collectionOperations={
+ *          "get"={"path"="/pcp/fichaTecnicaItemQtde", "security"="is_granted('ROLE_PCP')"},
+ *          "post"={"path"="/pcp/fichaTecnicaItemQtde", "security"="is_granted('ROLE_PCP')"}
+ *     },
+ *
+ *     attributes={
+ *          "pagination_items_per_page"=10,
+ *          "formats"={"jsonld", "csv"={"text/csv"}}
+ *     }
+ * )
+ *
+ *
+ * @ApiFilter(SearchFilter::class, properties={
+ *     "codigo": "exact",
+ *     "descricao": "partial",
+ *     "marca": "partial",
+ *     "tipoFichaTecnica.descricao": "partial"
+ * })
+ * @ApiFilter(OrderFilter::class, properties={"id", "codigo", "descricao", "marca", "updated"}, arguments={"orderParameterName"="order"})
+ *
+ * @EntityHandler(entityHandlerClass="App\EntityHandler\FichaTecnicaItemQtdeEntityHandler")
  *
  * @ORM\Table(name="prod_fichatecnica_item_qtde")
  * @ORM\Entity
@@ -25,17 +59,17 @@ class FichaTecnicaItemQtde implements EntityId
      * @var null|string
      *
      * @ORM\Column(name="qtde", type="decimal", precision=15, scale=3, nullable=true)
-     * @Groups("entity")
+     * @Groups("fichaTecnicaItemQtde")
      */
-    private ?string $qtde = null;
+    public ?string $qtde = null;
 
     /**
      * @var null|int
      *
      * @ORM\Column(name="grade_tamanho_id", type="bigint", nullable=false)
-     * @Groups("entity")
+     * @Groups("fichaTecnicaItemQtde")
      */
-    private ?int $gradeTamanhoId = null;
+    public ?int $gradeTamanhoId = null;
 
     /**
      * @var null|FichaTecnicaItem
@@ -44,68 +78,14 @@ class FichaTecnicaItemQtde implements EntityId
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="fichatecnica_item_id", referencedColumnName="id")
      * })
-     * @Groups("entity")
+     * @Groups("fichaTecnicaItemQtde")
      */
-    private ?FichaTecnicaItem $fichaTecnicaItem = null;
+    public ?FichaTecnicaItem $fichaTecnicaItem = null;
+
 
 
     /**
-     * @return null|string
-     */
-    public function getQtde(): ?string
-    {
-        return $this->qtde;
-    }
-
-    /**
-     * @param null|string $qtde
-     * @return FichaTecnicaItemQtde
-     */
-    public function setQtde(?string $qtde): FichaTecnicaItemQtde
-    {
-        $this->qtde = $qtde;
-        return $this;
-    }
-
-    /**
-     * @return int|null
-     */
-    public function getGradeTamanhoId(): ?int
-    {
-        return $this->gradeTamanhoId;
-    }
-
-    /**
-     * @param int|null $gradeTamanhoId
-     * @return FichaTecnicaItemQtde
-     */
-    public function setGradeTamanhoId(?int $gradeTamanhoId): FichaTecnicaItemQtde
-    {
-        $this->gradeTamanhoId = $gradeTamanhoId;
-        return $this;
-    }
-
-    /**
-     * @return FichaTecnicaItem|null
-     */
-    public function getFichaTecnicaItem(): ?FichaTecnicaItem
-    {
-        return $this->fichaTecnicaItem;
-    }
-
-    /**
-     * @param FichaTecnicaItem|null $fichaTecnicaItem
-     * @return FichaTecnicaItemQtde
-     */
-    public function setFichaTecnicaItem(?FichaTecnicaItem $fichaTecnicaItem): FichaTecnicaItemQtde
-    {
-        $this->fichaTecnicaItem = $fichaTecnicaItem;
-        return $this;
-    }
-
-
-    /**
-     * @return mixed
+     * @return void
      */
     public function __clone()
     {

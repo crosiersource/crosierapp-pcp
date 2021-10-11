@@ -2,13 +2,47 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use CrosierSource\CrosierLibBaseBundle\Doctrine\Annotations\EntityHandler;
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityId;
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityIdTrait;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * TipoArtigo
+ * @ApiResource(
+ *     normalizationContext={"groups"={"tipoArtigo","entityId"},"enable_max_depth"=true},
+ *     denormalizationContext={"groups"={"tipoArtigo"},"enable_max_depth"=true},
+ *
+ *     itemOperations={
+ *          "get"={"path"="/pcp/tipoArtigo/{id}", "security"="is_granted('ROLE_PCP')"},
+ *          "put"={"path"="/pcp/tipoArtigo/{id}", "security"="is_granted('ROLE_PCP')"},
+ *          "delete"={"path"="/pcp/tipoArtigo/{id}", "security"="is_granted('ROLE_PCP_ADMIN')"},
+ *     },
+ *     collectionOperations={
+ *          "get"={"path"="/pcp/tipoArtigo", "security"="is_granted('ROLE_PCP')"},
+ *          "post"={"path"="/pcp/tipoArtigo", "security"="is_granted('ROLE_PCP')"}
+ *     },
+ *
+ *     attributes={
+ *          "pagination_items_per_page"=10,
+ *          "formats"={"jsonld", "csv"={"text/csv"}}
+ *     }
+ * )
+ *
+ *
+ * @ApiFilter(SearchFilter::class, properties={
+ *     "codigo": "exact",
+ *     "descricao": "partial",
+ *     "marca": "partial",
+ *     "tipoTipoArtigo.descricao": "partial"
+ * })
+ * @ApiFilter(OrderFilter::class, properties={"id", "codigo", "descricao", "marca", "updated"}, arguments={"orderParameterName"="order"})
+ *
+ * @EntityHandler(entityHandlerClass="App\EntityHandler\TipoArtigoEntityHandler")
  *
  * @ORM\Table(name="prod_tipo_artigo")
  * @ORM\Entity(repositoryClass="App\Repository\TipoArtigoRepository")
@@ -25,114 +59,57 @@ class TipoArtigo implements EntityId
      * @var null|int
      *
      * @ORM\Column(name="codigo", type="integer", nullable=false)
-     * @Groups("entity")
+     * @Groups("tipoArtigo")
      */
-    private ?int $codigo = null;
+    public ?int $codigo = null;
 
+    
     /**
      * @var null|string
      *
      * @ORM\Column(name="descricao", type="string", length=100, nullable=false)
-     * @Groups("entity")
+     * @Groups("tipoArtigo")
      */
-    private ?string $descricao = null;
+    public ?string $descricao = null;
 
+    
     /**
      * @var null|string
      *
      * @ORM\Column(name="modo_calculo", type="string", length=15, nullable=false)
-     * @Groups("entity")
+     * @Groups("tipoArtigo")
      */
-    private ?string $modoCalculo = null;
+    public ?string $modoCalculo = null;
 
+    
     /**
      * @var null|int
      *
      * @ORM\Column(name="subdepto_id", type="bigint", nullable=false)
-     * @Groups("entity")
+     * @Groups("tipoArtigo")
      */
-    private ?int $subdeptoId = null;
+    public ?int $subdeptoId = null;
 
+    
     /**
      * @return string
-     * @Groups("entity")
+     * @Groups("tipoArtigo")
      */
     public function getDescricaoMontada(): string
     {
-        return $this->getCodigo(true) . ' - ' . $this->getDescricao();
+        return $this->getCodigo(true) . ' - ' . $this->descricao;
     }
 
-    public function getCodigo($format = false)
+    /**
+     * @return int|string|null
+     */
+    public function getCodigo(?bool $format = false)
     {
         if ($format) {
             return str_pad($this->codigo, 3, '0', STR_PAD_LEFT);
         }
 
         return $this->codigo;
-    }
-
-    /**
-     * @param int|null $codigo
-     * @return TipoArtigo
-     */
-    public function setCodigo(?int $codigo): TipoArtigo
-    {
-        $this->codigo = $codigo;
-        return $this;
-    }
-
-    /**
-     * @return null|string
-     */
-    public function getDescricao(): ?string
-    {
-        return $this->descricao;
-    }
-
-    /**
-     * @param null|string $descricao
-     * @return TipoArtigo
-     */
-    public function setDescricao(?string $descricao): TipoArtigo
-    {
-        $this->descricao = $descricao;
-        return $this;
-    }
-
-    /**
-     * @return null|string
-     */
-    public function getModoCalculo(): ?string
-    {
-        return $this->modoCalculo;
-    }
-
-    /**
-     * @param null|string $modoCalculo
-     * @return TipoArtigo
-     */
-    public function setModoCalculo(?string $modoCalculo): TipoArtigo
-    {
-        $this->modoCalculo = $modoCalculo;
-        return $this;
-    }
-
-    /**
-     * @return int|null
-     */
-    public function getSubdeptoId(): ?int
-    {
-        return $this->subdeptoId;
-    }
-
-    /**
-     * @param int|null $subdeptoId
-     * @return TipoArtigo
-     */
-    public function setSubdeptoId(?int $subdeptoId): TipoArtigo
-    {
-        $this->subdeptoId = $subdeptoId;
-        return $this;
     }
 
 

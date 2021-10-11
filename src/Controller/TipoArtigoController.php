@@ -44,7 +44,7 @@ class TipoArtigoController extends FormListController
      * @Route("/tipoArtigo/form/{id}", name="tipoArtigo_form", defaults={"id"=null}, requirements={"id"="\d+"})
      * @param Request $request
      * @param TipoArtigo|null $tipoArtigo
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
      * @throws \Exception
      *
      * @IsGranted("ROLE_PCP_ADMIN", statusCode=403)
@@ -64,7 +64,7 @@ class TipoArtigoController extends FormListController
      *
      * @Route("/tipoArtigo/list/", name="tipoArtigo_list")
      * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      * @throws \Exception
      *
      * @IsGranted("ROLE_PCP_ADMIN", statusCode=403)

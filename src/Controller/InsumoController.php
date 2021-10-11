@@ -46,7 +46,7 @@ class InsumoController extends FormListController
      * @Route("/insumo/form/{id}", name="insumo_form", defaults={"id"=null}, requirements={"id"="\d+"})
      * @param Request $request
      * @param Insumo|null $insumo
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
      * @throws \Exception
      *
      * @IsGranted("ROLE_PCP_ADMIN", statusCode=403)
@@ -67,6 +67,7 @@ class InsumoController extends FormListController
 
         return $this->doForm($request, $insumo, $params, false, $fnHandleRequestOnValid);
     }
+
 
     /**
      *
@@ -140,17 +141,51 @@ class InsumoController extends FormListController
             uasort($precos, function ($a, $b) {
                 /** @var InsumoPreco $a */
                 /** @var InsumoPreco $b */
-                return $a->getDtCusto() > $b->getDtCusto();
+                return $a->dtCusto > $b->dtCusto;
             });
 
             /** @var InsumoPreco $precoAtual */
             $precoAtual = $this->getDoctrine()->getRepository(InsumoPreco::class)->find($precos[0]->getId());
-            $precoAtual->setAtual(true);
+            $precoAtual->atual = true;
             $this->getDoctrine()->getManager()->persist($precoAtual);
 
         }
         $this->getDoctrine()->getManager()->flush();
+        return new Response('OK');
+    }
 
+
+    /**
+     * @Route("/pcp/insumo/list", name="pcp_insumo_list")
+     */
+    public function list2(): Response
+    {
+        $params = [
+            'jsEntry' => 'Insumo/list'
+        ];
+        return $this->doRender('@CrosierLibBase/vue-app-page.html.twig', $params);
+    }
+
+    /**
+     * @Route("/pcp/insumo/form", name="pcp_insumo_form")
+     */
+    public function form2(): Response
+    {
+        $params = [
+            'jsEntry' => 'Insumo/form'
+        ];
+        return $this->doRender('@CrosierLibBase/vue-app-page.html.twig', $params);
+    }
+
+    /**
+     * @Route("/pcp/insumo/alteracaoLote", name="pcp_insumo_alteracaoLote")
+     */
+    public function alteracaoLote(): Response
+    {
+        $params = [
+            'jsEntry' => 'Insumo/alteracaoLote'
+        ];
+        return $this->doRender('@CrosierLibBase/vue-app-page.html.twig', $params);
     }
 
 

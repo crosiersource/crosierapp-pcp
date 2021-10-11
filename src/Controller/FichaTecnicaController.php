@@ -88,7 +88,7 @@ class FichaTecnicaController extends FormListController
      * @Route("/fichaTecnica/form/{id}", name="fichaTecnica_form", defaults={"id"=null}, requirements={"id"="\d+"})
      * @param Request $request
      * @param FichaTecnica|null $fichaTecnica
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
      * @throws \Exception
      *
      * @IsGranted("ROLE_PCP", statusCode=403)
@@ -104,12 +104,12 @@ class FichaTecnicaController extends FormListController
         ];
         if (!$fichaTecnica) {
             $fichaTecnica = new FichaTecnica();
-            $fichaTecnica->setBloqueada(false);
-            $fichaTecnica->setOculta(false);
-            $fichaTecnica->setCustoOperacionalPadrao(0.35);
-            $fichaTecnica->setCustoFinanceiroPadrao(0.15);
-            $fichaTecnica->setMargemPadrao(0.12);
-            $fichaTecnica->setPrazoPadrao(30);
+            $fichaTecnica->bloqueada = (false);
+            $fichaTecnica->oculta = (false);
+            $fichaTecnica->custoOperacionalPadrao = (0.35);
+            $fichaTecnica->custoFinanceiroPadrao = (0.15);
+            $fichaTecnica->margemPadrao = (0.12);
+            $fichaTecnica->prazoPadrao = (30);
         }
         return $this->doForm($request, $fichaTecnica, $params);
     }
@@ -132,7 +132,7 @@ class FichaTecnicaController extends FormListController
      *
      * @Route("/fichaTecnica/list/", name="fichaTecnica_list")
      * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      * @throws \Exception
      *
      * @IsGranted("ROLE_PCP", statusCode=403)
@@ -157,7 +157,7 @@ class FichaTecnicaController extends FormListController
      * @Route("/fichaTecnica/datatablesJsList/", name="fichaTecnica_datatablesJsList")
      * @param Request $request
      * @return Response
-     * @throws \CrosierSource\CrosierLibBaseBundle\Exception\ViewException
+     * @throws ViewException
      *
      * @IsGranted("ROLE_PCP", statusCode=403)
      */
@@ -186,17 +186,15 @@ class FichaTecnicaController extends FormListController
         $parameters['instituicoes'] = $this->fichaTecnicaBusiness->buildInstituicoesSelect2();
         $parameters['insumos'] = $this->buildInsumosSelect2();
 
-        if ($fichaTecnica) {
-            $parameters['instituicaoId'] = $fichaTecnica->getInstituicao()->getId();
+        $parameters['instituicaoId'] = $fichaTecnica->instituicao->getId();
 
-            $parameters['tiposArtigos'] = $this->tipoArtigoController->findByInstituicao($parameters['instituicaoId'])->getContent();
-            $parameters['tipoArtigo'] = $fichaTecnica->getTipoArtigo()->getId();
+        $parameters['tiposArtigos'] = $this->tipoArtigoController->findByInstituicao($parameters['instituicaoId'])->getContent();
+        $parameters['tipoArtigo'] = $fichaTecnica->tipoArtigo->getId();
 
-            $parameters['fichasTecnicas'] = $this->doFindByInstituicaoIdAndTipoArtigo($parameters['instituicaoId'], $parameters['tipoArtigo'])->getContent();
-            $parameters['fichaTecnica'] = $fichaTecnica;
+        $parameters['fichasTecnicas'] = $this->doFindByInstituicaoIdAndTipoArtigo($parameters['instituicaoId'], $parameters['tipoArtigo'])->getContent();
+        $parameters['fichaTecnica'] = $fichaTecnica;
 
-            $parameters['insumosArray'] = $this->fichaTecnicaBusiness->buildInsumosArray($fichaTecnica);
-        }
+        $parameters['insumosArray'] = $this->fichaTecnicaBusiness->buildInsumosArray($fichaTecnica);
 
         $parameters['formRoute'] = 'fichaTecnica_form';
         $parameters['listRoute'] = 'fichaTecnica_list';
@@ -224,7 +222,7 @@ class FichaTecnicaController extends FormListController
             $arrInsumos[] = ['id' => '', 'text' => '...'];
             /** @var Insumo $insumo */
             foreach ($insumos as $insumo) {
-                $arrInsumos[] = ['id' => $insumo->getId(), 'text' => $insumo->getDescricao() . ' - ' . $insumo->marca . ' (' . number_format($insumo->getPrecoAtual()->getPrecoCusto(), 2, ',', '.') . ')'];
+                $arrInsumos[] = ['id' => $insumo->getId(), 'text' => $insumo->descricao . ' - ' . $insumo->marca . ' (' . number_format($insumo->getPrecoAtual()->precoCusto, 2, ',', '.') . ')'];
             }
 
             return $arrInsumos;
@@ -259,14 +257,14 @@ class FichaTecnicaController extends FormListController
      * @Route("/fichaTecnica/salvarObs/{fichaTecnica}", name="fichaTecnica_salvarObs", defaults={"fichaTecnica"=null}, requirements={"fichaTecnica"="\d+"})
      * @param Request $request
      * @param FichaTecnica|null $fichaTecnica
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
      * @throws \Exception
      *
      * @IsGranted("ROLE_PCP", statusCode=403)
      */
     public function salvarObs(Request $request, FichaTecnica $fichaTecnica)
     {
-        $fichaTecnica->setObs($request->get('obs'));
+        $fichaTecnica->obs = ($request->get('obs'));
         $this->getEntityHandler()->save($fichaTecnica);
         return $this->redirectToRoute('fichaTecnica_builder', ['id' => $fichaTecnica->getId()]);
     }
@@ -291,16 +289,16 @@ class FichaTecnicaController extends FormListController
      * @Route("/fichaTecnicaItem/form/{fichaTecnicaItem}", name="fichaTecnicaItem_form", defaults={"fichaTecnicaItem"=null}, requirements={"fichaTecnicaItem"="\d+"})
      * @param Request $request
      * @param FichaTecnicaItem|null $fichaTecnicaItem
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
      * @throws \Exception
      *
      * @IsGranted("ROLE_PCP", statusCode=403)
      */
-    public function itemForm(Request $request, FichaTecnicaItem $fichaTecnicaItem)
+    public function itemForm(Request $request, ?FichaTecnicaItem $fichaTecnicaItem = null)
     {
 
         if ($fichaTecnicaItem) {
-            $this->fichaTecnicaBusiness->buildQtdesTamanhosArray($fichaTecnicaItem->getFichaTecnica());
+            $this->fichaTecnicaBusiness->buildQtdesTamanhosArray($fichaTecnicaItem->fichaTecnica);
         }
 
 
@@ -308,19 +306,19 @@ class FichaTecnicaController extends FormListController
             if ($request->get('ficha_tecnica_item_qtde')) {
                 /** @var Insumo $insumo */
                 $insumo = $this->getDoctrine()->getRepository(Insumo::class)->find($request->get('insumo'));
-                $fichaTecnicaItem->setInsumo($insumo);
+                $fichaTecnicaItem->insumo = ($insumo);
                 $this->fichaTecnicaItemEntityHandler->handleSaveArrayQtdes($fichaTecnicaItem, $request->get('ficha_tecnica_item_qtde'));
             }
             $this->fichaTecnicaItemEntityHandler->save($fichaTecnicaItem);
             $this->addFlash('success', 'Registro salvo com sucesso!');
-            return $this->redirectToRoute('fichaTecnica_builder', ['id' => $fichaTecnicaItem->getFichaTecnica()->getId()]);
+            return $this->redirectToRoute('fichaTecnica_builder', ['id' => $fichaTecnicaItem->fichaTecnica->getId()]);
         }
 
 
         $parameters = [];
         $parameters['insumos'] = $this->buildInsumosSelect2();
         $parameters['fichaTecnicaItem'] = $fichaTecnicaItem;
-        $parameters['unidade'] = $this->fichaTecnicaBusiness->findUnidadeById($fichaTecnicaItem->getInsumo()->getUnidadeProdutoId());
+        $parameters['unidade'] = $this->fichaTecnicaBusiness->findUnidadeById($fichaTecnicaItem->insumo->unidadeProdutoId);
 
         return $this->doRender('fichaTecnicaItemForm.html.twig', $parameters);
     }
@@ -330,7 +328,7 @@ class FichaTecnicaController extends FormListController
      * @Route("/fichaTecnica/addItem/{fichaTecnica}", name="fichaTecnica_addItem", requirements={"fichaTecnica"="\d+"})
      * @param Request $request
      * @param FichaTecnica $fichaTecnica
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
      *
      * @IsGranted("ROLE_PCP", statusCode=403)
      */
@@ -361,7 +359,7 @@ class FichaTecnicaController extends FormListController
      */
     public function deleteItem(Request $request, FichaTecnicaItem $fichaTecnicaItem): \Symfony\Component\HttpFoundation\RedirectResponse
     {
-        $fichaTecnica = $fichaTecnicaItem->getFichaTecnica();
+        $fichaTecnica = $fichaTecnicaItem->fichaTecnica;
         if (!$this->isCsrfTokenValid('fichaTecnica_deleteItem', $request->request->get('token'))) {
             $this->addFlash('error', 'Erro interno do sistema.');
         } else {
@@ -410,9 +408,9 @@ class FichaTecnicaController extends FormListController
         }
 
         $parameters['instituicoes'] = $this->fichaTecnicaBusiness->buildInstituicoesSelect2();
-        $parameters['instituicaoId'] = $fichaTecnica->getInstituicao()->getId();
+        $parameters['instituicaoId'] = $fichaTecnica->instituicao->getId();
         $parameters['fichaTecnicaOrigem'] = $fichaTecnica;
-        $parameters['descricaoSugerida'] = $fichaTecnica->getDescricao() . ' (2)';
+        $parameters['descricaoSugerida'] = $fichaTecnica->descricao . ' (2)';
 
         return $this->doRender('fichaTecnica_clonar.html.twig', $parameters);
 
@@ -450,7 +448,7 @@ class FichaTecnicaController extends FormListController
             $clienteEntityHandler->save($cliente);
             /** @var FichaTecnica $fichaTecnica */
             $fichaTecnica = $repoFichaTecnica->find($ficha['id']);
-            $fichaTecnica->setInstituicao($cliente);
+            $fichaTecnica->instituicao = ($cliente);
         }
         return new Response('ok');
 

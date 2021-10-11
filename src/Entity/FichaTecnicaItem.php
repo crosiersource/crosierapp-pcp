@@ -2,6 +2,11 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use CrosierSource\CrosierLibBaseBundle\Doctrine\Annotations\EntityHandler;
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityId;
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityIdTrait;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -9,9 +14,38 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * FichaTecnicaItem
+ * @ApiResource(
+ *     normalizationContext={"groups"={"fichaTecnicaItem","entityId"},"enable_max_depth"=true},
+ *     denormalizationContext={"groups"={"fichaTecnicaItem"},"enable_max_depth"=true},
  *
- * @ORM\Table(name="prod_fichatecnica_item")
+ *     itemOperations={
+ *          "get"={"path"="/pcp/fichaTecnicaItem/{id}", "security"="is_granted('ROLE_PCP')"},
+ *          "put"={"path"="/pcp/fichaTecnicaItem/{id}", "security"="is_granted('ROLE_PCP')"},
+ *          "delete"={"path"="/pcp/fichaTecnicaItem/{id}", "security"="is_granted('ROLE_PCP_ADMIN')"},
+ *     },
+ *     collectionOperations={
+ *          "get"={"path"="/pcp/fichaTecnicaItem", "security"="is_granted('ROLE_PCP')"},
+ *          "post"={"path"="/pcp/fichaTecnicaItem", "security"="is_granted('ROLE_PCP')"}
+ *     },
+ *
+ *     attributes={
+ *          "pagination_items_per_page"=10,
+ *          "formats"={"jsonld", "csv"={"text/csv"}}
+ *     }
+ * )
+ *
+ *
+ * @ApiFilter(SearchFilter::class, properties={
+ *     "codigo": "exact",
+ *     "descricao": "partial",
+ *     "marca": "partial",
+ *     "tipoFichaTecnicaItem.descricao": "partial"
+ * })
+ * @ApiFilter(OrderFilter::class, properties={"id", "codigo", "descricao", "marca", "updated"}, arguments={"orderParameterName"="order"})
+ *
+ * @EntityHandler(entityHandlerClass="App\EntityHandler\FichaTecnicaItemEntityHandler")
+ *
+ * @ORM\Table(name="prod_fichaTecnicaItem_item")
  * @ORM\Entity(repositoryClass="App\Repository\FichaTecnicaItemRepository")
  *
  * @author Carlos Eduardo Pauluk
@@ -29,9 +63,10 @@ class FichaTecnicaItem implements EntityId
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="fichatecnica_id", referencedColumnName="id")
      * })
-     * @Groups("entity")
+     * @Groups("fichaTecnicaItem")
      */
-    private ?FichaTecnica $fichaTecnica = null;
+    public ?FichaTecnica $fichaTecnica = null;
+
 
     /**
      * @var null|Insumo
@@ -40,36 +75,28 @@ class FichaTecnicaItem implements EntityId
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="insumo_id", referencedColumnName="id")
      * })
-     * @Groups("entity")
+     * @Groups("fichaTecnicaItem")
      */
-    private ?Insumo $insumo = null;
+    public ?Insumo $insumo = null;
 
     /**
-     *
-     * @var FichaTecnicaItemQtde[]|ArrayCollection
-     *
      * @ORM\OneToMany(
      *      targetEntity="FichaTecnicaItemQtde",
      *      mappedBy="fichaTecnicaItem",
      *      orphanRemoval=true,
      *     cascade={"all"}
      * )
+     *
+     * @var null|array|ArrayCollection
      */
     private $qtdes;
 
     /**
      * Transient.
      *
-     * @var array
+     * @var null|array
      */
-    private array $qtdesTamanhosArray;
-
-    /**
-     * Transient.
-     *
-     * @var float
-     */
-    private float $totalQtdes;
+    private ?array $qtdesTamanhosArray;
 
 
     public function __construct()
@@ -77,41 +104,6 @@ class FichaTecnicaItem implements EntityId
         $this->qtdes = new ArrayCollection();
     }
 
-    /**
-     * @return FichaTecnica|null
-     */
-    public function getFichaTecnica(): ?FichaTecnica
-    {
-        return $this->fichaTecnica;
-    }
-
-    /**
-     * @param FichaTecnica|null $fichaTecnica
-     * @return FichaTecnicaItem
-     */
-    public function setFichaTecnica(?FichaTecnica $fichaTecnica): FichaTecnicaItem
-    {
-        $this->fichaTecnica = $fichaTecnica;
-        return $this;
-    }
-
-    /**
-     * @return Insumo|null
-     */
-    public function getInsumo(): ?Insumo
-    {
-        return $this->insumo;
-    }
-
-    /**
-     * @param Insumo|null $insumo
-     * @return FichaTecnicaItem
-     */
-    public function setInsumo(?Insumo $insumo): FichaTecnicaItem
-    {
-        $this->insumo = $insumo;
-        return $this;
-    }
 
     /**
      * @return FichaTecnicaItemQtde[]|ArrayCollection
@@ -121,17 +113,9 @@ class FichaTecnicaItem implements EntityId
         return $this->qtdes;
     }
 
-    /**
-     * @param FichaTecnicaItemQtde[]|ArrayCollection $qtdes
-     * @return FichaTecnicaItem
-     */
-    public function setQtdes($qtdes)
-    {
-        $this->qtdes = $qtdes;
-        return $this;
-    }
 
     /**
+     * @Groups("fichaTecnicaItem")
      * Retorna a qtde para cada tamanho.
      * @return array
      */
@@ -140,31 +124,34 @@ class FichaTecnicaItem implements EntityId
         return $this->qtdesTamanhosArray;
     }
 
+    
     /**
-     * @param array $qtdesTamanhosArray
+     * @param array|null $qtdesTamanhosArray
      */
-    public function setQtdesTamanhosArray(array $qtdesTamanhosArray): void
+    public function setQtdesTamanhosArray(?array $qtdesTamanhosArray): void
     {
         $this->qtdesTamanhosArray = $qtdesTamanhosArray;
     }
+    
 
     /**
+     * @Groups("fichaTecnicaItem")
      * @return float
      */
     public function getTotalQtdes(): float
     {
-        $this->totalQtdes = (float)0;
+        $totalQtdes = (float)0;
         if ($this->getQtdes()) {
             foreach ($this->getQtdes() as $qtde) {
-                $this->totalQtdes = bcadd($this->totalQtdes, $qtde->getQtde(), 3);
+                $totalQtdes = bcadd($totalQtdes, $qtde->getQtde(), 3);
             }
         }
-        return $this->totalQtdes;
+        return $totalQtdes;
     }
 
 
     /**
-     * @return mixed
+     * @return void
      */
     public function __clone()
     {

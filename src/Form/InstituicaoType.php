@@ -4,7 +4,6 @@ namespace App\Form;
 
 
 use CrosierSource\CrosierLibRadxBundle\Entity\CRM\Cliente;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -15,13 +14,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class InstituicaoType extends AbstractType
 {
-
-    private EntityManagerInterface $doctrine;
-
-    public function __construct(EntityManagerInterface $doctrine)
-    {
-        $this->doctrine = $doctrine;
-    }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {

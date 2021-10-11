@@ -32,11 +32,9 @@ use Symfony\Component\Routing\Annotation\Route;
 class LoteProducaoController extends FormListController
 {
 
-    /** @var LoteProducaoBusiness */
-    private $loteProducaoBusiness;
+    private LoteProducaoBusiness $loteProducaoBusiness;
 
-    /** @var LoteProducaoItemEntityHandler */
-    private $loteProducaoItemEntityHandler;
+    private LoteProducaoItemEntityHandler $loteProducaoItemEntityHandler;
 
     /**
      * @required
@@ -82,7 +80,7 @@ class LoteProducaoController extends FormListController
      * @Route("/loteProducao/form/{id}", name="loteProducao_form", defaults={"id"=null}, requirements={"id"="\d+"})
      * @param Request $request
      * @param LoteProducao|null $loteProducao
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
      * @throws \Exception
      */
     public function form(Request $request, LoteProducao $loteProducao = null)
@@ -97,11 +95,11 @@ class LoteProducaoController extends FormListController
         ];
 
         $loteProducaoItem = new LoteProducaoItem();
-        $loteProducaoItem->setLoteProducao($loteProducao);
+        $loteProducaoItem->loteProducao = ($loteProducao);
 
         if (!$loteProducao) {
             $loteProducao = new LoteProducao();
-            $loteProducao->setDtLote(new \DateTime());
+            $loteProducao->dtLote = (new \DateTime());
         }
         $this->loteProducaoBusiness->buildLoteQtdesTamanhosArray($loteProducao);
 
@@ -152,19 +150,18 @@ class LoteProducaoController extends FormListController
      * @Route("/loteProducaoItem/form/{loteProducaoItem}", name="loteProducaoItem_form", defaults={"loteProducaoItem"=null}, requirements={"loteProducaoItem"="\d+"})
      * @param Request $request
      * @param LoteProducaoItem|null $loteProducaoItem
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
      * @throws \Exception
      */
-    public function itemForm(Request $request, LoteProducaoItem $loteProducaoItem)
+    public function itemForm(Request $request, ?LoteProducaoItem $loteProducaoItem = null)
     {
         $params = [
             'formPageTitle' => 'Item de Lote',
-            'formRoute' => 'loteProducaoItem_form',
             'formRoute' => 'loteProducaoItem_form'
         ];
 
         if ($loteProducaoItem) {
-            $this->loteProducaoBusiness->buildLoteQtdesTamanhosArray($loteProducaoItem->getLoteProducao());
+            $this->loteProducaoBusiness->buildLoteQtdesTamanhosArray($loteProducaoItem->loteProducao);
         }
 
         $form = $this->createForm(LoteProducaoItemType::class, $loteProducaoItem);
@@ -179,7 +176,7 @@ class LoteProducaoController extends FormListController
                     }
                     $this->loteProducaoItemEntityHandler->save($entity);
                     $this->addFlash('success', 'Registro salvo com sucesso!');
-                    return $this->redirectToRoute('loteProducao_form', ['id' => $loteProducaoItem->getLoteProducao()->getId(), '_fragment' => 'itens']);
+                    return $this->redirectToRoute('loteProducao_form', ['id' => $loteProducaoItem->loteProducao->getId(), '_fragment' => 'itens']);
                 } catch (ViewException $e) {
                     $this->addFlash('error', $e->getMessage());
                 } catch (\Exception $e) {
@@ -206,7 +203,7 @@ class LoteProducaoController extends FormListController
      *
      * @Route("/loteProducao/list/", name="loteProducao_list")
      * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      * @throws \Exception
      */
     public function list(Request $request): Response
@@ -230,7 +227,7 @@ class LoteProducaoController extends FormListController
      * @Route("/loteProducao/datatablesJsList/", name="loteProducao_datatablesJsList")
      * @param Request $request
      * @return Response
-     * @throws \CrosierSource\CrosierLibBaseBundle\Exception\ViewException
+     * @throws ViewException
      */
     public function datatablesJsList(Request $request): Response
     {
@@ -246,7 +243,7 @@ class LoteProducaoController extends FormListController
      */
     public function delete(Request $request, LoteProducao $loteProducao): \Symfony\Component\HttpFoundation\RedirectResponse
     {
-        return $this->doDelete($request, $loteProducao);
+        return $this->doDelete($request, $loteProducao, []);
     }
 
     /**
@@ -257,7 +254,7 @@ class LoteProducaoController extends FormListController
      */
     public function deleteItem(Request $request, LoteProducaoItem $loteProducaoItem): \Symfony\Component\HttpFoundation\RedirectResponse
     {
-        $loteProducao = $loteProducaoItem->getLoteProducao();
+        $loteProducao = $loteProducaoItem->loteProducao;
         if (!$this->isCsrfTokenValid('loteProducao_deleteItem', $request->request->get('token'))) {
             $this->addFlash('error', 'Erro interno do sistema.');
         } else {
@@ -280,6 +277,9 @@ class LoteProducaoController extends FormListController
      * @param Request $request
      * @return Response
      *
+     * @noinspection PhpIncompatibleReturnTypeInspection
+     * @noinspection PhpVoidFunctionResultUsedInspection
+     * @noinspection PhpInconsistentReturnPointsInspection
      */
     public function relatorio(LoteProducao $loteProducao, Request $request): Response
     {
@@ -365,7 +365,7 @@ class LoteProducaoController extends FormListController
 
 
         // (Optional) Setup the paper size and orientation 'portrait' or 'portrait'
-        $dompdf->setPaper('A4', 'portrait');
+        $dompdf->setPaper('A4');
 
         // Render the HTML as PDF
         $dompdf->render();
@@ -428,7 +428,7 @@ class LoteProducaoController extends FormListController
 
 
         // (Optional) Setup the paper size and orientation 'portrait' or 'portrait'
-        $dompdf->setPaper('A4', 'portrait');
+        $dompdf->setPaper('A4');
 
         // Render the HTML as PDF
         $dompdf->render();

@@ -2,13 +2,47 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use CrosierSource\CrosierLibBaseBundle\Doctrine\Annotations\EntityHandler;
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityId;
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityIdTrait;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * FichaTecnicaPreco
+ * @ApiResource(
+ *     normalizationContext={"groups"={"fichaTecnicaPreco","entityId"},"enable_max_depth"=true},
+ *     denormalizationContext={"groups"={"fichaTecnicaPreco"},"enable_max_depth"=true},
+ *
+ *     itemOperations={
+ *          "get"={"path"="/pcp/fichaTecnica/{id}", "security"="is_granted('ROLE_PCP')"},
+ *          "put"={"path"="/pcp/fichaTecnica/{id}", "security"="is_granted('ROLE_PCP')"},
+ *          "delete"={"path"="/pcp/fichaTecnica/{id}", "security"="is_granted('ROLE_PCP_ADMIN')"},
+ *     },
+ *     collectionOperations={
+ *          "get"={"path"="/pcp/fichaTecnicaPreco", "security"="is_granted('ROLE_PCP')"},
+ *          "post"={"path"="/pcp/fichaTecnicaPreco", "security"="is_granted('ROLE_PCP')"}
+ *     },
+ *
+ *     attributes={
+ *          "pagination_items_per_page"=10,
+ *          "formats"={"jsonld", "csv"={"text/csv"}}
+ *     }
+ * )
+ *
+ *
+ * @ApiFilter(SearchFilter::class, properties={
+ *     "codigo": "exact",
+ *     "descricao": "partial",
+ *     "marca": "partial",
+ *     "tipoFichaTecnica.descricao": "partial"
+ * })
+ * @ApiFilter(OrderFilter::class, properties={"id", "codigo", "descricao", "marca", "updated"}, arguments={"orderParameterName"="order"})
+ *
+ * @EntityHandler(entityHandlerClass="App\EntityHandler\FichaTecnicaEntityHandler")
  *
  * @ORM\Table(name="prod_fichatecnica_preco")
  * @ORM\Entity(repositoryClass="App\Repository\FichaTecnicaPrecoRepository")
@@ -24,295 +58,106 @@ class FichaTecnicaPreco implements EntityId
      * @var null|float
      *
      * @ORM\Column(name="coeficiente", type="float", precision=10, scale=0, nullable=false)
-     * @Groups("entity")
+     * @Groups("fichaTecnicaPreco")
      */
-    private ?float $coeficiente = null;
+    public ?float $coeficiente = null;
 
+    
     /**
      * @var null|float
      *
      * @ORM\Column(name="custo_operacional", type="float", precision=10, scale=0, nullable=false)
-     * @Groups("entity")
+     * @Groups("fichaTecnicaPreco")
      */
-    private ?float $custoOperacional = null;
+    public ?float $custoOperacional = null;
 
+    
     /**
      * @var null|string
      *
      * @ORM\Column(name="descricao", type="string", length=200, nullable=false)
-     * @Groups("entity")
+     * @Groups("fichaTecnicaPreco")
      */
-    private ?string $descricao = null;
+    public ?string $descricao = null;
 
+    
     /**
      * @var null|\DateTime
      *
      * @ORM\Column(name="dt_custo", type="date", nullable=false)
-     * @Groups("entity")
+     * @Groups("fichaTecnicaPreco")
      */
-    private ?\DateTime $dtCusto = null;
+    public ?\DateTime $dtCusto = null;
 
+    
     /**
      * @var null|float
      *
      * @ORM\Column(name="margem", type="float", precision=10, scale=0, nullable=false)
-     * @Groups("entity")
+     * @Groups("fichaTecnicaPreco")
      */
-    private ?float $margem = null;
+    public ?float $margem = null;
 
+    
     /**
      * @var null|int
      *
      * @ORM\Column(name="prazo", type="integer", nullable=false)
-     * @Groups("entity")
+     * @Groups("fichaTecnicaPreco")
      */
-    private ?int $prazo = null;
+    public ?int $prazo = null;
 
+    
     /**
      * @var null|float
      *
      * @ORM\Column(name="preco_custo", type="float", precision=10, scale=0, nullable=false)
-     * @Groups("entity")
+     * @Groups("fichaTecnicaPreco")
      */
-    private ?float $precoCusto = null;
+    public ?float $precoCusto = null;
 
+    
     /**
      * @var null|float
      *
      * @ORM\Column(name="preco_prazo", type="float", precision=10, scale=0, nullable=false)
-     * @Groups("entity")
+     * @Groups("fichaTecnicaPreco")
      */
-    private ?float $precoPrazo = null;
+    public ?float $precoPrazo = null;
 
+    
     /**
      * @var null|float
      *
      * @ORM\Column(name="preco_vista", type="float", precision=10, scale=0, nullable=false)
-     * @Groups("entity")
+     * @Groups("fichaTecnicaPreco")
      */
-    private ?float $precoVista = null;
+    public ?float $precoVista = null;
 
+    
     /**
      * @var null|string
      *
      * @ORM\Column(name="custo_financeiro", type="decimal", precision=19, scale=2, nullable=false)
-     * @Groups("entity")
+     * @Groups("fichaTecnicaPreco")
      */
-    private ?string $custoFinanceiro = null;
+    public ?string $custoFinanceiro = null;
 
+    
     /**
      * @var null|FichaTecnica
      *
-     * @ORM\ManyToOne(targetEntity="FichaTecnica")
+     * @ORM\ManyToOne(targetEntity="FichaTecnicaPreco")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="fichatecnica_id", referencedColumnName="id")
      * })
-     * @Groups("entity")
+     * @Groups("fichaTecnicaPreco")
      */
-    private ?FichaTecnica $fichaTecnica = null;
+    public ?FichaTecnica $fichaTecnica = null;
 
 
     /**
-     * @return float|null
-     */
-    public function getCoeficiente(): ?float
-    {
-        return $this->coeficiente;
-    }
-
-    /**
-     * @param float|null $coeficiente
-     * @return FichaTecnicaPreco
-     */
-    public function setCoeficiente(?float $coeficiente): FichaTecnicaPreco
-    {
-        $this->coeficiente = $coeficiente;
-        return $this;
-    }
-
-    /**
-     * @return float|null
-     */
-    public function getCustoOperacional(): ?float
-    {
-        return $this->custoOperacional;
-    }
-
-    /**
-     * @param float|null $custoOperacional
-     * @return FichaTecnicaPreco
-     */
-    public function setCustoOperacional(?float $custoOperacional): FichaTecnicaPreco
-    {
-        $this->custoOperacional = $custoOperacional;
-        return $this;
-    }
-
-    /**
-     * @return null|string
-     */
-    public function getDescricao(): ?string
-    {
-        return $this->descricao;
-    }
-
-    /**
-     * @param null|string $descricao
-     * @return FichaTecnicaPreco
-     */
-    public function setDescricao(?string $descricao): FichaTecnicaPreco
-    {
-        $this->descricao = $descricao;
-        return $this;
-    }
-
-    /**
-     * @return \DateTime|null
-     */
-    public function getDtCusto(): ?\DateTime
-    {
-        return $this->dtCusto;
-    }
-
-    /**
-     * @param \DateTime|null $dtCusto
-     * @return FichaTecnicaPreco
-     */
-    public function setDtCusto(?\DateTime $dtCusto): FichaTecnicaPreco
-    {
-        $this->dtCusto = $dtCusto;
-        return $this;
-    }
-
-    /**
-     * @return float|null
-     */
-    public function getMargem(): ?float
-    {
-        return $this->margem;
-    }
-
-    /**
-     * @param float|null $margem
-     * @return FichaTecnicaPreco
-     */
-    public function setMargem(?float $margem): FichaTecnicaPreco
-    {
-        $this->margem = $margem;
-        return $this;
-    }
-
-    /**
-     * @return int|null
-     */
-    public function getPrazo(): ?int
-    {
-        return $this->prazo;
-    }
-
-    /**
-     * @param int|null $prazo
-     * @return FichaTecnicaPreco
-     */
-    public function setPrazo(?int $prazo): FichaTecnicaPreco
-    {
-        $this->prazo = $prazo;
-        return $this;
-    }
-
-    /**
-     * @return float|null
-     */
-    public function getPrecoCusto(): ?float
-    {
-        return $this->precoCusto;
-    }
-
-    /**
-     * @param float|null $precoCusto
-     * @return FichaTecnicaPreco
-     */
-    public function setPrecoCusto(?float $precoCusto): FichaTecnicaPreco
-    {
-        $this->precoCusto = $precoCusto;
-        return $this;
-    }
-
-    /**
-     * @return float|null
-     */
-    public function getPrecoPrazo(): ?float
-    {
-        return $this->precoPrazo;
-    }
-
-    /**
-     * @param float|null $precoPrazo
-     * @return FichaTecnicaPreco
-     */
-    public function setPrecoPrazo(?float $precoPrazo): FichaTecnicaPreco
-    {
-        $this->precoPrazo = $precoPrazo;
-        return $this;
-    }
-
-    /**
-     * @return float|null
-     */
-    public function getPrecoVista(): ?float
-    {
-        return $this->precoVista;
-    }
-
-    /**
-     * @param float|null $precoVista
-     * @return FichaTecnicaPreco
-     */
-    public function setPrecoVista(?float $precoVista): FichaTecnicaPreco
-    {
-        $this->precoVista = $precoVista;
-        return $this;
-    }
-
-    /**
-     * @return null|string
-     */
-    public function getCustoFinanceiro(): ?string
-    {
-        return $this->custoFinanceiro;
-    }
-
-    /**
-     * @param null|string $custoFinanceiro
-     * @return FichaTecnicaPreco
-     */
-    public function setCustoFinanceiro(?string $custoFinanceiro): FichaTecnicaPreco
-    {
-        $this->custoFinanceiro = $custoFinanceiro;
-        return $this;
-    }
-
-    /**
-     * @return FichaTecnica|null
-     */
-    public function getFichaTecnica(): ?FichaTecnica
-    {
-        return $this->fichaTecnica;
-    }
-
-    /**
-     * @param FichaTecnica|null $fichaTecnica
-     * @return FichaTecnicaPreco
-     */
-    public function setFichaTecnica(?FichaTecnica $fichaTecnica): FichaTecnicaPreco
-    {
-        $this->fichaTecnica = $fichaTecnica;
-        return $this;
-    }
-
-
-    /**
-     * @return mixed
+     * @return void
      */
     public function __clone()
     {

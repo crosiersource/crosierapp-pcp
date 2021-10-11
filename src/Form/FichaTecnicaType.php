@@ -15,7 +15,6 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
-use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\PercentType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -72,8 +71,8 @@ class FichaTecnicaType extends AbstractType
             ]);
 
 
-            if ($fichaTecnica->getInstituicao()) {
-                $instituicaoChoices = [$fichaTecnica->getInstituicao()];
+            if ($fichaTecnica->instituicao) {
+                $instituicaoChoices = [$fichaTecnica->instituicao];
             } else {
                 try {
                     /** @var ClienteRepository $repoCliente */

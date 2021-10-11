@@ -34,7 +34,7 @@ class TipoArtigoEntityHandler extends EntityHandler
                 $prox = $this->getDoctrine()
                     ->createNativeQuery('SELECT max(codigo)+1 as prox FROM prod_tipo_artigo', (new ResultSetMapping())->addScalarResult('prox', 'prox'))
                     ->getOneOrNullResult()['prox'];
-                $tipoArtigo->setCodigo($prox);
+                $tipoArtigo->codigo = $prox;
             } catch (NonUniqueResultException $e) {
                 throw new ViewException('Não foi possível obter o próximo código');
             }

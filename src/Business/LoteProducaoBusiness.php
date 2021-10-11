@@ -53,8 +53,8 @@ class LoteProducaoBusiness
             }
         }
 
-        $gradesTamanhosByPosicaoArray = $this->fichaTecnicaBusiness->buildGradesTamanhosByPosicaoArray($item->getFichaTecnica()->getGradeId());
-        $item->getFichaTecnica()->setGradesTamanhosByPosicaoArray($gradesTamanhosByPosicaoArray);
+        $gradesTamanhosByPosicaoArray = $this->fichaTecnicaBusiness->buildGradesTamanhosByPosicaoArray($item->fichaTecnica->gradeId);
+        $item->fichaTecnica->setGradesTamanhosByPosicaoArray($gradesTamanhosByPosicaoArray);
 
         $item->setQtdesTamanhosArray($array);
     }

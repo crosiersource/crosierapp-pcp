@@ -2,6 +2,11 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use CrosierSource\CrosierLibBaseBundle\Doctrine\Annotations\EntityHandler;
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityId;
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityIdTrait;
 use CrosierSource\CrosierLibRadxBundle\Entity\CRM\Cliente;
@@ -10,7 +15,36 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * FichaTecnica
+ * @ApiResource(
+ *     normalizationContext={"groups"={"fichaTecnica","entityId"},"enable_max_depth"=true},
+ *     denormalizationContext={"groups"={"fichaTecnica"},"enable_max_depth"=true},
+ *
+ *     itemOperations={
+ *          "get"={"path"="/pcp/fichaTecnica/{id}", "security"="is_granted('ROLE_PCP')"},
+ *          "put"={"path"="/pcp/fichaTecnica/{id}", "security"="is_granted('ROLE_PCP')"},
+ *          "delete"={"path"="/pcp/fichaTecnica/{id}", "security"="is_granted('ROLE_PCP_ADMIN')"},
+ *     },
+ *     collectionOperations={
+ *          "get"={"path"="/pcp/fichaTecnica", "security"="is_granted('ROLE_PCP')"},
+ *          "post"={"path"="/pcp/fichaTecnica", "security"="is_granted('ROLE_PCP')"}
+ *     },
+ *
+ *     attributes={
+ *          "pagination_items_per_page"=10,
+ *          "formats"={"jsonld", "csv"={"text/csv"}}
+ *     }
+ * )
+ *
+ *
+ * @ApiFilter(SearchFilter::class, properties={
+ *     "codigo": "exact",
+ *     "descricao": "partial",
+ *     "marca": "partial",
+ *     "tipoFichaTecnica.descricao": "partial"
+ * })
+ * @ApiFilter(OrderFilter::class, properties={"id", "codigo", "descricao", "marca", "updated"}, arguments={"orderParameterName"="order"})
+ *
+ * @EntityHandler(entityHandlerClass="App\EntityHandler\FichaTecnicaEntityHandler")
  *
  * @ORM\Table(name="prod_fichatecnica")
  * @ORM\Entity(repositoryClass="App\Repository\FichaTecnicaRepository")
@@ -22,13 +56,15 @@ class FichaTecnica implements EntityId
 
     use EntityIdTrait;
 
+
     /**
      * @var null|string
      *
      * @ORM\Column(name="descricao", type="string", length=200, nullable=false)
-     * @Groups("entity")
+     * @Groups("fichaTecnica")
      */
-    private ?string $descricao = null;
+    public ?string $descricao = null;
+
 
     /**
      * @var null|TipoArtigo
@@ -37,88 +73,98 @@ class FichaTecnica implements EntityId
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="tipo_artigo_id", referencedColumnName="id")
      * })
-     * @Groups("entity")
+     * @Groups("fichaTecnica")
      */
-    private ?TipoArtigo $tipoArtigo = null;
+    public ?TipoArtigo $tipoArtigo = null;
+
 
     /**
      * @var null|bool
      *
      * @ORM\Column(name="bloqueada", type="boolean", nullable=false)
-     * @Groups("entity")
+     * @Groups("fichaTecnica")
      */
-    private ?bool $bloqueada = null;
+    public ?bool $bloqueada = null;
+
 
     /**
      * @var null|float
      *
      * @ORM\Column(name="custo_operacional_padrao", type="float", precision=10, scale=3, nullable=false)
-     * @Groups("entity")
+     * @Groups("fichaTecnica")
      */
-    private ?float $custoOperacionalPadrao = null;
+    public ?float $custoOperacionalPadrao = null;
+
 
     /**
      * @var null|float
      *
      * @ORM\Column(name="margem_padrao", type="float", precision=10, scale=2, nullable=false)
-     * @Groups("entity")
+     * @Groups("fichaTecnica")
      */
-    private ?float $margemPadrao = null;
+    public ?float $margemPadrao = null;
+
 
     /**
      * @var null|string
      *
      * @ORM\Column(name="obs", type="string", length=5000, nullable=true)
-     * @Groups("entity")
+     * @Groups("fichaTecnica")
      */
-    private ?string $obs = null;
+    public ?string $obs = null;
+
 
     /**
      * @var null|int
      *
      * @ORM\Column(name="prazo_padrao", type="integer", nullable=false)
-     * @Groups("entity")
+     * @Groups("fichaTecnica")
      */
-    private ?int $prazoPadrao = null;
+    public ?int $prazoPadrao = null;
+
 
     /**
      * @var null|string
      *
      * @ORM\Column(name="custo_financeiro_padrao", type="decimal", precision=19, scale=2, nullable=false)
-     * @Groups("entity")
+     * @Groups("fichaTecnica")
      */
-    private ?string $custoFinanceiroPadrao = null;
+    public ?string $custoFinanceiroPadrao = null;
+
 
     /**
      * @var null|string
      *
      * @ORM\Column(name="modo_calculo", type="string", length=15, nullable=false)
-     * @Groups("entity")
+     * @Groups("fichaTecnica")
      */
-    private ?string $modoCalculo = null;
+    public ?string $modoCalculo = null;
+
 
     /**
      * @var null|int
      *
      * @ORM\Column(name="grade_id", type="bigint", nullable=false)
-     * @Groups("entity")
+     * @Groups("fichaTecnica")
      */
-    private ?int $gradeId = null;
+    public ?int $gradeId = null;
+
 
     /**
      * Transient.
      *
      * @var array
      */
-    private array $gradesTamanhosByPosicaoArray;
+    public array $gradesTamanhosByPosicaoArray;
+
 
     /**
      * @var null|bool
      *
      * @ORM\Column(name="oculta", type="boolean", nullable=false)
-     * @Groups("entity")
+     * @Groups("fichaTecnica")
      */
-    private ?bool $oculta = null;
+    public ?bool $oculta = null;
 
 
     /**
@@ -130,7 +176,8 @@ class FichaTecnica implements EntityId
      * })
      * @Groups("entity","cliente")
      */
-    private ?Cliente $instituicao = null;
+    public ?Cliente $instituicao = null;
+
 
     /**
      *
@@ -143,7 +190,7 @@ class FichaTecnica implements EntityId
      *     cascade={"all"}
      * )
      */
-    private $itens;
+    public $itens;
 
 
     /**
@@ -169,60 +216,7 @@ class FichaTecnica implements EntityId
 
 
     /**
-     * @return bool|null
-     */
-    public function getBloqueada(): ?bool
-    {
-        return $this->bloqueada;
-    }
-
-    /**
-     * @param bool|null $bloqueada
-     * @return FichaTecnica
-     */
-    public function setBloqueada(?bool $bloqueada): FichaTecnica
-    {
-        $this->bloqueada = $bloqueada;
-        return $this;
-    }
-
-    /**
-     * @return float|null
-     */
-    public function getCustoOperacionalPadrao(): ?float
-    {
-        return $this->custoOperacionalPadrao;
-    }
-
-    /**
-     * @param float|null $custoOperacionalPadrao
-     * @return FichaTecnica
-     */
-    public function setCustoOperacionalPadrao(?float $custoOperacionalPadrao): FichaTecnica
-    {
-        $this->custoOperacionalPadrao = $custoOperacionalPadrao;
-        return $this;
-    }
-
-    /**
-     * @return null|string
-     */
-    public function getDescricao(): ?string
-    {
-        return $this->descricao;
-    }
-
-    /**
-     * @param null|string $descricao
-     * @return FichaTecnica
-     */
-    public function setDescricao(?string $descricao): FichaTecnica
-    {
-        $this->descricao = $descricao;
-        return $this;
-    }
-
-    /**
+     * @Groups("fichaTecnica")
      * @return null|string
      */
     public function getDescricaoMontada(): ?string
@@ -233,171 +227,9 @@ class FichaTecnica implements EntityId
         return null;
     }
 
-    /**
-     * @return float|null
-     */
-    public function getMargemPadrao(): ?float
-    {
-        return $this->margemPadrao;
-    }
-
-    /**
-     * @param float|null $margemPadrao
-     * @return FichaTecnica
-     */
-    public function setMargemPadrao(?float $margemPadrao): FichaTecnica
-    {
-        $this->margemPadrao = $margemPadrao;
-        return $this;
-    }
-
-    /**
-     * @return null|string
-     */
-    public function getObs(): ?string
-    {
-        return $this->obs;
-    }
-
-    /**
-     * @param null|string $obs
-     * @return FichaTecnica
-     */
-    public function setObs(?string $obs): FichaTecnica
-    {
-        $this->obs = $obs;
-        return $this;
-    }
-
-    /**
-     * @return int|null
-     */
-    public function getPrazoPadrao(): ?int
-    {
-        return $this->prazoPadrao;
-    }
-
-    /**
-     * @param int|null $prazoPadrao
-     * @return FichaTecnica
-     */
-    public function setPrazoPadrao(?int $prazoPadrao): FichaTecnica
-    {
-        $this->prazoPadrao = $prazoPadrao;
-        return $this;
-    }
-
-    /**
-     * @return null|string
-     */
-    public function getCustoFinanceiroPadrao(): ?string
-    {
-        return $this->custoFinanceiroPadrao;
-    }
-
-    /**
-     * @param null|string $custoFinanceiroPadrao
-     * @return FichaTecnica
-     */
-    public function setCustoFinanceiroPadrao(?string $custoFinanceiroPadrao): FichaTecnica
-    {
-        $this->custoFinanceiroPadrao = $custoFinanceiroPadrao;
-        return $this;
-    }
-
-    /**
-     * @return null|string
-     */
-    public function getModoCalculo(): ?string
-    {
-        return $this->modoCalculo;
-    }
-
-    /**
-     * @param null|string $modoCalculo
-     * @return FichaTecnica
-     */
-    public function setModoCalculo(?string $modoCalculo): FichaTecnica
-    {
-        $this->modoCalculo = $modoCalculo;
-        return $this;
-    }
-
-    /**
-     * @return int|null
-     */
-    public function getGradeId(): ?int
-    {
-        return $this->gradeId;
-    }
-
-    /**
-     * @param int|null $gradeId
-     * @return FichaTecnica
-     */
-    public function setGradeId(?int $gradeId): FichaTecnica
-    {
-        $this->gradeId = $gradeId;
-        return $this;
-    }
-
-    /**
-     * @return bool|null
-     */
-    public function getOculta(): ?bool
-    {
-        return $this->oculta;
-    }
-
-    /**
-     * @param bool|null $oculta
-     * @return FichaTecnica
-     */
-    public function setOculta(?bool $oculta): FichaTecnica
-    {
-        $this->oculta = $oculta;
-        return $this;
-    }
-
-    /**
-     * @return Cliente|null
-     */
-    public function getInstituicao(): ?Cliente
-    {
-        return $this->instituicao;
-    }
-
-    /**
-     * @param Cliente|null $instituicao
-     * @return FichaTecnica
-     */
-    public function setInstituicao(?Cliente $instituicao): FichaTecnica
-    {
-        $this->instituicao = $instituicao;
-        return $this;
-    }
-
-    /**
-     * @return TipoArtigo|null
-     */
-    public function getTipoArtigo(): ?TipoArtigo
-    {
-        return $this->tipoArtigo;
-    }
-
-    /**
-     * @param TipoArtigo|null $tipoArtigo
-     * @return FichaTecnica
-     */
-    public function setTipoArtigo(?TipoArtigo $tipoArtigo): FichaTecnica
-    {
-        $this->tipoArtigo = $tipoArtigo;
-        return $this;
-    }
 
     /**
      * Ex.:
-     * ‌Array
      * (
      * [1] => 02
      * [2] => 04
@@ -415,6 +247,9 @@ class FichaTecnica implements EntityId
      * [14] => SS
      * [15] => -
      * )
+     *
+     * @Groups("fichaTecnica")
+     *
      * @return array
      */
     public function getGradesTamanhosByPosicaoArray(): array
@@ -429,9 +264,10 @@ class FichaTecnica implements EntityId
     {
         $this->gradesTamanhosByPosicaoArray = $gradesTamanhosByPosicaoArray;
     }
+    
 
     /**
-     * @return mixed
+     * @return void
      */
     public function __clone()
     {
@@ -457,7 +293,9 @@ class FichaTecnica implements EntityId
         }
     }
 
+
     /**
+     * @Groups("fichaTecnica")
      * @return FichaTecnicaItem[]|ArrayCollection
      */
     public function getItens()
@@ -465,32 +303,14 @@ class FichaTecnica implements EntityId
         return $this->itens;
     }
 
-    /**
-     * @param FichaTecnicaItem[]|ArrayCollection $itens
-     * @return FichaTecnica
-     */
-    public function setItens($itens): FichaTecnica
-    {
-        $this->itens = $itens;
-        return $this;
-    }
 
     /**
+     * @Groups("fichaTecnica")
      * @return FichaTecnicaPreco[]|ArrayCollection
      */
     public function getPrecos()
     {
         return $this->precos;
-    }
-
-    /**
-     * @param FichaTecnicaPreco[]|ArrayCollection $precos
-     * @return FichaTecnica
-     */
-    public function setPrecos($precos): FichaTecnica
-    {
-        $this->precos = $precos;
-        return $this;
     }
 
 

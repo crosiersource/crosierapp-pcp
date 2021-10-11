@@ -2,13 +2,47 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use CrosierSource\CrosierLibBaseBundle\Doctrine\Annotations\EntityHandler;
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityId;
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityIdTrait;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * LoteProducaoItemQtde
+ * @ApiResource(
+ *     normalizationContext={"groups"={"loteProducaoItemQtde","entityId"},"enable_max_depth"=true},
+ *     denormalizationContext={"groups"={"loteProducaoItemQtde"},"enable_max_depth"=true},
+ *
+ *     itemOperations={
+ *          "get"={"path"="/pcp/loteProducaoItemQtde/{id}", "security"="is_granted('ROLE_PCP')"},
+ *          "put"={"path"="/pcp/loteProducaoItemQtde/{id}", "security"="is_granted('ROLE_PCP')"},
+ *          "delete"={"path"="/pcp/loteProducaoItemQtde/{id}", "security"="is_granted('ROLE_PCP_ADMIN')"},
+ *     },
+ *     collectionOperations={
+ *          "get"={"path"="/pcp/loteProducaoItemQtde", "security"="is_granted('ROLE_PCP')"},
+ *          "post"={"path"="/pcp/loteProducaoItemQtde", "security"="is_granted('ROLE_PCP')"}
+ *     },
+ *
+ *     attributes={
+ *          "pagination_items_per_page"=10,
+ *          "formats"={"jsonld", "csv"={"text/csv"}}
+ *     }
+ * )
+ *
+ *
+ * @ApiFilter(SearchFilter::class, properties={
+ *     "codigo": "exact",
+ *     "descricao": "partial",
+ *     "marca": "partial",
+ *     "tipoLoteProducaoItemQtde.descricao": "partial"
+ * })
+ * @ApiFilter(OrderFilter::class, properties={"id", "codigo", "descricao", "marca", "updated"}, arguments={"orderParameterName"="order"})
+ *
+ * @EntityHandler(entityHandlerClass="App\EntityHandler\LoteProducaoItemQtdeEntityHandler")
  *
  * @ORM\Table(name="prod_lote_producao_item_qtde")
  * @ORM\Entity
@@ -24,18 +58,20 @@ class LoteProducaoItemQtde implements EntityId
      * @var null|int
      *
      * @ORM\Column(name="qtde", type="integer", nullable=false)
-     * @Groups("entity")
+     * @Groups("loteProducaoItemQtde")
      */
-    private ?int $qtde = null;
+    public ?int $qtde = null;
 
+    
     /**
      * @var null|int
      *
      * @ORM\Column(name="grade_tamanho_id", type="bigint", nullable=false)
-     * @Groups("entity")
+     * @Groups("loteProducaoItemQtde")
      */
-    private ?int $gradeTamanhoId = null;
+    public ?int $gradeTamanhoId = null;
 
+    
     /**
      * @var null|LoteProducaoItem
      *
@@ -43,64 +79,10 @@ class LoteProducaoItemQtde implements EntityId
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="lote_producao_item_id", referencedColumnName="id")
      * })
-     * @Groups("entity")
+     * @Groups("loteProducaoItemQtde")
      */
-    private ?LoteProducaoItem $loteProducaoItem = null;
+    public ?LoteProducaoItem $loteProducaoItem = null;
 
-
-    /**
-     * @return int|null
-     */
-    public function getQtde(): ?int
-    {
-        return $this->qtde;
-    }
-
-    /**
-     * @param int|null $qtde
-     * @return LoteProducaoItemQtde
-     */
-    public function setQtde(?int $qtde): LoteProducaoItemQtde
-    {
-        $this->qtde = $qtde;
-        return $this;
-    }
-
-    /**
-     * @return int|null
-     */
-    public function getGradeTamanhoId(): ?int
-    {
-        return $this->gradeTamanhoId;
-    }
-
-    /**
-     * @param int|null $gradeTamanhoId
-     * @return LoteProducaoItemQtde
-     */
-    public function setGradeTamanhoId(?int $gradeTamanhoId): LoteProducaoItemQtde
-    {
-        $this->gradeTamanhoId = $gradeTamanhoId;
-        return $this;
-    }
-
-    /**
-     * @return LoteProducaoItem|null
-     */
-    public function getLoteProducaoItem(): ?LoteProducaoItem
-    {
-        return $this->loteProducaoItem;
-    }
-
-    /**
-     * @param LoteProducaoItem|null $loteProducaoItem
-     * @return LoteProducaoItemQtde
-     */
-    public function setLoteProducaoItem(?LoteProducaoItem $loteProducaoItem): LoteProducaoItemQtde
-    {
-        $this->loteProducaoItem = $loteProducaoItem;
-        return $this;
-    }
 
 
 }

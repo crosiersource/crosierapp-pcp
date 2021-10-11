@@ -33,13 +33,13 @@ class LoteProducaoItemEntityHandler extends EntityHandler
     public function beforeSave($loteProducaoItem)
     {
         /** @var LoteProducaoItem $loteProducaoItem */
-        if (!$loteProducaoItem->getOrdem()) {
-            $loteProducao = $loteProducaoItem->getLoteProducao();
+        if (!$loteProducaoItem->ordem) {
+            $loteProducao = $loteProducaoItem->loteProducao;
             $maxOrdem = 0;
             foreach ($loteProducao->getItens() as $item) {
                 $maxOrdem = $maxOrdem < $item->getOrdem() ? $item->getOrdem() : $maxOrdem;
             }
-            $loteProducaoItem->setOrdem($maxOrdem + 1);
+            $loteProducaoItem->ordem = ($maxOrdem + 1);
         }
     }
 
@@ -57,14 +57,13 @@ class LoteProducaoItemEntityHandler extends EntityHandler
         foreach ($qtdes as $posicao => $qtde) {
             $qtde = (int)$qtde;
             if (!$qtde) continue;
-            $tamanho = $this->fichaTecnicaBusiness->findTamanhoByGradeIdAndPosicao($item->getFichaTecnica()->getGradeId(), $posicao);
+            $tamanho = $this->fichaTecnicaBusiness->findTamanhoByGradeIdAndPosicao($item->fichaTecnica->gradeId, $posicao);
             $gradeTamanhoId = $tamanho['id'];
             $lpiq = new LoteProducaoItemQtde();
 
-            $lpiq
-                ->setLoteProducaoItem($item)
-                ->setGradeTamanhoId($gradeTamanhoId)
-                ->setQtde($qtde);
+            $lpiq->loteProducaoItem = ($item);
+            $lpiq->gradeTamanhoId = ($gradeTamanhoId);
+            $lpiq->qtde = ($qtde);
             $this->handleSavingEntityId($lpiq);
             $item->getQtdes()->add($lpiq);
 

@@ -50,14 +50,13 @@ class FichaTecnicaItemEntityHandler extends EntityHandler
             if (!$qtde) continue;
             $qtde = $formatter->parse($qtde);
 
-            $tamanho = $this->fichaTecnicaBusiness->findTamanhoByGradeIdAndPosicao($item->getFichaTecnica()->getGradeId(), $posicao);
+            $tamanho = $this->fichaTecnicaBusiness->findTamanhoByGradeIdAndPosicao($item->fichaTecnica->gradeId, $posicao);
             $gradeTamanhoId = $tamanho['id'];
             $lpiq = new FichaTecnicaItemQtde();
 
-            $lpiq
-                ->setFichaTecnicaItem($item)
-                ->setGradeTamanhoId($gradeTamanhoId)
-                ->setQtde($qtde);
+            $lpiq->fichaTecnicaItem = ($item);
+            $lpiq->gradeTamanhoId = ($gradeTamanhoId);
+            $lpiq->qtde = ($qtde);
             $this->handleSavingEntityId($lpiq);
             $item->getQtdes()->add($lpiq);
 

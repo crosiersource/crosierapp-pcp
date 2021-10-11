@@ -38,14 +38,6 @@ class FichaTecnicaBusiness
         $this->calculoPreco = $calculoPreco;
     }
 
-    /**
-     * @required
-     * @param CrosierEntityIdAPIClient $crosierEntityIdAPIClient
-     */
-    public function setGenericAPIClient(CrosierEntityIdAPIClient $crosierEntityIdAPIClient): void
-    {
-        $this->crosierEntityIdAPIClient = $crosierEntityIdAPIClient;
-    }
 
     /**
      * @required
@@ -77,39 +69,39 @@ class FichaTecnicaBusiness
         $fichaTecnica->getPrecos()->clear();
         $this->fichaTecnicaEntityHandler->save($fichaTecnica);
 
-        if ($fichaTecnica->getModoCalculo() === 'MODO_1') {
+        if ($fichaTecnica->modoCalculo === 'MODO_1') {
             $fichaTecnica = $this->calcularModo1($fichaTecnica, $insumosArray['totalGlobal']);
-        } elseif ($fichaTecnica->getModoCalculo() === 'MODO_2') {
+        } elseif ($fichaTecnica->modoCalculo === 'MODO_2') {
             $fichaTecnica = $this->calcularModo2($fichaTecnica, $insumosArray['totalGlobal']);
-        } elseif ($fichaTecnica->getModoCalculo() === 'MODO_3') {
+        } elseif ($fichaTecnica->modoCalculo === 'MODO_3') {
             $fichaTecnica = $this->calcularModo3($fichaTecnica, $insumosArray['totalGlobal']);
         }
 
         /** @var FichaTecnicaPreco $preco */
         foreach ($fichaTecnica->getPrecos() as $preco) {
-            $preco->setDtCusto(new \DateTime());
+            $preco->dtCusto = new \DateTime();
 
-            $preco->setCustoOperacional($fichaTecnica->getCustoOperacionalPadrao());
-            $preco->setCustoFinanceiro($fichaTecnica->getCustoFinanceiroPadrao());
-            $preco->setMargem($fichaTecnica->getMargemPadrao());
-            $preco->setPrazo($fichaTecnica->getPrazoPadrao());
+            $preco->custoOperacional = ($fichaTecnica->custoOperacionalPadrao);
+            $preco->custoFinanceiro = ($fichaTecnica->custoFinanceiroPadrao);
+            $preco->margem = ($fichaTecnica->margemPadrao);
+            $preco->prazo = ($fichaTecnica->prazoPadrao);
 
             $precoParams = [
-                'prazo' => $preco->getPrazo(),
-                'margem' => $preco->getMargem(),
-                'custoOperacional' => $preco->getCustoOperacional(),
-                'custoFinanceiro' => $preco->getCustoFinanceiro(),
-                'precoCusto' => $preco->getPrecoCusto(),
+                'prazo' => $preco->prazo,
+                'margem' => $preco->margem,
+                'custoOperacional' => $preco->custoOperacional,
+                'custoFinanceiro' => $preco->custoFinanceiro,
+                'precoCusto' => $preco->precoCusto,
                 'precoPrazo' => 0.0,
                 'precoVista' => 0.0,
                 'coeficiente' => 0.0,
             ];
-            if ($preco->getPrecoCusto()) {
+            if ($preco->precoCusto) {
                 $this->calculoPreco->calcularPreco($precoParams);
             }
-            $preco->setPrecoPrazo((float)($precoParams['precoPrazo'] ?? 0.0));
-            $preco->setPrecoVista((float)($precoParams['precoVista'] ?? 0.0));
-            $preco->setCoeficiente((float)($precoParams['coeficiente'] ?? 0.0));
+            $preco->precoPrazo = ((float)($precoParams['precoPrazo'] ?? 0.0));
+            $preco->precoVista = ((float)($precoParams['precoVista'] ?? 0.0));
+            $preco->coeficiente = ((float)($precoParams['coeficiente'] ?? 0.0));
 
             $this->fichaTecnicaEntityHandler->handleSavingEntityId($preco);
         }
@@ -128,7 +120,7 @@ class FichaTecnicaBusiness
 
         $iterator = $itens->getIterator();
         $iterator->uasort(function (FichaTecnicaItem $a, FichaTecnicaItem $b) {
-            return strcasecmp($a->getInsumo()->getTipoInsumo()->getDescricao(), $b->getInsumo()->getTipoInsumo()->getDescricao());
+            return strcasecmp($a->insumo->tipoInsumo->descricao, $b->insumo->tipoInsumo->descricao);
         });
 
         $fichaTecnicaItens = new ArrayCollection(iterator_to_array($iterator));
@@ -146,8 +138,8 @@ class FichaTecnicaBusiness
 
         /** @var FichaTecnicaItem $item */
         foreach ($fichaTecnicaItens as $item) {
-            if ($item->getInsumo()->getTipoInsumo()->getDescricao() !== $tipoInsumoDescricao_aux) {
-                $tipoInsumoDescricao_aux = $item->getInsumo()->getTipoInsumo()->getDescricao();
+            if ($item->insumo->tipoInsumo->descricao !== $tipoInsumoDescricao_aux) {
+                $tipoInsumoDescricao_aux = $item->insumo->tipoInsumo->descricao;
 
                 $insumosArray[++$c] = [
                     'tipoInsumo' => $tipoInsumoDescricao_aux,
@@ -158,13 +150,13 @@ class FichaTecnicaBusiness
                     $insumosArray[$c]['totais'][$i]['decimal'] = 0.0;
                 }
             }
-            $unidade = $this->findUnidadeById($item->getInsumo()->getUnidadeProdutoId());
+            $unidade = $this->findUnidadeById($item->insumo->unidadeProdutoId);
             $item->casasDecimais = $unidade['casasDecimais'];
             $item->unidade = $unidade['label'];
             $insumosArray[$c]['itens'][] = $item;
             $qtdesTamanhosArray = $item->getQtdesTamanhosArray();
             for ($i = 1; $i <= 15; $i++) {
-                $precoCustoAtual = $item->getInsumo()->getPrecoAtual()->getPrecoCusto() ?? 0.0;
+                $precoCustoAtual = $item->insumo->getPrecoAtual()->precoCusto ?? 0.0;
 
                 $total = (float)bcmul($qtdesTamanhosArray[$i]['decimal'], $precoCustoAtual, 3);
 
@@ -180,7 +172,7 @@ class FichaTecnicaBusiness
             uasort($r['itens'], function ($a, $b) {
                 /** @var FichaTecnicaItem $a */
                 /** @var FichaTecnicaItem $b */
-                return strcasecmp($a->getInsumo()->getDescricao(), $b->getInsumo()->getDescricao());
+                return strcasecmp($a->insumo->descricao, $b->insumo->descricao);
             });
         }
 
@@ -199,7 +191,7 @@ class FichaTecnicaBusiness
      */
     public function buildQtdesTamanhosArray(FichaTecnica $fichaTecnica): void
     {
-        $gradesTamanhosByPosicaoArray = $this->buildGradesTamanhosByPosicaoArray($fichaTecnica->getGradeId());
+        $gradesTamanhosByPosicaoArray = $this->buildGradesTamanhosByPosicaoArray($fichaTecnica->gradeId);
         $fichaTecnica->setGradesTamanhosByPosicaoArray($gradesTamanhosByPosicaoArray);
         foreach ($fichaTecnica->getItens() as $item) {
             $this->buildItemQtdesTamanhosByPosicaoArray($item);
@@ -214,7 +206,7 @@ class FichaTecnicaBusiness
      */
     public function buildItemQtdesTamanhosByPosicaoArray(FichaTecnicaItem $item): void
     {
-        $unidade = $this->findUnidadeById($item->getInsumo()->getUnidadeProdutoId());
+        $unidade = $this->findUnidadeById($item->insumo->unidadeProdutoId);
         $array = [];
         for ($i = 1; $i <= 15; $i++) {
             $array[$i]['decimal'] = 0.0;
@@ -260,13 +252,13 @@ class FichaTecnicaBusiness
         if ($vPos1 || $vPos2 || $vPos3) {
             $preco = new FichaTecnicaPreco();
 
-            $preco->setFichaTecnica($fichaTecnica);
+            $preco->fichaTecnica = $fichaTecnica;
             $tams = $pos1 . '-' . $pos2 . '-' . $pos3;
-            $preco->setDescricao('TAM ' . $tams);
+            $preco->descricao = ('TAM ' . $tams);
 
             $precoMedio = $vPos3 ?: $vPos2 ?: $vPos1;
 
-            $preco->setPrecoCusto($precoMedio);
+            $preco->precoCusto = ($precoMedio);
 
             $fichaTecnica->getPrecos()->add($preco);
         }
@@ -275,65 +267,65 @@ class FichaTecnicaBusiness
 
             $preco = new FichaTecnicaPreco();
 
-            $preco->setFichaTecnica($fichaTecnica);
+            $preco->fichaTecnica = ($fichaTecnica);
 
             $tams = $pos4 . '-' . $pos5;
-            $preco->setDescricao('TAM ' . $tams);
+            $preco->descricao = ('TAM ' . $tams);
 
             $precoMedio = $vPos5 ?: $vPos4;
-            $preco->setPrecoCusto($precoMedio);
+            $preco->precoCusto = ($precoMedio);
 
             $fichaTecnica->getPrecos()->add($preco);
         }
         if ($vPos6 || $vPos7 || $vPos8) {
             $preco = new FichaTecnicaPreco();
 
-            $preco->setFichaTecnica($fichaTecnica);
+            $preco->fichaTecnica = ($fichaTecnica);
 
             $tams = $pos6 . '-' . $pos7 . '-' . $pos8;
-            $preco->setDescricao('TAM ' . $tams);
+            $preco->descricao = ('TAM ' . $tams);
 
             $precoMedio = $vPos8 ?: $vPos7 ?: $vPos6;
-            $preco->setPrecoCusto($precoMedio);
+            $preco->precoCusto = ($precoMedio);
 
             $fichaTecnica->getPrecos()->add($preco);
         }
         if ($vPos9 || $vPos10 || $vPos11) {
             $preco = new FichaTecnicaPreco();
 
-            $preco->setFichaTecnica($fichaTecnica);
+            $preco->fichaTecnica = ($fichaTecnica);
 
             $tams = $pos9 . '-' . $pos10 . '-' . $pos11;
-            $preco->setDescricao('TAM ' . $tams);
+            $preco->descricao = ('TAM ' . $tams);
 
             // preferencialmente pega o M->-> caso seja nulo, pega o G-> Por último o P->
             $precoMedio = $vPos10 ?: $vPos11 ?: $vPos9;
 
-            $preco->setPrecoCusto($precoMedio);
+            $preco->precoCusto = ($precoMedio);
             $fichaTecnica->getPrecos()->add($preco);
         }
         if ($vPos12) {
             $preco = new FichaTecnicaPreco();
 
-            $preco->setFichaTecnica($fichaTecnica);
-            $preco->setDescricao('TAM ' . $pos12);
-            $preco->setPrecoCusto($vPos12);
+            $preco->fichaTecnica = ($fichaTecnica);
+            $preco->descricao = ('TAM ' . $pos12);
+            $preco->precoCusto = ($vPos12);
             $fichaTecnica->getPrecos()->add($preco);
         }
         if ($vPos13) {
             $preco = new FichaTecnicaPreco();
 
-            $preco->setFichaTecnica($fichaTecnica);
-            $preco->setDescricao('TAM ' . $pos13);
-            $preco->setPrecoCusto($vPos13);
+            $preco->fichaTecnica = ($fichaTecnica);
+            $preco->descricao = ('TAM ' . $pos13);
+            $preco->precoCusto = ($vPos13);
             $fichaTecnica->getPrecos()->add($preco);
         }
         if ($vPos14) {
             $preco = new FichaTecnicaPreco();
 
-            $preco->setFichaTecnica($fichaTecnica);
-            $preco->setDescricao('TAM ' . $pos14);
-            $preco->setPrecoCusto($vPos14);
+            $preco->fichaTecnica = ($fichaTecnica);
+            $preco->descricao = ('TAM ' . $pos14);
+            $preco->precoCusto = ($vPos14);
             $fichaTecnica->getPrecos()->add($preco);
         }
 
@@ -382,12 +374,12 @@ class FichaTecnicaBusiness
         if ($vPos1 || $vPos2 || $vPos3 || $vPos4) {
             $preco = new FichaTecnicaPreco();
 
-            $preco->setFichaTecnica($fichaTecnica);
+            $preco->fichaTecnica = ($fichaTecnica);
             $tams = $pos1 . '-' . $pos2 . '-' . $pos3 . '-' . $pos4;
-            $preco->setDescricao('TAM ' . $tams);
+            $preco->descricao = ('TAM ' . $tams);
 
             $precoMedio = $vPos4 ?: $vPos3 ?: $vPos2 ?: $vPos1;
-            $preco->setPrecoCusto($precoMedio);
+            $preco->precoCusto = ($precoMedio);
 
             $fichaTecnica->getPrecos()->add($preco);
         }
@@ -395,12 +387,12 @@ class FichaTecnicaBusiness
         if ($vPos5 || $vPos6 || $vPos7 || $vPos8) {
             $preco = new FichaTecnicaPreco();
 
-            $preco->setFichaTecnica($fichaTecnica);
+            $preco->fichaTecnica = ($fichaTecnica);
             $tams = $pos5 . '-' . $pos6 . '-' . $pos7 . '-' . $pos8;
-            $preco->setDescricao('TAM ' . $tams);
+            $preco->descricao = ('TAM ' . $tams);
 
             $precoMedio = $vPos8 ?: $vPos7 ?: $vPos6 ?: $vPos5;
-            $preco->setPrecoCusto($precoMedio);
+            $preco->precoCusto = ($precoMedio);
 
             $fichaTecnica->getPrecos()->add($preco);
         }
@@ -408,37 +400,37 @@ class FichaTecnicaBusiness
         if ($vPos9 || $vPos10 || $vPos11) {
             $preco = new FichaTecnicaPreco();
 
-            $preco->setFichaTecnica($fichaTecnica);
+            $preco->fichaTecnica = ($fichaTecnica);
             $tams = $pos9 . '-' . $pos10 . '-' . $pos11;
-            $preco->setDescricao('TAM ' . $tams);
+            $preco->descricao = ('TAM ' . $tams);
 
             $precoMedio = $vPos10 ?: $vPos11 ?: $vPos9;
-            $preco->setPrecoCusto($precoMedio);
+            $preco->precoCusto = ($precoMedio);
 
             $fichaTecnica->getPrecos()->add($preco);
         }
         if ($vPos12) {
             $preco = new FichaTecnicaPreco();
 
-            $preco->setFichaTecnica($fichaTecnica);
-            $preco->setDescricao('TAM ' . $pos12);
-            $preco->setPrecoCusto($vPos12);
+            $preco->fichaTecnica = ($fichaTecnica);
+            $preco->descricao = ('TAM ' . $pos12);
+            $preco->precoCusto = ($vPos12);
             $fichaTecnica->getPrecos()->add($preco);
         }
         if ($vPos13) {
             $preco = new FichaTecnicaPreco();
 
-            $preco->setFichaTecnica($fichaTecnica);
-            $preco->setDescricao('TAM ' . $pos13);
-            $preco->setPrecoCusto($vPos13);
+            $preco->fichaTecnica = ($fichaTecnica);
+            $preco->descricao = ('TAM ' . $pos13);
+            $preco->precoCusto = ($vPos13);
             $fichaTecnica->getPrecos()->add($preco);
         }
         if ($vPos14) {
             $preco = new FichaTecnicaPreco();
 
-            $preco->setFichaTecnica($fichaTecnica);
-            $preco->setDescricao('TAM ' . $pos14);
-            $preco->setPrecoCusto($vPos14);
+            $preco->fichaTecnica = ($fichaTecnica);
+            $preco->descricao = ('TAM ' . $pos14);
+            $preco->precoCusto = ($vPos14);
             $fichaTecnica->getPrecos()->add($preco);
         }
 
@@ -470,12 +462,12 @@ class FichaTecnicaBusiness
         if ($vPos1 || $vPos2 || $vPos3 || $vPos4) {
             $preco = new FichaTecnicaPreco();
 
-            $preco->setFichaTecnica($fichaTecnica);
+            $preco->fichaTecnica = ($fichaTecnica);
             $tams = $pos1 . '-' . $pos2 . '-' . $pos3 . '-' . $pos4;
-            $preco->setDescricao('TAM ' . $tams);
+            $preco->descricao = ('TAM ' . $tams);
 
             $precoMedio = $vPos4 ?: $vPos3 ?: $vPos2 ?: $vPos1;
-            $preco->setPrecoCusto($precoMedio);
+            $preco->precoCusto = ($precoMedio);
 
             $fichaTecnica->getPrecos()->add($preco);
         }
@@ -483,31 +475,31 @@ class FichaTecnicaBusiness
         if ($vPos5 || $vPos6 || $vPos7) {
             $preco = new FichaTecnicaPreco();
 
-            $preco->setFichaTecnica($fichaTecnica);
+            $preco->fichaTecnica = ($fichaTecnica);
             $tams = $pos5 . '-' . $pos6 . '-' . $pos7;
-            $preco->setDescricao('TAM ' . $tams);
+            $preco->descricao = ('TAM ' . $tams);
 
             $precoMedio = $vPos7 ?: $vPos6 ?: $vPos5;
-            $preco->setPrecoCusto($precoMedio);
+            $preco->precoCusto = ($precoMedio);
 
             $fichaTecnica->getPrecos()->add($preco);
         }
         if ($vPos8 || $vPos9 || $vPos10 || $vPos11) {
             $preco = new FichaTecnicaPreco();
 
-            $preco->setFichaTecnica($fichaTecnica);
+            $preco->fichaTecnica = ($fichaTecnica);
             $tams = $pos8 . '-' . $pos9 . '-' . $pos10 . '-' . $pos11;
-            $preco->setDescricao('TAM ' . $tams);
+            $preco->descricao = ('TAM ' . $tams);
 
             $precoMedio = $vPos10 ?: $vPos11 ?: $vPos9 ?: $vPos8;
-            $preco->setPrecoCusto($precoMedio);
+            $preco->precoCusto = ($precoMedio);
 
             $fichaTecnica->getPrecos()->add($preco);
         }
         if ($vPos12 || $vPos13 || $vPos14) {
             $preco = new FichaTecnicaPreco();
 
-            $preco->setFichaTecnica($fichaTecnica);
+            $preco->fichaTecnica = ($fichaTecnica);
 
             $tams = '';
 
@@ -524,10 +516,10 @@ class FichaTecnicaBusiness
             $tams = substr($tams, 0, -1);
 
 
-            $preco->setDescricao('TAM ' . $tams);
+            $preco->descricao = ('TAM ' . $tams);
 
             $precoMedio = $vPos14 ?: $vPos13 ?: $vPos12;
-            $preco->setPrecoCusto($precoMedio);
+            $preco->precoCusto = ($precoMedio);
 
             $fichaTecnica->getPrecos()->add($preco);
         }
@@ -549,14 +541,14 @@ class FichaTecnicaBusiness
         $this->fichaTecnicaEntityHandler->getDoctrine()->beginTransaction();
 
         $novaFichaTecnica = clone $fichaTecnicaOrigem;
-        $novaFichaTecnica->setDescricao($novaDescricao);
+        $novaFichaTecnica->descricao = ($novaDescricao);
 
         /** @var ClienteRepository $repoCliente */
         $repoCliente = $this->doctrine->getRepository(Cliente::class);
         /** @var Cliente $instituicao */
         $instituicao = $repoCliente->find($instituicaoId);
 
-        $novaFichaTecnica->setInstituicao($instituicao);
+        $novaFichaTecnica->instituicao = ($instituicao);
 
         /** @var FichaTecnica $novaFichaTecnica */
         $novaFichaTecnica = $this->fichaTecnicaEntityHandler->save($novaFichaTecnica);
@@ -586,14 +578,13 @@ class FichaTecnicaBusiness
 
         $fichaTecnicaItem = new FichaTecnicaItem();
         $fichaTecnicaItem
-            ->setFichaTecnica($fichaTecnica)
-            ->setInsumo($insumo);
+            ->fichaTecnica = ($fichaTecnica);
+        $fichaTecnicaItem->insumo = ($insumo);
         $this->fichaTecnicaEntityHandler->handleSavingEntityId($fichaTecnicaItem);
 
         $fichaTecnica->getItens()->add($fichaTecnicaItem);
-        /** @var FichaTecnica $rFichaTecnica */
-        $rFichaTecnica = $this->fichaTecnicaEntityHandler->save($fichaTecnica);
-        return $rFichaTecnica;
+        
+        return $this->fichaTecnicaEntityHandler->save($fichaTecnica);
     }
 
 
@@ -628,7 +619,7 @@ class FichaTecnicaBusiness
 
         $cache = new FilesystemAdapter($_SERVER['CROSIERAPP_ID'] . '.cache', 0, $_SERVER['CROSIER_SESSIONS_FOLDER']);
 
-        $rGrades = $cache->get('grades', function (ItemInterface $item) {
+        return $cache->get('grades', function (ItemInterface $item) {
             $item->expiresAfter(3600);
 
 
@@ -652,9 +643,6 @@ class FichaTecnicaBusiness
 
             return $rGrades;
         });
-
-
-        return $rGrades;
     }
 
     /**
@@ -666,7 +654,7 @@ class FichaTecnicaBusiness
     {
         $cache = new FilesystemAdapter($_SERVER['CROSIERAPP_ID'] . '.cache', 0, $_SERVER['CROSIER_SESSIONS_FOLDER']);
 
-        $grades = $cache->get('findTamanhosByGradeId_' . $gradeId, function (ItemInterface $item) use ($gradeId) {
+        return $cache->get('findTamanhosByGradeId_' . $gradeId, function (ItemInterface $item) use ($gradeId) {
             $item->expiresAfter(3600);
 
             $conn = $this->doctrine->getConnection();
@@ -681,7 +669,6 @@ class FichaTecnicaBusiness
             }
             return false;
         });
-        return $grades;
     }
 
 
@@ -693,7 +680,7 @@ class FichaTecnicaBusiness
     {
         $cache = new FilesystemAdapter($_SERVER['CROSIERAPP_ID'] . '.cache', 0, $_SERVER['CROSIER_SESSIONS_FOLDER']);
 
-        $tamanho = $cache->get('findGradeTamanhoById_' . $id, function (ItemInterface $item) use ($id) {
+        return $cache->get('findGradeTamanhoById_' . $id, function (ItemInterface $item) use ($id) {
             $item->expiresAfter(3600);
 
             $conn = $this->doctrine->getConnection();
@@ -711,7 +698,6 @@ class FichaTecnicaBusiness
 
             return null;
         });
-        return $tamanho;
     }
 
 
@@ -725,7 +711,7 @@ class FichaTecnicaBusiness
 
         $cache = new FilesystemAdapter($_SERVER['CROSIERAPP_ID'] . '.cache', 0, $_SERVER['CROSIER_SESSIONS_FOLDER']);
 
-        $tamanho = $cache->get('findTamanhoByGradeIdAndPosicao_' . $gradeId . '-' . $posicao, function (ItemInterface $item) use ($gradeId, $posicao) {
+        return $cache->get('findTamanhoByGradeIdAndPosicao_' . $gradeId . '-' . $posicao, function (ItemInterface $item) use ($gradeId, $posicao) {
             $item->expiresAfter(3600);
 
             $tamanhos = $this->findTamanhosByGradeId($gradeId);
@@ -737,8 +723,6 @@ class FichaTecnicaBusiness
 
             return null;
         });
-
-        return $tamanho;
     }
 
 
@@ -751,7 +735,7 @@ class FichaTecnicaBusiness
     {
         $cache = new FilesystemAdapter($_SERVER['CROSIERAPP_ID'] . '.cache', 0, $_SERVER['CROSIER_SESSIONS_FOLDER']);
 
-        $gradesTamanhosByPosicaoArray = $cache->get('buildGradesTamanhosByPosicaoArray_' . $gradeId, function (ItemInterface $item) use ($gradeId) {
+        return $cache->get('buildGradesTamanhosByPosicaoArray_' . $gradeId, function (ItemInterface $item) use ($gradeId) {
             $item->expiresAfter(3600);
 
             $tamanhos = $this->findTamanhosByGradeId($gradeId);
@@ -769,8 +753,6 @@ class FichaTecnicaBusiness
             return $gradesTamanhosByPosicaoArray;
         });
 
-        return $gradesTamanhosByPosicaoArray;
-
     }
 
     /**
@@ -783,7 +765,7 @@ class FichaTecnicaBusiness
 
         $cache = new FilesystemAdapter($_SERVER['CROSIERAPP_ID'] . '.cache', 0, $_SERVER['CROSIER_SESSIONS_FOLDER']);
 
-        $posicao = $cache->get('findPosicaoByGradeTamanhoId' . $gradeTamanhoId, function (ItemInterface $item) use ($gradeTamanhoId) {
+        return $cache->get('findPosicaoByGradeTamanhoId' . $gradeTamanhoId, function (ItemInterface $item) use ($gradeTamanhoId) {
             $item->expiresAfter(3600);
 
             $conn = $this->doctrine->getConnection();
@@ -803,7 +785,6 @@ class FichaTecnicaBusiness
 
             return -1;
         });
-        return $posicao;
     }
 
 
@@ -815,7 +796,7 @@ class FichaTecnicaBusiness
 
         $cache = new FilesystemAdapter($_SERVER['CROSIERAPP_ID'] . '.cache', 0, $_SERVER['CROSIER_SESSIONS_FOLDER']);
 
-        $rUnidades = $cache->get('unidades', function (ItemInterface $item) {
+        return $cache->get('unidades', function (ItemInterface $item) {
             $item->expiresAfter(3600);
 
             $conn = $this->doctrine->getConnection();
@@ -823,9 +804,6 @@ class FichaTecnicaBusiness
                 ['appUUID' => $_SERVER['CROSIERAPP_UUID'], 'chave' => 'unidades.json']);
             return json_decode($rsGrades['valor'], true);
         });
-
-
-        return $rUnidades;
     }
 
 
@@ -839,7 +817,7 @@ class FichaTecnicaBusiness
     {
         $cache = new FilesystemAdapter($_SERVER['CROSIERAPP_ID'] . '.cache', 0, $_SERVER['CROSIER_SESSIONS_FOLDER']);
 
-        $unidade = $cache->get('findUnidadeById' . $unidadeId, function (ItemInterface $item) use ($unidadeId) {
+        return $cache->get('findUnidadeById' . $unidadeId, function (ItemInterface $item) use ($unidadeId) {
             $item->expiresAfter(3600);
 
             $conn = $this->doctrine->getConnection();
@@ -856,7 +834,6 @@ class FichaTecnicaBusiness
 
             return null;
         });
-        return $unidade;
     }
 
 

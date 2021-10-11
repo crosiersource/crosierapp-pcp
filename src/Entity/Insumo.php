@@ -2,6 +2,11 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use CrosierSource\CrosierLibBaseBundle\Doctrine\Annotations\EntityHandler;
 use CrosierSource\CrosierLibBaseBundle\Doctrine\Annotations\NotUppercase;
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityId;
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityIdTrait;
@@ -9,9 +14,40 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Serializer\Annotation\MaxDepth;
+use Symfony\Component\Serializer\Annotation\SerializedName;
 
 /**
- * Insumo
+ * @ApiResource(
+ *     normalizationContext={"groups"={"insumo","tipoInsumo","entityId"},"enable_max_depth"=true},
+ *     denormalizationContext={"groups"={"insumo"},"enable_max_depth"=true},
+ *
+ *     itemOperations={
+ *          "get"={"path"="/pcp/insumo/{id}", "security"="is_granted('ROLE_PCP')"},
+ *          "put"={"path"="/pcp/insumo/{id}", "security"="is_granted('ROLE_PCP')"},
+ *          "delete"={"path"="/pcp/insumo/{id}", "security"="is_granted('ROLE_PCP_ADMIN')"},
+ *     },
+ *     collectionOperations={
+ *          "get"={"path"="/pcp/insumo", "security"="is_granted('ROLE_PCP')"},
+ *          "post"={"path"="/pcp/insumo", "security"="is_granted('ROLE_PCP')"}
+ *     },
+ *
+ *     attributes={
+ *          "pagination_items_per_page"=10,
+ *          "formats"={"jsonld", "csv"={"text/csv"}}
+ *     }
+ * )
+ *
+ *
+ * @ApiFilter(SearchFilter::class, properties={
+ *     "codigo": "exact",
+ *     "descricao": "partial",
+ *     "marca": "partial",
+ *     "tipoInsumo": "exact",
+ *     "tipoInsumo.descricao": "partial"
+ * })
+ * @ApiFilter(OrderFilter::class, properties={"id", "codigo", "descricao", "marca", "tipoInsumo.codigo", "updated"}, arguments={"orderParameterName"="order"})
+ *
+ * @EntityHandler(entityHandlerClass="App\EntityHandler\InsumoEntityHandler")
  *
  * @ORM\Table(name="prod_insumo")
  * @ORM\Entity(repositoryClass="App\Repository\InsumoRepository")
@@ -27,7 +63,7 @@ class Insumo implements EntityId
      * @var null|int
      *
      * @ORM\Column(name="codigo", type="integer", nullable=false)
-     * @Groups("entity")
+     * @Groups("insumo")
      */
     public ?int $codigo = null;
 
@@ -35,7 +71,7 @@ class Insumo implements EntityId
      * @var null|string
      *
      * @ORM\Column(name="descricao", type="string", length=200, nullable=false)
-     * @Groups("entity")
+     * @Groups("insumo")
      */
     public ?string $descricao = null;
 
@@ -43,7 +79,7 @@ class Insumo implements EntityId
      * @var null|string
      *
      * @ORM\Column(name="marca", type="string", length=200, nullable=true)
-     * @Groups("entity")
+     * @Groups("insumo")
      */
     public ?string $marca = null;
 
@@ -51,7 +87,7 @@ class Insumo implements EntityId
      * @var null|int
      *
      * @ORM\Column(name="unidade_produto_id", type="bigint", nullable=false)
-     * @Groups("entity")
+     * @Groups("insumo")
      */
     public ?int $unidadeProdutoId = null;
 
@@ -62,7 +98,7 @@ class Insumo implements EntityId
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="tipo_insumo_id", referencedColumnName="id")
      * })
-     * @Groups("entity")
+     * @Groups("insumo")
      */
     public ?TipoInsumo $tipoInsumo = null;
 
@@ -71,10 +107,26 @@ class Insumo implements EntityId
      * @ORM\Column(name="json_data", type="json")
      * @var null|array
      * @NotUppercase()
-     * @Groups("entity")
+     * @Groups("insumo")
      */
     public ?array $jsonData = null;
 
+
+    /**
+     * @var null|\DateTime
+     *
+     * @ORM\Column(name="dt_custo", type="date", nullable=false)
+     * @Groups("insumo")
+     */
+    public ?\DateTime $dtCusto = null;
+
+
+    /**
+     * @var null|float
+     *
+     * @ORM\Column(name="preco_custo", type="float", precision=15, scale=2, nullable=false)
+     */
+    public ?float $precoCusto = null;
 
     /**
      *
@@ -91,7 +143,7 @@ class Insumo implements EntityId
 
     /**
      * Transient.
-     * @Groups("entity")
+     * @Groups("insumo")
      * @MaxDepth(2)
      */
     public ?InsumoPreco $precoAtual = null;
@@ -112,69 +164,6 @@ class Insumo implements EntityId
         return $this->codigo;
     }
 
-    /**
-     * @param int|null $codigo
-     * @return Insumo
-     */
-    public function setCodigo(?int $codigo): Insumo
-    {
-        $this->codigo = $codigo;
-        return $this;
-    }
-
-    /**
-     * @return null|string
-     */
-    public function getDescricao(): ?string
-    {
-        return $this->descricao;
-    }
-
-    /**
-     * @param null|string $descricao
-     * @return Insumo
-     */
-    public function setDescricao(?string $descricao): Insumo
-    {
-        $this->descricao = $descricao;
-        return $this;
-    }
-
-    /**
-     * @return int|null
-     */
-    public function getUnidadeProdutoId(): ?int
-    {
-        return $this->unidadeProdutoId;
-    }
-
-    /**
-     * @param int|null $unidadeProdutoId
-     * @return Insumo
-     */
-    public function setUnidadeProdutoId(?int $unidadeProdutoId): Insumo
-    {
-        $this->unidadeProdutoId = $unidadeProdutoId;
-        return $this;
-    }
-
-    /**
-     * @return TipoInsumo|null
-     */
-    public function getTipoInsumo(): ?TipoInsumo
-    {
-        return $this->tipoInsumo;
-    }
-
-    /**
-     * @param TipoInsumo|null $tipoInsumo
-     * @return Insumo
-     */
-    public function setTipoInsumo(?TipoInsumo $tipoInsumo): Insumo
-    {
-        $this->tipoInsumo = $tipoInsumo;
-        return $this;
-    }
 
     /**
      * @return InsumoPreco[]|ArrayCollection
@@ -186,51 +175,66 @@ class Insumo implements EntityId
 
     /**
      * @param InsumoPreco[]|ArrayCollection $precos
-     * @return Insumo
      */
-    public function setPrecos($precos)
+    public function setPrecos($precos): Insumo
     {
         $this->precos = $precos;
         return $this;
     }
 
-    /**
-     * @param InsumoPreco $precoAtual
-     * @return Insumo
-     */
-    public function setPrecoAtual(?InsumoPreco $precoAtual): Insumo
-    {
-        $this->precoAtual = $precoAtual;
-        return $this;
-    }
-
-
-    /**
-     * @return null|InsumoPreco
-     */
     public function getPrecoAtual(): ?InsumoPreco
     {
-        if ($this->precos) {
-            foreach ($this->precos as $preco) {
-                if ($preco->getAtual()) {
-                    $this->precoAtual = $preco;
-                    break;
+        try {
+            if (!$this->precoAtual) {
+                if ($this->precos) {
+                    foreach ($this->precos as $preco) {
+                        if ($preco->atual) {
+                            $this->precoAtual = $preco;
+                            break;
+                        }
+                    }
+
+                    if (!$this->precoAtual) {
+                        $iterator = $this->precos->getIterator();
+                        $iterator->uasort(function (InsumoPreco $a, InsumoPreco $b) {
+                            return $a->dtCusto >= $b->dtCusto;
+                        });
+                        $precos = new ArrayCollection(iterator_to_array($iterator));
+
+                        $this->precoAtual = $precos[0];
+                    }
                 }
             }
-
-            if (!$this->precoAtual) {
-                $iterator = $this->precos->getIterator();
-                $iterator->uasort(function (InsumoPreco $a, InsumoPreco $b) {
-                    return $a->getDtCusto() >= $b->getDtCusto();
-                });
-                $precos = new ArrayCollection(iterator_to_array($iterator));
-
-                $this->precoAtual = $precos[0];
-            }
+        } catch (\Exception $e) {
+            $this->precoAtual = null;
         }
         return $this->precoAtual;
     }
 
 
+    /**
+     * Para aceitar tanto em string quanto em double.
+     * @Groups("insumo")
+     * @SerializedName("precoCusto")
+     * @return float
+     */
+    public function getPrecoCustoFormatted(): float
+    {
+        return (float)$this->precoCusto;
+    }
+
+
+    /**
+     * Para aceitar tanto em string quanto em double.
+     * @Groups("insumo")
+     * @SerializedName("precoCusto")
+     * @param float $precoCusto
+     */
+    public function setPrecoCustoFormatted(float $precoCusto)
+    {
+        $this->precoCusto = $precoCusto;
+    }
+
+    
 
 }

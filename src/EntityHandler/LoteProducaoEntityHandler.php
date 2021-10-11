@@ -26,9 +26,9 @@ class LoteProducaoEntityHandler extends EntityHandler
     public function beforeSave($loteProducao)
     {
         /** @var LoteProducao $loteProducao */
-        if (!$loteProducao->getCodigo()) {
+        if (!$loteProducao->codigo) {
             $proxCodigo = $this->getDoctrine()->getRepository(LoteProducao::class)->findProx('codigo');
-            $loteProducao->setCodigo($proxCodigo);
+            $loteProducao->codigo = ($proxCodigo);
         }
     }
 

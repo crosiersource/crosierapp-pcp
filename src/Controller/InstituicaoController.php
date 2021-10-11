@@ -42,7 +42,7 @@ class InstituicaoController extends FormListController
      * @Route("/instituicao/form/{id}", name="instituicao_form", defaults={"id"=null}, requirements={"id"="\d+"})
      * @param Request $request
      * @param Cliente|null $cliente
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
      * @throws \Exception
      *
      * @IsGranted("ROLE_PCP_ADMIN", statusCode=403)
@@ -70,7 +70,7 @@ class InstituicaoController extends FormListController
      *
      * @Route("/instituicao/list/", name="instituicao_list")
      * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      * @throws \Exception
      *
      * @IsGranted("ROLE_PCP_ADMIN", statusCode=403)

@@ -53,7 +53,7 @@ class FichaTecnicaItemType extends AbstractType
                 'placeholder' => '...',
                 'required' => false,
                 'choice_label' => function (?Insumo $insumo) {
-                    return $insumo && $insumo->getDescricao() ? $insumo->getDescricao() : '';
+                    return $insumo && $insumo->descricao ? $insumo->descricao : '';
                 },
                 'attr' => ['class' => 'autoSelect2']
             ]);

@@ -3,7 +3,6 @@
 namespace App\Form;
 
 use App\Entity\LoteProducao;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
@@ -18,19 +17,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class LoteProducaoType extends AbstractType
 {
-
-    /** @var EntityManagerInterface */
-    private $doctrine;
-
-    /**
-     * @required
-     * @param EntityManagerInterface $doctrine
-     */
-    public function setDoctrine(EntityManagerInterface $doctrine): void
-    {
-        $this->doctrine = $doctrine;
-    }
-
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
