@@ -26,12 +26,15 @@
       <div class="card-body">
         <form @submit.prevent="this.$emit('submitForm')">
           <fieldset :disabled="this.loading">
-            <CrosierPercent
-              v-model="this.porcentValor"
-              @input="this.changePorcentValor"
-              id="porcentValor"
-              label="Inc/Dec Preço Custo"
-            />
+            <div class="form-row mt-3">
+              <CrosierPercent
+                col="3"
+                v-model="this.porcentValor"
+                @input="this.changePorcentValor"
+                id="porcentValor"
+                label="Inc/Dec Preço Custo"
+              />
+            </div>
             <div class="row mt-3">
               <div class="col text-right">
                 <button
@@ -62,7 +65,9 @@
               <div class="text-right">
                 <span
                   :style="
-                    r.data?.precoCusto_novo && r.data.precoCusto_novo !== r.data.precoCusto
+                    this.porcentValor &&
+                    r.data?.precoCusto_novo &&
+                    r.data.precoCusto_novo !== r.data.precoCusto
                       ? 'text-decoration: line-through'
                       : ''
                   "
@@ -75,7 +80,11 @@
                   }}
                 </span>
                 <span
-                  v-if="r.data?.precoCusto_novo && r.data?.precoCusto_novo !== r.data.precoCusto"
+                  v-if="
+                    this.porcentValor &&
+                    r.data?.precoCusto_novo &&
+                    r.data?.precoCusto_novo !== r.data.precoCusto
+                  "
                   ><br /><b>
                     {{
                       r.data.precoCusto_novo.toLocaleString("pt-BR", {
@@ -108,7 +117,7 @@ import ConfirmDialog from "primevue/confirmdialog";
 import Column from "primevue/column";
 import { mapMutations } from "vuex";
 import moment from "moment";
-import { CrosierPercent, api } from "crosier-vue";
+import { api, CrosierPercent } from "crosier-vue";
 
 export default {
   name: "alteracaoLote",
@@ -189,6 +198,8 @@ export default {
               }
             })
           );
+          localStorage.removeItem("dt-state/api/pcp/insumo");
+          window.location = "/pcp/insumo/list";
           this.setLoading(false);
         },
       });

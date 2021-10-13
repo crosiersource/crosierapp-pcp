@@ -27,6 +27,28 @@ class FichaTecnicaItemEntityHandler extends EntityHandler
         $this->fichaTecnicaBusiness = $fichaTecnicaBusiness;
     }
 
+    /**
+     * @param FichaTecnicaItem $fichaTecnicaItem
+     */
+    public function afterSave($fichaTecnicaItem)
+    {
+        $this->getDoctrine()->getConnection()
+            ->update('prod_fichatecnica',
+                ['updated' => (new \DateTime())->format('Y-m-d H:i:s')],
+                ['id' => $fichaTecnicaItem->fichaTecnica->getId()]);
+    }
+
+    /**
+     * @param FichaTecnicaItem $fichaTecnicaItem
+     */
+    public function afterDelete($fichaTecnicaItem)
+    {
+        $this->getDoctrine()->getConnection()
+            ->update('prod_fichatecnica',
+                ['updated' => (new \DateTime())->format('Y-m-d H:i:s')],
+                ['id' => $fichaTecnicaItem->fichaTecnica->getId()]);
+    }
+
 
     public function getEntityClass()
     {
@@ -35,9 +57,9 @@ class FichaTecnicaItemEntityHandler extends EntityHandler
 
     public function handleSaveArrayQtdes(FichaTecnicaItem $item, array $qtdes): void
     {
-
+        /** @var FichaTecnicaItemQtde $qtde */
         foreach ($item->getQtdes() as $qtde) {
-            $qtde->setFichaTecnicaItem(null);
+            $qtde->fichaTecnicaItem = null;
             $this->getDoctrine()->remove($qtde);
         }
         $item->getQtdes()->clear();
@@ -59,7 +81,6 @@ class FichaTecnicaItemEntityHandler extends EntityHandler
             $lpiq->qtde = ($qtde);
             $this->handleSavingEntityId($lpiq);
             $item->getQtdes()->add($lpiq);
-
         }
     }
 

@@ -18,7 +18,7 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
 
 /**
  * @ApiResource(
- *     normalizationContext={"groups"={"insumo","tipoInsumo","entityId"},"enable_max_depth"=true},
+ *     normalizationContext={"groups"={"insumo","tipoInsumo","insumoPreco","entityId"},"enable_max_depth"=true},
  *     denormalizationContext={"groups"={"insumo"},"enable_max_depth"=true},
  *
  *     itemOperations={
@@ -84,10 +84,8 @@ class Insumo implements EntityId
     public ?string $marca = null;
 
     /**
-     * @var null|int
-     *
      * @ORM\Column(name="unidade_produto_id", type="bigint", nullable=false)
-     * @Groups("insumo")
+     * @var null|int
      */
     public ?int $unidadeProdutoId = null;
 
@@ -234,6 +232,32 @@ class Insumo implements EntityId
     {
         $this->precoCusto = $precoCusto;
     }
+
+
+    /**
+     * Para aceitar tanto em string quanto em double.
+     * @Groups("insumo")
+     * @SerializedName("unidadeProdutoId")
+     * @return int
+     */
+    public function getUnidadeProdutoIdFormatted(): int
+    {
+        return $this->unidadeProdutoId;
+    }
+
+
+    /**
+     * Para aceitar tanto em string quanto em double.
+     * @Groups("insumo")
+     * @SerializedName("unidadeProdutoId")
+     * @param int $unidadeProdutoId
+     */
+    public function setUnidadeProdutoIdFormatted(int $unidadeProdutoId)
+    {
+        $this->unidadeProdutoId = $unidadeProdutoId;
+    }
+    
+    
 
     
 

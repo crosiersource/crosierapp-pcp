@@ -16,7 +16,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ApiResource(
- *     normalizationContext={"groups"={"fichaTecnica","entityId"},"enable_max_depth"=true},
+ *     normalizationContext={"groups"={"fichaTecnica","tipoArtigo","cliente","entityId"},"enable_max_depth"=true},
  *     denormalizationContext={"groups"={"fichaTecnica"},"enable_max_depth"=true},
  *
  *     itemOperations={
@@ -155,7 +155,7 @@ class FichaTecnica implements EntityId
      *
      * @var array
      */
-    public array $gradesTamanhosByPosicaoArray;
+    public array $gradesTamanhosByPosicaoArray = [];
 
 
     /**

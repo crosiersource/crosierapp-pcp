@@ -163,16 +163,16 @@ class FichaTecnicaController extends FormListController
      */
     public function datatablesJsList(Request $request): Response
     {
-        return $this->doDatatablesJsList($request, null, null, null, ['outrosGruposSerializ' => ['cliente']]);
+        return $this->doDatatablesJsList($request,
+            null, null, null, 
+            ['outrosGruposSerializ' => ['cliente', 'tipoArtigo']]);
     }
 
 
     /**
      *
      * @Route("/fichaTecnica/builder/{id}", name="fichaTecnica_builder", defaults={"id"=null}, requirements={"id"="\d+"})
-     * @param FichaTecnica $fichaTecnica
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
-     * @throws \Exception
      * @throws \Psr\Cache\InvalidArgumentException
      * @IsGranted("ROLE_PCP", statusCode=403)
      */
@@ -246,7 +246,7 @@ class FichaTecnicaController extends FormListController
         /** @var FichaTecnica $fichaTecnica */
         foreach ($fichasTecnicas as $fichaTecnica) {
             $r['id'] = $fichaTecnica->getId();
-            $r['text'] = $fichaTecnica->getDescricao();
+            $r['text'] = $fichaTecnica->descricao;
             $rs[] = $r;
         }
         return new JsonResponse($rs);
@@ -290,7 +290,7 @@ class FichaTecnicaController extends FormListController
      * @param Request $request
      * @param FichaTecnicaItem|null $fichaTecnicaItem
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
-     * @throws \Exception
+     * @throws \Exception|\Psr\Cache\InvalidArgumentException
      *
      * @IsGranted("ROLE_PCP", statusCode=403)
      */
@@ -457,19 +457,15 @@ class FichaTecnicaController extends FormListController
     /**
      *
      * @Route("/fichaTecnica/corrigirClientesNasFichas", name="fichaTecnica_corrigirClientesNasFichas")
-     * @param ClienteEntityHandler $clienteEntityHandler
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
-     * @throws ViewException
      * @throws \Doctrine\DBAL\Exception
      */
-    public function corrigirClientesNasFichas(ClienteEntityHandler $clienteEntityHandler): Response
+    public function corrigirClientesNasFichas(): Response
     {
         $conn = $this->fichaTecnicaItemEntityHandler->getDoctrine()->getConnection();
 
         $clientes = $conn->fetchAllAssociative('select count(id) as qt, documento, nome from crm_cliente where nome IS NOT NULL AND json_data->>"$.cliente_pcp" = \'S\' GROUP BY documento, nome HAVING qt > 1');
 
-        $repoFichaTecnica = $this->fichaTecnicaItemEntityHandler->getDoctrine()->getRepository(FichaTecnica::class);
-        $repoCliente = $this->fichaTecnicaItemEntityHandler->getDoctrine()->getRepository(Cliente::class);
 
         foreach ($clientes as $cliente) {
             $rsClientesIds = $conn->fetchAllAssociative('SELECT id FROM crm_cliente WHERE json_data->>"$.cliente_pcp" = \'S\' AND nome = :nome', ['nome' => $cliente['nome']]);

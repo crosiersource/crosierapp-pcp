@@ -147,7 +147,7 @@ class FichaTecnicaPreco implements EntityId
     /**
      * @var null|FichaTecnica
      *
-     * @ORM\ManyToOne(targetEntity="FichaTecnicaPreco")
+     * @ORM\ManyToOne(targetEntity="FichaTecnica")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="fichatecnica_id", referencedColumnName="id")
      * })

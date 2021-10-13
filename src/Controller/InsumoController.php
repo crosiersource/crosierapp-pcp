@@ -106,7 +106,11 @@ class InsumoController extends FormListController
     public function datatablesJsList(Request $request): Response
     {
         // o filter 'visivel' é NEQ...
-        return $this->doDatatablesJsList($request, ['filter' => ['visivel' => 'N']]);
+        return $this->doDatatablesJsList($request, 
+            ['filter' => ['visivel' => 'N']], 
+            null, 
+            null, 
+            ['outrosGruposSerializ' => ['tipoInsumo']]);
     }
 
     /**

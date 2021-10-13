@@ -185,10 +185,11 @@ class LoteProducaoItem implements EntityId
      */
     public function getTotalQtdes(): int
     {
-        $this->totalQtdes = 0;
+        $this->totalQtdes = 0;        
         if ($this->getQtdes()) {
+            /** @var LoteProducaoItemQtde $qtde */
             foreach ($this->getQtdes() as $qtde) {
-                $this->totalQtdes += $qtde->getQtde();
+                $this->totalQtdes += $qtde->qtde;
             }
         }
         return $this->totalQtdes;

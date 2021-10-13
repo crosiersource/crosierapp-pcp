@@ -30,7 +30,7 @@ function getDatatablesColumns() {
       title: "Tipo de Artigo",
     },
     {
-      name: "e.id",
+      name: "e.updated",
       data: "e",
       title: "",
       render(data, type, row) {

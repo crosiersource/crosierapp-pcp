@@ -4,6 +4,7 @@ namespace App\Business;
 
 use App\Entity\LoteProducao;
 use App\Entity\LoteProducaoItem;
+use App\Entity\LoteProducaoItemQtde;
 
 /**
  * Class LoteProducaoBusiness
@@ -45,10 +46,11 @@ class LoteProducaoBusiness
         $array = [];
         for ($i = 1; $i <= 15; $i++) {
             $array[$i] = null;
+            /** @var LoteProducaoItemQtde $qtde */
             foreach ($item->getQtdes() as $qtde) {
-                $posicao = $this->fichaTecnicaBusiness->findPosicaoByGradeTamanhoId($qtde->getGradeTamanhoId());
+                $posicao = $this->fichaTecnicaBusiness->findPosicaoByGradeTamanhoId($qtde->gradeTamanhoId);
                 if ($posicao === $i) {
-                    $array[$i] = $qtde->getQtde();
+                    $array[$i] = $qtde->qtde;
                 }
             }
         }

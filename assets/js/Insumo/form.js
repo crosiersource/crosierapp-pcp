@@ -24,7 +24,9 @@ const store = createStore({
   state() {
     return {
       loading: 0,
-      insumo: {},
+      insumo: {
+        jsonData: {},
+      },
       insumoErrors: [],
     };
   },
@@ -51,6 +53,7 @@ const store = createStore({
     },
 
     setInsumo(state, insumo) {
+      insumo.dtCusto = insumo.dtCusto ? new Date(insumo.dtCusto) : null;
       state.insumo = insumo;
     },
 
@@ -66,7 +69,7 @@ const store = createStore({
       if (id) {
         try {
           const response = await api.get({
-            apiResource: `/api/clin/insumo/${id}}`,
+            apiResource: `/api/pcp/insumo/${id}}`,
           });
 
           if (response.data["@id"]) {

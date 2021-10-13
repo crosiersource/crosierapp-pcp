@@ -15,7 +15,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ApiResource(
- *     normalizationContext={"groups"={"fichaTecnicaItem","entityId"},"enable_max_depth"=true},
+ *     normalizationContext={"groups"={"fichaTecnicaItem","fichaTecnica","insumo","tipoInsumo","entityId"},"enable_max_depth"=true},
  *     denormalizationContext={"groups"={"fichaTecnicaItem"},"enable_max_depth"=true},
  *
  *     itemOperations={
@@ -45,7 +45,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *
  * @EntityHandler(entityHandlerClass="App\EntityHandler\FichaTecnicaItemEntityHandler")
  *
- * @ORM\Table(name="prod_fichaTecnicaItem_item")
+ * @ORM\Table(name="prod_fichatecnica_item")
  * @ORM\Entity(repositoryClass="App\Repository\FichaTecnicaItemRepository")
  *
  * @author Carlos Eduardo Pauluk

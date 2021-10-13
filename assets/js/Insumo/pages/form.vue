@@ -1,37 +1,94 @@
 <template>
   <Toast class="mt-5" />
   <CrosierFormS
-    listUrl="/clin/insumo/list"
-    formUrl="/clin/insumo/form"
+    listUrl="/pcp/insumo/list"
+    formUrl="/pcp/insumo/form"
     @submitForm="this.submitForm"
-    titulo="Convênio"
+    titulo="Insumo"
   >
     <div class="form-row">
-      <div class="col-md-3">
-        <label for="id">ID</label>
-        <InputText class="form-control" id="id" type="text" v-model="this.insumo.id" disabled />
-      </div>
-      <div class="col-md-9">
-        <label for="name">Descrição</label>
-        <InputText
-          :class="'form-control ' + (this.formErrors['descricao'] ? 'is-invalid' : '')"
-          id="nome"
-          type="text"
-          v-model="this.insumo.descricao"
-        />
-        <div class="invalid-feedback">
-          {{ this.formErrors["descricao"] }}
-        </div>
-      </div>
+      <CrosierInputInt id="id" label="Id" v-model="this.insumo.id" :disabled="true" col="2" />
+
+      <CrosierInputInt id="codigo" label="Código" v-model="this.insumo.codigo" col="2" />
+
+      <CrosierInputText
+        id="descricao"
+        label="Descrição"
+        col="5"
+        v-model="this.insumo.descricao"
+        :error="this.formErrors.descricao"
+      />
+
+      <CrosierDropdownEntity
+        col="3"
+        v-model="this.insumo.tipoInsumo"
+        entity-uri="/api/pcp/tipoInsumo"
+        optionLabel="descricaoMontada"
+        :optionValue="null"
+        :orderBy="{ codigo: 'ASC' }"
+        label="Tipo de Insumo"
+        id="tipoInsumo"
+      />
+    </div>
+
+    <div class="form-row">
+      <CrosierInputText
+        id="marca"
+        label="Marca"
+        col="3"
+        v-model="this.insumo.marca"
+        :error="this.formErrors.marca"
+      />
+
+      <CrosierDropdownEntity
+        col="3"
+        v-model="this.insumo.unidadeProdutoId"
+        entity-uri="/api/est/unidade"
+        optionLabel="label"
+        optionValue="id"
+        :orderBy="{ codigo: 'ASC' }"
+        label="Unidade"
+        id="unidade"
+      />
+
+      <CrosierCurrency
+        col="3"
+        v-model="this.insumo.precoCusto"
+        label="Preço Custo"
+        id="precoCusto"
+      />
+
+      <CrosierCalendar col="3" v-model="this.insumo.dtCusto" label="Dt Custo" id="dtCusto" />
+    </div>
+
+    <div class="form-row">
+      <CrosierDropdown
+        col="3"
+        v-model="this.insumo.jsonData.visivel"
+        label="Habilitado"
+        :options="[
+          { name: 'Sim', value: 'S' },
+          { name: 'Não', value: 'N' },
+        ]"
+        id="visivel"
+      />
     </div>
   </CrosierFormS>
 </template>
 
 <script>
 import Toast from "primevue/toast";
-import InputText from "primevue/inputtext";
 import * as yup from "yup";
-import { CrosierFormS, submitForm } from "crosier-vue";
+import {
+  CrosierCalendar,
+  CrosierCurrency,
+  CrosierDropdown,
+  CrosierDropdownEntity,
+  CrosierFormS,
+  CrosierInputInt,
+  CrosierInputText,
+  submitForm,
+} from "crosier-vue";
 import { mapGetters, mapMutations } from "vuex";
 
 export default {
@@ -39,7 +96,12 @@ export default {
   components: {
     Toast,
     CrosierFormS,
-    InputText,
+    CrosierInputText,
+    CrosierInputInt,
+    CrosierDropdownEntity,
+    CrosierDropdown,
+    CrosierCurrency,
+    CrosierCalendar,
   },
 
   data() {
@@ -55,12 +117,16 @@ export default {
 
     this.$store.dispatch("loadData");
     this.schemaValidator = yup.object().shape({
-      nome: yup.string().required().typeError(),
-      prefixo: yup.string().required().typeError(),
-      ativo: yup.boolean().required().typeError(),
+      codigo: yup.number().required().typeError(),
+      descricao: yup.string().required().typeError(),
+      tipoInsumo: yup.mixed().required().typeError(),
+      unidadeProdutoId: yup.number().required().typeError(),
+      marca: yup.string().required().typeError(),
+      precoCusto: yup.number().required().typeError(),
+      dtCusto: yup.date().required().typeError(),
     });
 
-    document.getElementById("nome").focus();
+    document.getElementById("descricao").focus();
 
     document.getElementsByTagName("input").forEach(function doff(i) {
       i.autocomplete = "off";
@@ -75,18 +141,14 @@ export default {
     async submitForm() {
       this.setLoading(true);
       await submitForm({
-        apiResource: "/api/clin/insumo",
+        apiResource: "/api/pcp/insumo",
         schemaValidator: this.schemaValidator,
         $store: this.$store,
         formDataStateName: "insumo",
         $toast: this.$toast,
         fnBeforeSave: (formData) => {
-          const jsonData = { ...formData.jsonData };
-          jsonData.criarVincularCarteira = this.criarVincularCarteira;
-          formData.jsonData = jsonData;
-          if (formData?.carteira) {
-            formData.carteira = formData?.carteira["@id"] ?? null;
-          }
+          formData.tipoInsumo = formData?.tipoInsumo["@id"] ?? null;
+          delete formData.precoAtual;
         },
       });
       this.setLoading(false);

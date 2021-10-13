@@ -154,6 +154,7 @@ class FichaTecnicaBusiness
             $item->casasDecimais = $unidade['casasDecimais'];
             $item->unidade = $unidade['label'];
             $insumosArray[$c]['itens'][] = $item;
+            
             $qtdesTamanhosArray = $item->getQtdesTamanhosArray();
             for ($i = 1; $i <= 15; $i++) {
                 $precoCustoAtual = $item->insumo->getPrecoAtual()->precoCusto ?? 0.0;
@@ -211,11 +212,12 @@ class FichaTecnicaBusiness
         for ($i = 1; $i <= 15; $i++) {
             $array[$i]['decimal'] = 0.0;
             $array[$i]['formatado'] = '-';
+            /** @var FichaTecnicaItemQtde $qtde */
             foreach ($item->getQtdes() as $qtde) {
-                $posicao = $this->findPosicaoByGradeTamanhoId($qtde->getGradeTamanhoId());
+                $posicao = $this->findPosicaoByGradeTamanhoId($qtde->gradeTamanhoId);
                 if ($posicao === $i) {
 
-                    $array[$i]['decimal'] = (float)$qtde->getQtde();
+                    $array[$i]['decimal'] = (float)$qtde->qtde;
                     $array[$i]['formatado'] = $array[$i]['decimal'] > 0 ? number_format($array[$i]['decimal'], $unidade['casasDecimais'], ',', '.') : '-';
 
                 }
@@ -570,8 +572,9 @@ class FichaTecnicaBusiness
     {
         $itens = $fichaTecnica->getItens();
 
+        /** @var FichaTecnicaItem $item */
         foreach ($itens as $item) {
-            if ($item->getInsumo()->getId() === $insumo->getId()) {
+            if ($item->insumo->getId() === $insumo->getId()) {
                 throw new \LogicException('Insumo já existente na ficha técnica.');
             }
         }

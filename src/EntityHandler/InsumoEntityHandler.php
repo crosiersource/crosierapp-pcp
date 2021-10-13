@@ -29,7 +29,7 @@ class InsumoEntityHandler extends EntityHandler
             $insumo->jsonData['visivel'] = 'S';
         }
         /** @var Insumo $insumo */
-        if (!$insumo->getCodigo()) {
+        if (!$insumo->codigo) {
             /** @var InsumoRepository $repoInsumo */
             $repoInsumo = $this->getDoctrine()->getRepository(Insumo::class);
             $insumo->codigo = ($repoInsumo->findProximoCodigo());
@@ -37,28 +37,16 @@ class InsumoEntityHandler extends EntityHandler
 
         $adicionarPreco = true;
         if ($insumo->getId()) {
-            $sql = 'SELECT dt_custo, preco_custo FROM prod_insumo_preco WHERE insumo_id = :insumoId AND atual IS TRUE';
-
-            $rsm = new ResultSetMapping();
-            $rsm->addScalarResult('dt_custo', 'dt_custo');
-            $rsm->addScalarResult('preco_custo', 'preco_custo');
-            $query = $this->getDoctrine()->createNativeQuery($sql, $rsm);
-            $query->setParameter('insumoId', $insumo->getId());
-            $precoAtual = $query->getResult()[0] ?? null;
-
-            if ($precoAtual && isset($precoAtual['dt_custo']) && isset($precoAtual['preco_custo'])) {
-
-                if ($insumo->getPrecoAtual()->dtCusto->format('Y-m-d') === $precoAtual['dt_custo'] &&
-                    $insumo->getPrecoAtual()->precoCusto === (float)$precoAtual['preco_custo']) {
-                    $adicionarPreco = false;
-                }
-            }
+            $adicionarPreco = $insumo->precoCusto !== $insumo->getPrecoAtual()->precoCusto;
         }
 
+        $agora = new \DateTime();
+        
         if ($adicionarPreco) {
+            $insumo->dtCusto = $agora;
             $insumoPrecos = $insumo->getPrecos();
             foreach ($insumoPrecos as $preco) {
-                $preco->setAtual(false);
+                $preco->atual = false;
             }
 
             $insumoPreco = new InsumoPreco();
@@ -72,14 +60,8 @@ class InsumoEntityHandler extends EntityHandler
             $insumoPreco->prazo = (0);
             $insumoPreco->precoVista = (0);
             $insumoPreco->precoPrazo = (0);
-            if ($insumo->getPrecoAtual()) {
-                if ($insumo->getPrecoAtual()->precoCusto) {
-                    $insumoPreco->precoCusto = ($insumo->getPrecoAtual()->precoCusto);
-                }
-                if ($insumo->getPrecoAtual()->dtCusto) {
-                    $insumoPreco->dtCusto = (clone $insumo->getPrecoAtual()->dtCusto);
-                }
-            }
+            $insumoPreco->precoCusto = $insumo->precoCusto;
+            $insumoPreco->dtCusto = $agora;
 
             // para resetar o precoAtual
             $insumo->precoAtual = (null);
@@ -87,16 +69,6 @@ class InsumoEntityHandler extends EntityHandler
             $insumo->getPrecos()->add($insumoPreco);
             $insumo->getPrecoAtual();
         }
-
-        if ($insumo->getPrecoAtual()) {
-            if ($insumo->getPrecoAtual()->precoCusto) {
-                $insumo->jsonData['preco_custo'] = $insumo->getPrecoAtual()->precoCusto;
-            }
-            if ($insumo->getPrecoAtual()->dtCusto) {
-                $insumo->jsonData['dt_custo'] = $insumo->getPrecoAtual()->dtCusto->format('Y-m-d');
-            }
-        }
-
     }
 
     

@@ -150,7 +150,8 @@ ORDER BY i.descricao;
 
 
     /**
-     * @param LoteProducao $loteProducao
+     * @param array $loteProducaoItensIds
+     * @param array $tiposInsumosIds
      * @return array
      */
     public function buildRelatorioDeInsumos(array $loteProducaoItensIds, array $tiposInsumosIds): array
@@ -187,9 +188,10 @@ ORDER BY i.descricao;
         $repoTipoInsumo = $this->getEntityManager()->getRepository(TipoInsumo::class);
 
         foreach ($tiposInsumosIds as $tipoInsumoId) {
+            /** @var TipoInsumo $tipoInsumo */
             $tipoInsumo = $repoTipoInsumo->find($tipoInsumoId);
             $tipoInsumoId = $tipoInsumo->getId();
-            $tipoInsumoDescricao = $tipoInsumo->getDescricao();
+            $tipoInsumoDescricao = $tipoInsumo->descricao;
             $rsm = new ResultSetMapping();
             $rsm->addScalarResult('id', 'id');
             $rsm->addScalarResult('descricao', 'descricao');
@@ -291,7 +293,6 @@ ORDER BY i.descricao;
      */
     public function getTotalPorLoteItemEInsumoETamanho(LoteProducaoItem $loteProducaoItem, int $insumoId, int $gradeTamanhoId): float
     {
-        $dados = [];
 
         $sql =
             'select 	
@@ -336,6 +337,8 @@ where
 
     /**
      * @param LoteProducao $loteProducao
+     * @param array $loteProducaoItensIds
+     * @param array $tiposInsumosIds
      * @return array
      */
     public function buildRelatorioDeCorte(LoteProducao $loteProducao, array $loteProducaoItensIds, array $tiposInsumosIds): array
@@ -348,6 +351,7 @@ where
             $itens[] = $repoLoteProducaoItem->find($loteProducaoItemId);
         }
 
+        $tiposInsumos = [];
         $tiposInsumosLote = $this->getTiposInsumosPorLote($loteProducao);
         if ($tiposInsumosIds) {
             foreach ($tiposInsumosLote as $tipoInsumoLote) {
@@ -365,6 +369,7 @@ where
 
         $totalItensPorTamanho = $this->getTotalItensLotePorTamanho($loteProducao);
         $totalItensGeral = 0.0;
+        
         foreach ($totalItensPorTamanho as $item) {
             $dados['totalItensPorTamanho'][$item['tamanho']] = $item['total'];
             $totalItensGeral += $item['total'];
@@ -412,7 +417,7 @@ where
             }
 
             $dados['itens'][$item->getId()] = [
-                'item' => ['descricao' => $item->getFichaTecnica()->getDescricao()],
+                'item' => ['descricao' => $item->fichaTecnica->descricao],
                 'totalItensLoteItemPorTamanho' => $rTotalItensLoteItemPorTamanho,
                 'totalItensLoteItem' => $totalItensLoteItem,
                 'tiposInsumos' => $rPorTipoInsumo

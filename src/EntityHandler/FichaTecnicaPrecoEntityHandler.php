@@ -18,4 +18,28 @@ class FichaTecnicaPrecoEntityHandler extends EntityHandler
     {
         return FichaTecnicaPreco::class;
     }
+
+    /**
+     * @param FichaTecnicaPreco $fichaTecnicaPreco
+     */
+    public function afterSave($fichaTecnicaPreco)
+    {
+        $this->getDoctrine()->getConnection()
+            ->update('prod_fichatecnica',
+                ['updated' => (new \DateTime())->format('Y-m-d H:i:s')],
+                ['id' => $fichaTecnicaPreco->fichaTecnica->getId()]);
+    }
+    
+    /**
+     * @param FichaTecnicaPreco $fichaTecnicaPreco
+     */
+    public function afterDelete($fichaTecnicaPreco)
+    {
+        $this->getDoctrine()->getConnection()
+            ->update('prod_fichatecnica',
+                ['updated' => (new \DateTime())->format('Y-m-d H:i:s')],
+                ['id' => $fichaTecnicaPreco->fichaTecnica->getId()]);
+    }
+
+
 }
