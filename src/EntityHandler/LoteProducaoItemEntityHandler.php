@@ -46,8 +46,9 @@ class LoteProducaoItemEntityHandler extends EntityHandler
     public function handleSaveArrayQtdes(LoteProducaoItem $item, array $qtdes): void
     {
 
+        /** @var LoteProducaoItemQtde $qtde */
         foreach ($item->getQtdes() as $qtde) {
-            $qtde->setLoteProducaoItem(null);
+            $qtde->loteProducaoItem = (null);
             $this->getDoctrine()->remove($qtde);
         }
         $item->getQtdes()->clear();

@@ -275,18 +275,20 @@ class FichaTecnica implements EntityId
             $this->setId(null);
             $itens = $this->getItens();
             $novosItens = new ArrayCollection();
+            /** @var FichaTecnicaItem $item */
             foreach ($itens as $item) {
                 $novoItem = clone $item;
-                $novoItem->setFichaTecnica($this);
+                $novoItem->fichaTecnica = ($this);
                 $novosItens->add($novoItem);
             }
             $this->itens = $novosItens;
 
             $precos = $this->getPrecos();
             $novosPrecos = new ArrayCollection();
+            /** @var FichaTecnicaPreco $preco */
             foreach ($precos as $preco) {
                 $novoPreco = clone $preco;
-                $novoPreco->setFichaTecnica($this);
+                $novoPreco->fichaTecnica = ($this);
                 $novosPrecos->add($novoPreco);
             }
             $this->precos = $novosPrecos;
