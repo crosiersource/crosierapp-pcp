@@ -159,9 +159,10 @@ class FichaTecnicaItem implements EntityId
             $this->setId(null);
             $qtdes = $this->getQtdes();
             $novasQtdes = new ArrayCollection();
+            /** @var FichaTecnicaItemQtde $qtde */
             foreach ($qtdes as $qtde) {
                 $novoQtde = clone $qtde;
-                $novoQtde->setFichaTecnicaItem($this);
+                $novoQtde->fichaTecnicaItem = ($this);
                 $novasQtdes->add($novoQtde);
             }
             $this->qtdes = $novasQtdes;
