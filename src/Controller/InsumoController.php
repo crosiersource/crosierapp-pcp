@@ -33,13 +33,6 @@ class InsumoController extends FormListController
         $this->entityHandler = $entityHandler;
     }
 
-    public function getFilterDatas(array $params): array
-    {
-        return [
-            new FilterData(['descricao', 'ti.descricao'], 'LIKE', 'str', $params),
-            new FilterData(['visivel'], 'NEQ', 'visivel', $params, null, true),
-        ];
-    }
 
     /**
      *
@@ -68,50 +61,6 @@ class InsumoController extends FormListController
         return $this->doForm($request, $insumo, $params, false, $fnHandleRequestOnValid);
     }
 
-
-    /**
-     *
-     * @Route("/insumo/list/", name="insumo_list")
-     * @param Request $request
-     * @return Response
-     * @throws \Exception
-     *
-     * @IsGranted("ROLE_PCP_ADMIN", statusCode=403)
-     */
-    public function list(Request $request): Response
-    {
-        $params = [
-            'formRoute' => 'insumo_form',
-            'listView' => '@CrosierLibBase/list.html.twig',
-            'listRoute' => 'insumo_list',
-            'listRouteAjax' => 'insumo_datatablesJsList',
-            'listPageTitle' => 'Insumos',
-            'listId' => 'insumoList',
-            'list_PROGRAM_UUID' => null,
-            'listJS' => 'insumoList.js',
-            'deleteRoute' => 'insumo_delete',
-        ];
-        return $this->doList($request, $params);
-    }
-
-    /**
-     *
-     * @Route("/insumo/datatablesJsList/", name="insumo_datatablesJsList")
-     * @param Request $request
-     * @return Response
-     * @throws \CrosierSource\CrosierLibBaseBundle\Exception\ViewException
-     *
-     * @IsGranted("ROLE_PCP_ADMIN", statusCode=403)
-     */
-    public function datatablesJsList(Request $request): Response
-    {
-        // o filter 'visivel' é NEQ...
-        return $this->doDatatablesJsList($request, 
-            ['filter' => ['visivel' => 'N']], 
-            null, 
-            null, 
-            ['outrosGruposSerializ' => ['tipoInsumo']]);
-    }
 
     /**
      *

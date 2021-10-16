@@ -214,7 +214,7 @@ class FichaTecnicaController extends FormListController
         $cache = new FilesystemAdapter($_SERVER['CROSIERAPP_ID'] . '.cache', 0, $_SERVER['CROSIER_SESSIONS_FOLDER']);
 
         $arrInsumos = $cache->get('buildInsumosSelect2', function (ItemInterface $item) {
-            $fd = new FilterData('visivel', 'NEQ', 'visivel', ['filter' => ['visivel' => 'N']], null, true);
+            $fd = new FilterData('visivel', 'EQ', 'visivel', ['filter' => ['visivel' => true]]);
             $insumos = $this->getDoctrine()->getRepository(Insumo::class)
                 ->findByFiltersSimpl([$fd], ['descricao' => 'ASC'], 0, 9999999);
 

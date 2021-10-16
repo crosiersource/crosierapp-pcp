@@ -25,9 +25,6 @@ class InsumoEntityHandler extends EntityHandler
 
     public function beforeSave($insumo)
     {
-        if (!isset($insumo->jsonData['visivel'])) {
-            $insumo->jsonData['visivel'] = 'S';
-        }
         /** @var Insumo $insumo */
         if (!$insumo->codigo) {
             /** @var InsumoRepository $repoInsumo */
