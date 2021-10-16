@@ -89,6 +89,7 @@ CREATE TABLE `prod_insumo`
   `unidade_produto_id` bigint(20)     NOT NULL,
   `dt_custo`           date           NOT NULL,
   `preco_custo`        decimal(15, 2) NOT NULL,
+  `visivel`            tinyint(1)     NOT NULL DEFAULT 1,
 
   PRIMARY KEY (`id`),
   UNIQUE KEY `UK_prod_insumo_codigo` (`codigo`),
@@ -99,7 +100,7 @@ CREATE TABLE `prod_insumo`
   -- campo de controle
   `inserted`           datetime       NOT NULL,
   `updated`            datetime       NOT NULL,
-  `version`            int(11) DEFAULT NULL,
+  `version`            int(11)                 DEFAULT NULL,
   `estabelecimento_id` bigint(20)     NOT NULL,
   `user_inserted_id`   bigint(20)     NOT NULL,
   `user_updated_id`    bigint(20)     NOT NULL,

@@ -1,8 +1,15 @@
 <template>
-  <CrosierListS titulo="Insumos" apiResource="/api/pcp/insumo" :formUrl="this.formUrl">
+  <Toast class="mt-5" />
+  <ConfirmDialog />
+  <CrosierListS
+    titulo="Insumos"
+    apiResource="/api/pcp/insumo"
+    :formUrl="this.formUrl"
+    ref="crosierListS"
+  >
     <template v-slot:headerButtons>
       <a role="button" class="ml-1 btn btn-success btn-sm" href="/pcp/insumo/alteracaoLote"
-        >Alteração em Lote</a
+        ><i class="fas fa-layer-group"></i> Alteração em Lote</a
       >
     </template>
     <template v-slot:filter-fields>
@@ -71,6 +78,14 @@
               :href="this.formUrl + '?id=' + r.data.id"
               ><i class="fas fa-wrench" aria-hidden="true"></i
             ></a>
+            <button
+              type="button"
+              class="btn btn-danger btn-sm ml-1"
+              title="Deletar registro"
+              @click="this.deletar(r.data.id)"
+            >
+              <i class="fas fa-trash" aria-hidden="true"></i>
+            </button>
           </div>
           <div class="d-flex justify-content-end mt-1">
             <span
@@ -89,9 +104,11 @@
 
 <script>
 import { mapGetters, mapMutations } from "vuex";
-import { CrosierListS, CrosierDropdownEntity } from "crosier-vue";
+import { api, CrosierDropdownEntity, CrosierListS } from "crosier-vue";
 import Column from "primevue/column";
 import InputText from "primevue/inputtext";
+import Toast from "primevue/toast";
+import ConfirmDialog from "primevue/confirmdialog";
 import moment from "moment";
 
 export default {
@@ -101,6 +118,8 @@ export default {
     Column,
     InputText,
     CrosierDropdownEntity,
+    ConfirmDialog,
+    Toast,
   },
   data() {
     return {
@@ -119,6 +138,37 @@ export default {
 
     moment(date) {
       return moment(date);
+    },
+
+    deletar(id) {
+      this.$confirm.require({
+        acceptLabel: "Sim",
+        rejectLabel: "Não",
+        message: "Confirmar deleção?",
+        header: "Atenção!",
+        icon: "pi pi-exclamation-triangle",
+        accept: async () => {
+          this.setLoading(true);
+          const rsDelete = await api.delete(`/api/pcp/insumo/${id}}`);
+          if (rsDelete.status === 204) {
+            this.$toast.add({
+              severity: "success",
+              summary: "Sucesso",
+              detail: "Registro deletado com sucesso",
+              life: 5000,
+            });
+            this.$refs.crosierListS.doClearFilters();
+          } else {
+            this.$toast.add({
+              severity: "error",
+              summary: "Erro",
+              detail: "Ocorreu um erro ao tentar deletar o registro",
+              life: 5000,
+            });
+          }
+          this.setLoading(false);
+        },
+      });
     },
   },
 

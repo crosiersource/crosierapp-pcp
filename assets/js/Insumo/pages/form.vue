@@ -24,6 +24,7 @@
         v-model="this.insumo.tipoInsumo"
         entity-uri="/api/pcp/tipoInsumo"
         optionLabel="descricaoMontada"
+        :error="this.formErrors.tipoInsumo"
         :optionValue="null"
         :orderBy="{ codigo: 'ASC' }"
         label="Tipo de Insumo"
@@ -43,6 +44,7 @@
       <CrosierDropdownEntity
         col="3"
         v-model="this.insumo.unidadeProdutoId"
+        :error="this.formErrors.unidadeProdutoId"
         entity-uri="/api/est/unidade"
         optionLabel="label"
         optionValue="id"
@@ -54,24 +56,12 @@
       <CrosierCurrency
         col="3"
         v-model="this.insumo.precoCusto"
+        :error="this.formErrors.precoCusto"
         label="Preço Custo"
         id="precoCusto"
       />
 
       <CrosierCalendar col="3" v-model="this.insumo.dtCusto" label="Dt Custo" id="dtCusto" />
-    </div>
-
-    <div class="form-row">
-      <CrosierDropdown
-        col="3"
-        v-model="this.insumo.jsonData.visivel"
-        label="Habilitado"
-        :options="[
-          { name: 'Sim', value: 'S' },
-          { name: 'Não', value: 'N' },
-        ]"
-        id="visivel"
-      />
     </div>
   </CrosierFormS>
 </template>
@@ -99,7 +89,6 @@ export default {
     CrosierInputText,
     CrosierInputInt,
     CrosierDropdownEntity,
-    CrosierDropdown,
     CrosierCurrency,
     CrosierCalendar,
   },
@@ -117,13 +106,11 @@ export default {
 
     this.$store.dispatch("loadData");
     this.schemaValidator = yup.object().shape({
-      codigo: yup.number().required().typeError(),
       descricao: yup.string().required().typeError(),
       tipoInsumo: yup.mixed().required().typeError(),
       unidadeProdutoId: yup.number().required().typeError(),
       marca: yup.string().required().typeError(),
       precoCusto: yup.number().required().typeError(),
-      dtCusto: yup.date().required().typeError(),
     });
 
     document.getElementById("descricao").focus();

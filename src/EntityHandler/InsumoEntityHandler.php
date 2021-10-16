@@ -74,7 +74,7 @@ class InsumoEntityHandler extends EntityHandler
     
     public function delete($insumo)
     {
-        $insumo->jsonData['visivel'] = 'N';
+        $insumo->visivel = false;
         $this->save($insumo);
     }
 

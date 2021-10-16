@@ -6,6 +6,7 @@ use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
 use CrosierSource\CrosierLibBaseBundle\Doctrine\Annotations\EntityHandler;
 use CrosierSource\CrosierLibBaseBundle\Doctrine\Annotations\NotUppercase;
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityId;
@@ -45,7 +46,19 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
  *     "tipoInsumo": "exact",
  *     "tipoInsumo.descricao": "partial"
  * })
- * @ApiFilter(OrderFilter::class, properties={"id", "codigo", "descricao", "marca", "tipoInsumo.codigo", "updated"}, arguments={"orderParameterName"="order"})
+ * @ApiFilter(BooleanFilter::class, properties={
+ *     "visivel"
+ * })
+ * @ApiFilter(OrderFilter::class, properties={
+ *     "id", 
+ *     "codigo", 
+ *     "descricao", 
+ *     "marca", 
+ *     "tipoInsumo.codigo", 
+ *     "updated", 
+ *     "precoCusto", 
+ *     "dtCusto"
+ * }, arguments={"orderParameterName"="order"})
  *
  * @EntityHandler(entityHandlerClass="App\EntityHandler\InsumoEntityHandler")
  *
@@ -127,6 +140,14 @@ class Insumo implements EntityId
     public ?float $precoCusto = null;
 
     /**
+     * @var null|bool
+     *
+     * @ORM\Column(name="visivel", type="boolean", nullable=false)
+     * @Groups("insumo")
+     */
+    public ?bool $visivel = true;
+
+    /**
      *
      * @var InsumoPreco[]|ArrayCollection
      *
@@ -153,7 +174,12 @@ class Insumo implements EntityId
     }
 
 
-    public function getCodigo($format = false)
+    /**
+     * @Groups("insumo")
+     * @param false $format
+     * @return int|string|null
+     */
+    public function getCodigo(?bool $format = false)
     {
         if ($format) {
             return str_pad($this->codigo, 3, '0', STR_PAD_LEFT);
@@ -164,6 +190,7 @@ class Insumo implements EntityId
 
 
     /**
+     * @Groups("insumo")
      * @return InsumoPreco[]|ArrayCollection
      */
     public function getPrecos()
@@ -172,6 +199,7 @@ class Insumo implements EntityId
     }
 
     /**
+     * 
      * @param InsumoPreco[]|ArrayCollection $precos
      */
     public function setPrecos($precos): Insumo
@@ -180,6 +208,10 @@ class Insumo implements EntityId
         return $this;
     }
 
+    /**
+     * @Groups("insumo")
+     * @return InsumoPreco|null
+     */
     public function getPrecoAtual(): ?InsumoPreco
     {
         try {

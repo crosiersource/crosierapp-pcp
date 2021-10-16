@@ -22,6 +22,9 @@ const store = createStore({
     return {
       loading: 0,
       filters: {},
+      defaultFilters: {
+        visivel: true,
+      },
     };
   },
 
@@ -40,13 +43,11 @@ const store = createStore({
   },
 
   getters: {
-    isLoading(state) {
-      return state.loading > 0;
-    },
+    isLoading: (state) => state.loading > 0,
 
-    getFilters(state) {
-      return state.filters;
-    },
+    getFilters: (state) => state.filters,
+
+    getDefaultFilters: (state) => state.defaultFilters,
   },
 });
 
