@@ -115,7 +115,7 @@ import Toast from "primevue/toast";
 import DataTable from "primevue/datatable";
 import ConfirmDialog from "primevue/confirmdialog";
 import Column from "primevue/column";
-import { mapMutations } from "vuex";
+import { mapGetters, mapMutations } from "vuex";
 import moment from "moment";
 import { api, CrosierPercent } from "crosier-vue";
 
@@ -204,6 +204,10 @@ export default {
         },
       });
     },
+  },
+
+  computed: {
+    ...mapGetters({ loading: "isLoading" }),
   },
 };
 </script>

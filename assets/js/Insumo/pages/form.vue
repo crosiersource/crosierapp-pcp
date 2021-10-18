@@ -136,6 +136,7 @@ export default {
         fnBeforeSave: (formData) => {
           formData.tipoInsumo = formData?.tipoInsumo["@id"] ?? null;
           delete formData.precoAtual;
+          delete formData.precos;
         },
       });
       this.setLoading(false);
