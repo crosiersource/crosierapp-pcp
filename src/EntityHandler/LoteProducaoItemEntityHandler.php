@@ -36,8 +36,9 @@ class LoteProducaoItemEntityHandler extends EntityHandler
         if (!$loteProducaoItem->ordem) {
             $loteProducao = $loteProducaoItem->loteProducao;
             $maxOrdem = 0;
+            /** @var LoteProducaoItem $item */
             foreach ($loteProducao->getItens() as $item) {
-                $maxOrdem = $maxOrdem < $item->getOrdem() ? $item->getOrdem() : $maxOrdem;
+                $maxOrdem = $maxOrdem < $item->ordem ? $item->ordem : $maxOrdem;
             }
             $loteProducaoItem->ordem = ($maxOrdem + 1);
         }

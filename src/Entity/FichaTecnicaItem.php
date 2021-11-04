@@ -142,8 +142,9 @@ class FichaTecnicaItem implements EntityId
     {
         $totalQtdes = (float)0;
         if ($this->getQtdes()) {
+            /** @var FichaTecnicaItemQtde $qtde */
             foreach ($this->getQtdes() as $qtde) {
-                $totalQtdes = bcadd($totalQtdes, $qtde->getQtde(), 3);
+                $totalQtdes = bcadd($totalQtdes, $qtde->qtde, 3);
             }
         }
         return $totalQtdes;
