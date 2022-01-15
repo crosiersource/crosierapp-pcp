@@ -3606,10 +3606,10 @@ create-hmac@^1.1.0, create-hmac@^1.1.4, create-hmac@^1.1.7:
     safe-buffer "^5.0.1"
     sha.js "^2.4.8"
 
-crosier-vue@0.7.8:
-  version "0.7.8"
-  resolved "https://registry.yarnpkg.com/crosier-vue/-/crosier-vue-0.7.8.tgz#263b7eaad4addb342bc15989972e097adbabe517"
-  integrity sha512-oL660OapDXPFYXcHjYLis2HI6TsWXplnDvwFmF2CzcGRG/j2+R4Tt/VANvFgQDLsL+SDnRD1CV5IaWXhGX9aYA==
+crosier-vue@0.7.9:
+  version "0.7.9"
+  resolved "https://registry.yarnpkg.com/crosier-vue/-/crosier-vue-0.7.9.tgz#8b977b1e2516046fb157eb816ba43c4d990f8df0"
+  integrity sha512-J93A9avcriXt/9/Gbq8Kz/SCGlK294gJKrfRNME3qbcy0UOOnytzoLR6IabD50ux/k3dbKePUnv7dq0y/KbcBQ==
   dependencies:
     "@fullcalendar/core" "^5.6.0"
     "@fullcalendar/daygrid" "^5.5.0"
@@ -8982,10 +8982,15 @@ primeicons@^4.1.0:
   resolved "https://registry.yarnpkg.com/primeicons/-/primeicons-4.1.0.tgz#19eaef8ef5594b0006358ae64e738d03e167c9bb"
   integrity sha512-uEv2pSPk1zQCfaB2VgnUfnUxxlGryYi+5rbdxmZBBt5v9S/pscIQYS5YDLxsQZ7D9jn5c76+Tx5wX/2J1nK6sA==
 
-primevue@^3.1.1, primevue@^3.8.1:
+primevue@^3.1.1:
   version "3.8.2"
   resolved "https://registry.yarnpkg.com/primevue/-/primevue-3.8.2.tgz#c9c11ef912714e516c5ede19a8256d60848ccf01"
   integrity sha512-ToJYJad5wvrSydBjyIFHuDZzehor90XVioTzNHGyMqBat23XMwHqQSHsCmbOS91CCxTP9UjaAS8S6m4HjBGceQ==
+
+primevue@^3.8.1:
+  version "3.10.0"
+  resolved "https://registry.yarnpkg.com/primevue/-/primevue-3.10.0.tgz#518b2030b3a8b91f72eafac9e4a69c41012800e6"
+  integrity sha512-tZwzdg0gVOpohFAzPWuIQ7OoNZ1/g6EcY29xn6KzuZ/p8HDiGmg2ChpTUpPaLIJplD+1FyInIo8uvA4YtRulGg==
 
 print-js@^1.0.63:
   version "1.6.0"
