@@ -70,4 +70,17 @@ class DefaultController extends BaseController
     }
 
 
+
+    /**
+     *
+     * @Route("/nosec", name="nosec", methods={"GET"})
+     * @return Response
+     */
+    public function nosec(): Response
+    {
+        return new Response('nosec OK');
+    }
+
+
+
 }
