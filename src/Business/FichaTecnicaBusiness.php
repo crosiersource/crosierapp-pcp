@@ -4,6 +4,7 @@ namespace App\Business;
 
 use App\Entity\FichaTecnica;
 use App\Entity\FichaTecnicaItem;
+use App\Entity\FichaTecnicaItemQtde;
 use App\Entity\FichaTecnicaPreco;
 use App\Entity\Insumo;
 use App\EntityHandler\FichaTecnicaEntityHandler;
@@ -230,11 +231,9 @@ class FichaTecnicaBusiness
      * calças, jaquetas, bermudas, etc
      * 02-04-06 >> 06
      * 08-10 >> 10
-     * 12-14-16 >> 16
+     * 12-14-16 >> 14
      * P-M-G >> M
-     * XG >> XG
-     * SG >> SG
-     * SS >> SS
+     * XG-SG-SS >> SG
      *
      * @param FichaTecnica $fichaTecnica
      * @param array $totalGlobal
@@ -253,81 +252,63 @@ class FichaTecnicaBusiness
 
         if ($vPos1 || $vPos2 || $vPos3) {
             $preco = new FichaTecnicaPreco();
-
             $preco->fichaTecnica = $fichaTecnica;
+            
             $tams = $pos1 . '-' . $pos2 . '-' . $pos3;
             $preco->descricao = ('TAM ' . $tams);
 
             $precoMedio = $vPos3 ?: $vPos2 ?: $vPos1;
 
             $preco->precoCusto = ($precoMedio);
-
             $fichaTecnica->getPrecos()->add($preco);
         }
 
         if ($vPos4 || $vPos5) {
-
             $preco = new FichaTecnicaPreco();
-
             $preco->fichaTecnica = ($fichaTecnica);
 
             $tams = $pos4 . '-' . $pos5;
             $preco->descricao = ('TAM ' . $tams);
 
             $precoMedio = $vPos5 ?: $vPos4;
+            
             $preco->precoCusto = ($precoMedio);
-
             $fichaTecnica->getPrecos()->add($preco);
         }
         if ($vPos6 || $vPos7 || $vPos8) {
             $preco = new FichaTecnicaPreco();
-
             $preco->fichaTecnica = ($fichaTecnica);
 
             $tams = $pos6 . '-' . $pos7 . '-' . $pos8;
             $preco->descricao = ('TAM ' . $tams);
 
-            $precoMedio = $vPos8 ?: $vPos7 ?: $vPos6;
+            $precoMedio = $vPos7 ?: $vPos8 ?: $vPos6;
+            
             $preco->precoCusto = ($precoMedio);
-
             $fichaTecnica->getPrecos()->add($preco);
         }
         if ($vPos9 || $vPos10 || $vPos11) {
             $preco = new FichaTecnicaPreco();
-
             $preco->fichaTecnica = ($fichaTecnica);
 
             $tams = $pos9 . '-' . $pos10 . '-' . $pos11;
             $preco->descricao = ('TAM ' . $tams);
 
-            // preferencialmente pega o M->-> caso seja nulo, pega o G-> Por último o P->
             $precoMedio = $vPos10 ?: $vPos11 ?: $vPos9;
 
             $preco->precoCusto = ($precoMedio);
             $fichaTecnica->getPrecos()->add($preco);
         }
-        if ($vPos12) {
+        if ($vPos12 || $vPos13 || $vPos14) {
             $preco = new FichaTecnicaPreco();
-
             $preco->fichaTecnica = ($fichaTecnica);
-            $preco->descricao = ('TAM ' . $pos12);
-            $preco->precoCusto = ($vPos12);
-            $fichaTecnica->getPrecos()->add($preco);
-        }
-        if ($vPos13) {
-            $preco = new FichaTecnicaPreco();
 
-            $preco->fichaTecnica = ($fichaTecnica);
-            $preco->descricao = ('TAM ' . $pos13);
-            $preco->precoCusto = ($vPos13);
-            $fichaTecnica->getPrecos()->add($preco);
-        }
-        if ($vPos14) {
-            $preco = new FichaTecnicaPreco();
+            $tams = $pos12 . '-' . $pos13 . '-' . $pos14;
+            $preco->descricao = ('TAM ' . $tams);
 
-            $preco->fichaTecnica = ($fichaTecnica);
-            $preco->descricao = ('TAM ' . $pos14);
-            $preco->precoCusto = ($vPos14);
+            $precoMedio = $vPos13 ?: $vPos14 ?: $vPos12;
+
+            $preco->precoCusto = ($precoMedio);
             $fichaTecnica->getPrecos()->add($preco);
         }
 
@@ -350,12 +331,10 @@ class FichaTecnicaBusiness
 
     /**
      * CAMISETAS
-     * 02-08 >> 08
+     * 02-08 >> 06
      * 10-16 >> 14
      * P-M-G >> M
-     * XG >> XG
-     * SG >> SG
-     * SS >> SS
+     * XG-SG-SS >> SG
      *
      * @param FichaTecnica $fichaTecnica
      * @param array $totalGlobal
@@ -380,12 +359,11 @@ class FichaTecnicaBusiness
             $tams = $pos1 . '-' . $pos2 . '-' . $pos3 . '-' . $pos4;
             $preco->descricao = ('TAM ' . $tams);
 
-            $precoMedio = $vPos4 ?: $vPos3 ?: $vPos2 ?: $vPos1;
+            $precoMedio = $vPos3 ?: $vPos4 ?: $vPos2 ?: $vPos1;
             $preco->precoCusto = ($precoMedio);
 
             $fichaTecnica->getPrecos()->add($preco);
         }
-
         if ($vPos5 || $vPos6 || $vPos7 || $vPos8) {
             $preco = new FichaTecnicaPreco();
 
@@ -393,12 +371,11 @@ class FichaTecnicaBusiness
             $tams = $pos5 . '-' . $pos6 . '-' . $pos7 . '-' . $pos8;
             $preco->descricao = ('TAM ' . $tams);
 
-            $precoMedio = $vPos8 ?: $vPos7 ?: $vPos6 ?: $vPos5;
+            $precoMedio = $vPos7 ?: $vPos8 ?: $vPos6 ?: $vPos5;
             $preco->precoCusto = ($precoMedio);
 
             $fichaTecnica->getPrecos()->add($preco);
         }
-
         if ($vPos9 || $vPos10 || $vPos11) {
             $preco = new FichaTecnicaPreco();
 
@@ -411,28 +388,16 @@ class FichaTecnicaBusiness
 
             $fichaTecnica->getPrecos()->add($preco);
         }
-        if ($vPos12) {
+        if ($vPos12 || $vPos13 || $vPos14) {
             $preco = new FichaTecnicaPreco();
-
             $preco->fichaTecnica = ($fichaTecnica);
-            $preco->descricao = ('TAM ' . $pos12);
-            $preco->precoCusto = ($vPos12);
-            $fichaTecnica->getPrecos()->add($preco);
-        }
-        if ($vPos13) {
-            $preco = new FichaTecnicaPreco();
 
-            $preco->fichaTecnica = ($fichaTecnica);
-            $preco->descricao = ('TAM ' . $pos13);
-            $preco->precoCusto = ($vPos13);
-            $fichaTecnica->getPrecos()->add($preco);
-        }
-        if ($vPos14) {
-            $preco = new FichaTecnicaPreco();
+            $tams = $pos12 . '-' . $pos13 . '-' . $pos14;
+            $preco->descricao = ('TAM ' . $tams);
 
-            $preco->fichaTecnica = ($fichaTecnica);
-            $preco->descricao = ('TAM ' . $pos14);
-            $preco->precoCusto = ($vPos14);
+            $precoMedio = $vPos13 ?: $vPos14 ?: $vPos12;
+
+            $preco->precoCusto = ($precoMedio);
             $fichaTecnica->getPrecos()->add($preco);
         }
 
@@ -440,11 +405,16 @@ class FichaTecnicaBusiness
     }
 
     /**
-     * "IPÊ"
-     * 08-06-04-02
-     * 14-12-10
-     * G-M-P-PP
-     * SS-EG-GG
+     * Modo "IPÊ" (ANTIGO)
+     * 02-04-06-08: 06
+     * 10-12-14: 12
+     * PP-P-M-G: M
+     * GG-EG-SS: EG
+     * 
+     * 02-08 >> 06
+     * 10-14 >> 12
+     * 16-P-M-G >> M
+     * XG-SG-SS >> SG
      *
      * @param FichaTecnica $fichaTecnica
      * @param array $totalGlobal
@@ -468,7 +438,7 @@ class FichaTecnicaBusiness
             $tams = $pos1 . '-' . $pos2 . '-' . $pos3 . '-' . $pos4;
             $preco->descricao = ('TAM ' . $tams);
 
-            $precoMedio = $vPos4 ?: $vPos3 ?: $vPos2 ?: $vPos1;
+            $precoMedio = $vPos3 ?: $vPos4 ?: $vPos2 ?: $vPos1;
             $preco->precoCusto = ($precoMedio);
 
             $fichaTecnica->getPrecos()->add($preco);
@@ -481,7 +451,7 @@ class FichaTecnicaBusiness
             $tams = $pos5 . '-' . $pos6 . '-' . $pos7;
             $preco->descricao = ('TAM ' . $tams);
 
-            $precoMedio = $vPos7 ?: $vPos6 ?: $vPos5;
+            $precoMedio = $vPos6 ?: $vPos7 ?: $vPos5;
             $preco->precoCusto = ($precoMedio);
 
             $fichaTecnica->getPrecos()->add($preco);
@@ -500,35 +470,19 @@ class FichaTecnicaBusiness
         }
         if ($vPos12 || $vPos13 || $vPos14) {
             $preco = new FichaTecnicaPreco();
-
             $preco->fichaTecnica = ($fichaTecnica);
 
-            $tams = '';
-
-            if ($pos12) {
-                $tams .= $pos12 . '-';
-            }
-            if ($pos13) {
-                $tams .= $pos13 . '-';
-            }
-            if ($pos14) {
-                $tams .= $pos14 . '-';
-            }
-
-            $tams = substr($tams, 0, -1);
-
-
+            $tams = $pos12 . '-' . $pos13 . '-' . $pos14;
             $preco->descricao = ('TAM ' . $tams);
 
-            $precoMedio = $vPos14 ?: $vPos13 ?: $vPos12;
-            $preco->precoCusto = ($precoMedio);
+            $precoMedio = $vPos13 ?: $vPos14 ?: $vPos12;
 
+            $preco->precoCusto = ($precoMedio);
             $fichaTecnica->getPrecos()->add($preco);
         }
 
         return $fichaTecnica;
     }
-
 
     /**
      * @param FichaTecnica $fichaTecnicaOrigem

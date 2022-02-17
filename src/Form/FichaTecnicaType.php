@@ -175,7 +175,6 @@ class FichaTecnicaType extends AbstractType
                     'MODO 1' => 'MODO_1',
                     'MODO 2' => 'MODO_2',
                     'MODO 3' => 'MODO_3',
-                    'MODO 4' => 'MODO_4',
                 ],
                 'attr' => ['class' => 'autoSelect2']
             ]);

@@ -36,7 +36,6 @@ class TipoArtigoType extends AbstractType
                 'Modo 1' => 'MODO_1',
                 'Modo 2' => 'MODO_2',
                 'Modo 3' => 'MODO_3',
-                'Modo 4' => 'MODO_4',
             ],
             'attr' => ['class' => 'autoSelect2']
 
