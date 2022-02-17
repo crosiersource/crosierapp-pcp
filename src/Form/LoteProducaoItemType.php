@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\FichaTecnica;
 use App\Entity\LoteProducaoItem;
+use CrosierSource\CrosierLibBaseBundle\Utils\DateTimeUtils\DateTimeUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\WhereBuilder;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -47,10 +48,14 @@ class LoteProducaoItemType extends AbstractType
             $loteProducaoItem = $event->getData();
             $form = $event->getForm();
 
+            $ultimoMes = DateTimeUtils::incMes(new \DateTime(), -1);
+            $repoFichaTecnica = $this->doctrine->getRepository(FichaTecnica::class);
+            $choices = $repoFichaTecnica->findByFiltersSimpl([['updated', 'GT', $ultimoMes]], ['descricao' => 'ASC'], 0, null);
+            
             $form->add('fichaTecnica', EntityType::class, [
                 'label' => 'Ficha Técnica',
                 'class' => FichaTecnica::class,
-                'choices' => $this->doctrine->getRepository(FichaTecnica::class)->findAll(WhereBuilder::buildOrderBy('descricao')),
+                'choices' => $choices,
                 'placeholder' => '...',
                 'required' => false,
                 'choice_label' => function (?FichaTecnica $fichaTecnica) {
