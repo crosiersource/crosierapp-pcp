@@ -48,7 +48,7 @@ class LoteProducaoItemType extends AbstractType
             $loteProducaoItem = $event->getData();
             $form = $event->getForm();
 
-            $ultimoMes = DateTimeUtils::incMes(new \DateTime(), -1);
+            $ultimoMes = DateTimeUtils::incMes(new \DateTime(), -3);
             $repoFichaTecnica = $this->doctrine->getRepository(FichaTecnica::class);
             $choices = $repoFichaTecnica->findByFiltersSimpl([['updated', 'GT', $ultimoMes]], ['descricao' => 'ASC'], 0, null);
             
