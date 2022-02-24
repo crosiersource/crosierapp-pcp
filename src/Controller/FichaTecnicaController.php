@@ -14,7 +14,9 @@ use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\FilterData;
 use CrosierSource\CrosierLibRadxBundle\Entity\CRM\Cliente;
+use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Unidade;
 use CrosierSource\CrosierLibRadxBundle\EntityHandler\CRM\ClienteEntityHandler;
+use CrosierSource\CrosierLibRadxBundle\Repository\Estoque\UnidadeRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -297,6 +299,9 @@ class FichaTecnicaController extends FormListController
     public function itemForm(Request $request, ?FichaTecnicaItem $fichaTecnicaItem = null)
     {
 
+        /** @var UnidadeRepository $repoUnidade */
+        $repoUnidade = $this->getDoctrine()->getRepository(Unidade::class);
+
         if ($fichaTecnicaItem) {
             $this->fichaTecnicaBusiness->buildQtdesTamanhosArray($fichaTecnicaItem->fichaTecnica);
         }
@@ -318,7 +323,7 @@ class FichaTecnicaController extends FormListController
         $parameters = [];
         $parameters['insumos'] = $this->buildInsumosSelect2();
         $parameters['fichaTecnicaItem'] = $fichaTecnicaItem;
-        $parameters['unidade'] = $this->fichaTecnicaBusiness->findUnidadeById($fichaTecnicaItem->insumo->unidadeProdutoId);
+        $parameters['unidade'] = $repoUnidade->find($fichaTecnicaItem->insumo->unidadeProdutoId);
 
         return $this->doRender('fichaTecnicaItemForm.html.twig', $parameters);
     }

@@ -12,7 +12,9 @@ use CrosierSource\CrosierLibBaseBundle\APIClient\CrosierEntityIdAPIClient;
 use CrosierSource\CrosierLibBaseBundle\Utils\NumberUtils\DecimalUtils;
 use CrosierSource\CrosierLibRadxBundle\Business\Estoque\CalculoPreco;
 use CrosierSource\CrosierLibRadxBundle\Entity\CRM\Cliente;
+use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Unidade;
 use CrosierSource\CrosierLibRadxBundle\Repository\CRM\ClienteRepository;
+use CrosierSource\CrosierLibRadxBundle\Repository\Estoque\UnidadeRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
@@ -136,6 +138,9 @@ class FichaTecnicaBusiness
         }
 
         $c = -1;
+        
+        /** @var UnidadeRepository $repoUnidade */
+        $repoUnidade = $this->doctrine->getRepository(Unidade::class);
 
         /** @var FichaTecnicaItem $item */
         foreach ($fichaTecnicaItens as $item) {
@@ -151,9 +156,10 @@ class FichaTecnicaBusiness
                     $insumosArray[$c]['totais'][$i]['decimal'] = 0.0;
                 }
             }
-            $unidade = $this->findUnidadeById($item->insumo->unidadeProdutoId);
-            $item->casasDecimais = $unidade['casasDecimais'];
-            $item->unidade = $unidade['label'];
+            /** @var Unidade $unidade */
+            $unidade = $repoUnidade->find($item->insumo->unidadeProdutoId);
+            $item->casasDecimais = $unidade->casasDecimais;
+            $item->unidade = $unidade->label;
             $insumosArray[$c]['itens'][] = $item;
             
             $qtdesTamanhosArray = $item->getQtdesTamanhosArray();
@@ -208,7 +214,11 @@ class FichaTecnicaBusiness
      */
     public function buildItemQtdesTamanhosByPosicaoArray(FichaTecnicaItem $item): void
     {
-        $unidade = $this->findUnidadeById($item->insumo->unidadeProdutoId);
+        /** @var UnidadeRepository $repoUnidade */
+        $repoUnidade = $this->doctrine->getRepository(Unidade::class);
+        
+        /** @var Unidade $unidade */
+        $unidade = $repoUnidade->find($item->insumo->unidadeProdutoId);
         $array = [];
         for ($i = 1; $i <= 15; $i++) {
             $array[$i]['decimal'] = 0.0;
@@ -219,7 +229,7 @@ class FichaTecnicaBusiness
                 if ($posicao === $i) {
 
                     $array[$i]['decimal'] = (float)$qtde->qtde;
-                    $array[$i]['formatado'] = $array[$i]['decimal'] > 0 ? number_format($array[$i]['decimal'], $unidade['casasDecimais'], ',', '.') : '-';
+                    $array[$i]['formatado'] = $array[$i]['decimal'] > 0 ? number_format($array[$i]['decimal'], $unidade->casasDecimais, ',', '.') : '-';
 
                 }
             }
@@ -741,55 +751,6 @@ class FichaTecnicaBusiness
             }
 
             return -1;
-        });
-    }
-
-
-    /**
-     * @return array
-     */
-    public function findUnidades(): array
-    {
-
-        $cache = new FilesystemAdapter($_SERVER['CROSIERAPP_ID'] . '.cache', 0, $_SERVER['CROSIER_SESSIONS_FOLDER']);
-
-        return $cache->get('unidades', function (ItemInterface $item) {
-            $item->expiresAfter(3600);
-
-            $conn = $this->doctrine->getConnection();
-            $rsGrades = $conn->fetchAssociative('SELECT valor FROM cfg_app_config WHERE app_uuid = :appUUID AND chave = :chave',
-                ['appUUID' => $_SERVER['CROSIERAPP_UUID'], 'chave' => 'unidades.json']);
-            return json_decode($rsGrades['valor'], true);
-        });
-    }
-
-
-    /**
-     * Encontra uma unidade por seu id no json UNIDADES.
-     *
-     * @param int $unidadeId
-     * @return array|null
-     */
-    public function findUnidadeById(int $unidadeId): ?array
-    {
-        $cache = new FilesystemAdapter($_SERVER['CROSIERAPP_ID'] . '.cache', 0, $_SERVER['CROSIER_SESSIONS_FOLDER']);
-
-        return $cache->get('findUnidadeById' . $unidadeId, function (ItemInterface $item) use ($unidadeId) {
-            $item->expiresAfter(3600);
-
-            $conn = $this->doctrine->getConnection();
-            $rsUnidades = $conn->fetchAssociative('SELECT valor FROM cfg_app_config WHERE app_uuid = :appUUID AND chave = :chave',
-                ['appUUID' => $_SERVER['CROSIERAPP_UUID'], 'chave' => 'unidades.json']);
-            $unidades = json_decode($rsUnidades['valor'], true);
-
-            foreach ($unidades as $unidade) {
-                if ($unidadeId === $unidade['id']) {
-                    return $unidade;
-                }
-
-            }
-
-            return null;
         });
     }
 

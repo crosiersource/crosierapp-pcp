@@ -42,7 +42,7 @@
             <tr>
                 <td>{{ item.insumo.id }}</td>
                 <td>
-                    {{ item.insumo.descricao }}<br>
+                    <a href="/pcp/insumo/form?id={{ item.insumo.id }}" target="_blank">{{ item.insumo.descricao }}</a><br>
                     <span style="font-size: smaller; color: darkslategrey">{{  item.insumo.dtCusto|date('d/m/Y') }}</span>
                     <span class="badge badge-info float-right">{{ item.unidade }}</span>
                 </td>

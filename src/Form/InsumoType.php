@@ -6,6 +6,8 @@ use App\Business\FichaTecnicaBusiness;
 use App\Entity\Insumo;
 use App\Entity\TipoInsumo;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\WhereBuilder;
+use CrosierSource\CrosierLibRadxBundle\Entity\Estoque\Unidade;
+use CrosierSource\CrosierLibRadxBundle\Repository\Estoque\UnidadeRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -25,8 +27,6 @@ class InsumoType extends AbstractType
 
     private EntityManagerInterface $doctrine;
 
-    private FichaTecnicaBusiness $fichaTecnicaBusiness;
-
     /**
      * @required
      * @param EntityManagerInterface $doctrine
@@ -36,14 +36,6 @@ class InsumoType extends AbstractType
         $this->doctrine = $doctrine;
     }
 
-    /**
-     * @required
-     * @param FichaTecnicaBusiness $fichaTecnicaBusiness
-     */
-    public function setFichaTecnicaBusiness(FichaTecnicaBusiness $fichaTecnicaBusiness): void
-    {
-        $this->fichaTecnicaBusiness = $fichaTecnicaBusiness;
-    }
 
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -61,10 +53,15 @@ class InsumoType extends AbstractType
             'label' => 'Marca'
         ));
 
-        $rUnidades = $this->fichaTecnicaBusiness->findUnidades();
+        /** @var UnidadeRepository $repoUnidade */
+        $repoUnidade = $this->doctrine->getRepository(Unidade::class);
+        
+        $rUnidades = $repoUnidade->findAll();
         $unidades = [];
-        foreach ($rUnidades as $rUnidade) {
-            $unidades[$rUnidade['label']] = $rUnidade['id'];
+        
+        /** @var Unidade $unidade */
+        foreach ($rUnidades as $unidade) {
+            $unidades[$unidade->label] = $unidade->getId();
         }
 
         $builder->add('unidadeProdutoId', ChoiceType::class, array(
