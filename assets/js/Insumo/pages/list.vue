@@ -40,7 +40,11 @@
 
     <template v-slot:columns>
       <Column selectionMode="multiple" headerStyle="width: 5em"></Column>
-      <Column field="id" header="Id" :sortable="true"></Column>
+      <Column field="id" header="Id" :sortable="true">
+        <template #body="r">
+          {{ ("00000000" + r.data.id).slice(-8) }}
+        </template>
+      </Column>
       <Column field="codigo" header="Código" :sortable="true"></Column>
       <Column field="marca" header="Marca" :sortable="true"></Column>
       <Column field="descricao" header="Descrição" :sortable="true"></Column>

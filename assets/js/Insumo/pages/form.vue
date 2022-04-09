@@ -72,7 +72,6 @@ import * as yup from "yup";
 import {
   CrosierCalendar,
   CrosierCurrency,
-  CrosierDropdown,
   CrosierDropdownEntity,
   CrosierFormS,
   CrosierInputInt,
