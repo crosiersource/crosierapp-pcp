@@ -31,7 +31,7 @@ class FichaTecnicaBusiness
     private EntityManagerInterface $doctrine;
 
     private CalculoPreco $calculoPreco;
-
+    
     /**
      * @required
      * @param CalculoPreco $calculoPreco
