@@ -213,7 +213,7 @@ class FichaTecnicaController extends FormListController
      */
     private function buildInsumosSelect2()
     {
-        $cache = new FilesystemAdapter($_SERVER['CROSIERAPP_ID'] . '.cache', 0, $_SERVER['CROSIER_SESSIONS_FOLDER']);
+        $cache = new FilesystemAdapter($_SERVER['CROSIERAPP_ID'] . '.cache', 600, $_SERVER['CROSIER_SESSIONS_FOLDER']);
 
         $arrInsumos = $cache->get('buildInsumosSelect2', function (ItemInterface $item) {
             $fd = new FilterData('visivel', 'EQ', 'visivel', ['filter' => ['visivel' => true]]);
