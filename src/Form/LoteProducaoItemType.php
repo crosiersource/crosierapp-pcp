@@ -5,7 +5,6 @@ namespace App\Form;
 use App\Entity\FichaTecnica;
 use App\Entity\LoteProducaoItem;
 use CrosierSource\CrosierLibBaseBundle\Utils\DateTimeUtils\DateTimeUtils;
-use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\WhereBuilder;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -42,7 +41,6 @@ class LoteProducaoItemType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
             /** @var LoteProducaoItem $loteProducaoItem */
             $loteProducaoItem = $event->getData();
@@ -51,7 +49,7 @@ class LoteProducaoItemType extends AbstractType
             $ultimosDoisAnos = DateTimeUtils::incMes(new \DateTime(), -24);
             $repoFichaTecnica = $this->doctrine->getRepository(FichaTecnica::class);
             $choices = $repoFichaTecnica->findByFiltersSimpl([['updated', 'GT', $ultimosDoisAnos]], ['descricao' => 'ASC'], 0, null);
-            
+
             $form->add('fichaTecnica', EntityType::class, [
                 'label' => 'Ficha Técnica',
                 'class' => FichaTecnica::class,
