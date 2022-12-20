@@ -186,9 +186,6 @@
     "myclabs/php-enum": {
         "version": "1.8.0"
     },
-    "neitanod/forceutf8": {
-        "version": "v2.0.4"
-    },
     "nelmio/cors-bundle": {
         "version": "1.5",
         "recipe": {
