@@ -3277,16 +3277,16 @@
         },
         {
             "name": "nfephp-org/sped-common",
-            "version": "v5.1.10",
+            "version": "v5.1.11",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nfephp-org/sped-common.git",
-                "reference": "c6ef66efdbbadd640fa5a4748848d481ec3ef26a"
+                "reference": "dc5aa121871b0236c2014ef993f569e07fc09385"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nfephp-org/sped-common/zipball/c6ef66efdbbadd640fa5a4748848d481ec3ef26a",
-                "reference": "c6ef66efdbbadd640fa5a4748848d481ec3ef26a",
+                "url": "https://api.github.com/repos/nfephp-org/sped-common/zipball/dc5aa121871b0236c2014ef993f569e07fc09385",
+                "reference": "dc5aa121871b0236c2014ef993f569e07fc09385",
                 "shasum": ""
             },
             "require": {
@@ -3349,9 +3349,9 @@
             ],
             "support": {
                 "issues": "https://github.com/nfephp-org/sped-common/issues",
-                "source": "https://github.com/nfephp-org/sped-common/tree/v5.1.10"
+                "source": "https://github.com/nfephp-org/sped-common/tree/v5.1.11"
             },
-            "time": "2023-06-01T19:17:00+00:00"
+            "time": "2023-09-19T13:51:57+00:00"
         },
         {
             "name": "nfephp-org/sped-da",
