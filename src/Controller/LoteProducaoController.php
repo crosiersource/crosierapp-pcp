@@ -271,15 +271,10 @@ class LoteProducaoController extends FormListController
 
 
     /**
-     *
      * @Route("/loteProducao/relatorio/{loteProducao}", name="loteProducao_relatorio", requirements={"loteProducao"="\d+"})
      * @param LoteProducao $loteProducao
      * @param Request $request
      * @return Response
-     *
-     * @noinspection PhpIncompatibleReturnTypeInspection
-     * @noinspection PhpVoidFunctionResultUsedInspection
-     * @noinspection PhpInconsistentReturnPointsInspection
      */
     public function relatorio(LoteProducao $loteProducao, Request $request): Response
     {
@@ -289,13 +284,13 @@ class LoteProducaoController extends FormListController
             if ($request->get('tipoImpressao') === 'HTML') {
                 return $this->relatorioDeCorteHTML($loteProducao, $loteItens, $tiposInsumos);
             }
-            return $this->relatorioDeCortePDF($loteProducao, $loteItens, $tiposInsumos);
+            $this->relatorioDeCortePDF($loteProducao, $loteItens, $tiposInsumos);
         }
         if ($request->get('tipoRelatorio') === 'Relatório de Insumos') {
             if ($request->get('tipoImpressao') === 'HTML') {
                 return $this->relatorioDeInsumosHTML($loteProducao, $loteItens, $tiposInsumos);
             }
-            return $this->relatorioDeInsumosPDF($loteProducao, $loteItens, $tiposInsumos);
+            $this->relatorioDeInsumosPDF($loteProducao, $loteItens, $tiposInsumos);
         }
     }
 

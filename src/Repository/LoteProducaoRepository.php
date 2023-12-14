@@ -355,7 +355,7 @@ where
         $tiposInsumosLote = $this->getTiposInsumosPorLote($loteProducao);
         if ($tiposInsumosIds) {
             foreach ($tiposInsumosLote as $tipoInsumoLote) {
-                if (in_array($tipoInsumoLote['id'], $tiposInsumosIds, true)) {
+                if (in_array($tipoInsumoLote['id'], $tiposInsumosIds, false)) {
                     $tiposInsumos[] = $tipoInsumoLote;
                 }
             }
