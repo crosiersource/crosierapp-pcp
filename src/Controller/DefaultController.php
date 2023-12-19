@@ -45,7 +45,7 @@ class DefaultController extends BaseController
      */
     public function pdf(): Response
     {
-        
+
         $pdf = new Fpdi('P', 'mm', 'A4'); //FPDI extends TCPDF
 
         $pages = $pdf->setSourceFile('/home/carlos/Downloads/cotacao/scan3745_com_ocr.pdfa.pdf');
@@ -53,10 +53,9 @@ class DefaultController extends BaseController
         $certificate = 'file://home/carlos/Dropbox/Ipê/Certs/2021/chave.pfx';
 
 // set additional information
-        
 
-        for ($i = 1; $i <= $pages; $i++)
-        {
+
+        for ($i = 1; $i <= $pages; $i++) {
             $pdf->AddPage();
             $page = $pdf->importPage($i);
             $pdf->useTemplate($page, 0, 0);
@@ -70,7 +69,6 @@ class DefaultController extends BaseController
     }
 
 
-
     /**
      *
      * @Route("/nosec", name="nosec", methods={"GET"})
@@ -81,6 +79,26 @@ class DefaultController extends BaseController
         return new Response('nosec OK');
     }
 
+
+    /**
+     * @Route("/v/{vuePage}", name="v_vuaPage", requirements={"vuePage"=".+"})
+     */
+    public function vuePage($vuePage): Response
+    {
+        $rURL = $this->getDoctrine()->getConnection()->fetchAssociative('SELECT valor FROM cfg_app_config WHERE app_uuid = :appUUID AND chave = :chave', [
+            'appUUID' => $_SERVER['CROSIERAPPRADX_UUID'],
+            'chave' => 'URL_' . $_SERVER['CROSIER_ENV']
+        ]);
+
+        $params = [
+            'jsEntry' => $vuePage,
+            'serverParams' => json_encode(
+                ['radxURL' => $rURL['valor']]
+            )
+        ];
+
+        return $this->doRender('@CrosierLibBase/vue-app-page.html.twig', $params);
+    }
 
 
 }
