@@ -86,7 +86,7 @@ class DefaultController extends BaseController
     public function vuePage($vuePage): Response
     {
         $rURL = $this->getDoctrine()->getConnection()->fetchAssociative('SELECT valor FROM cfg_app_config WHERE app_uuid = :appUUID AND chave = :chave', [
-            'appUUID' => $_SERVER['CROSIERAPPRADX_UUID'],
+            'appUUID' => $_SERVER['CROSIERAPP_UUID'],
             'chave' => 'URL_' . $_SERVER['CROSIER_ENV']
         ]);
 
