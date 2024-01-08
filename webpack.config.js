@@ -28,10 +28,8 @@ Encore
   // --------------------------------------------
   .addEntry('tipoInsumoList', './assets/js/tipoInsumoList.js')
   .addEntry('tipoArtigoList', './assets/js/tipoArtigoList.js')
-  .addEntry('insumoList', './assets/js/insumoList.js')
   
-  .addEntry('Insumo/form', './assets/js/Insumo/form.js')
-  .addEntry('Insumo/alteracaoLote', './assets/js/Insumo/alteracaoLote.js')
+  
   .addEntry('instituicaoList', './assets/js/instituicaoList.js')
   .addEntry('fichaTecnicaList', './assets/js/fichaTecnicaList.js')
   .addEntry('loteProducaoList', './assets/js/loteProducaoList.js')
@@ -41,8 +39,9 @@ Encore
   .addEntry('fichaTecnicaItemForm', './assets/js/fichaTecnicaItemForm.js')
 
 
-
   .addEntry('insumo/list', './assets/js/Insumo/list.js')
+  .addEntry('insumo/form', './assets/js/Insumo/form.js')
+  .addEntry('Insumo/alteracaoLote', './assets/js/Insumo/alteracaoLote.js')
   // --------------------------------------------
 
   .splitEntryChunks()

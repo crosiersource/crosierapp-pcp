@@ -1,41 +1,24 @@
 <template>
   <Toast class="mt-5" />
   <ConfirmDialog />
-  <CrosierListS
-    titulo="Insumos"
-    apiResource="/api/pcp/insumo"
-    :formUrl="this.formUrl"
-    ref="crosierListS"
-  >
+  <CrosierListS titulo="Insumos" apiResource="/api/pcp/insumo" ref="crosierListS" filtrosNaSidebar>
     <template v-slot:headerButtons>
       <a role="button" class="ml-1 btn btn-success btn-sm" href="/pcp/insumo/alteracaoLote"
         ><i class="fas fa-layer-group"></i> Alteração em Lote</a
       >
     </template>
     <template v-slot:filter-fields>
-      <div class="form-row">
-        <div class="col-md-2 form-group">
-          <label for="id">Código</label>
-          <InputText class="form-control" id="id" type="text" v-model="this.filters.codigo" />
-        </div>
-        <div class="col-md-4 form-group">
-          <label for="nome">Descrição</label>
-          <InputText class="form-control" id="nome" type="text" v-model="this.filters.descricao" />
-        </div>
-        <div class="col-md-3 form-group">
-          <label for="nome">Marca</label>
-          <InputText class="form-control" id="nome" type="text" v-model="this.filters.marca" />
-        </div>
-        <CrosierDropdownEntity
-          v-model="this.filters.tipoInsumo"
-          id="tipoInsumo"
-          label="Tipo de Insumo"
-          col="3"
-          optionLabel="descricaoMontada"
-          entityUri="/api/pcp/tipoInsumo"
-          orderBy="codigo"
-        />
-      </div>
+      <CrosierInputText label="Código" v-model="this.filters.codigo" />
+      <CrosierInputText label="Descrição" v-model="this.filters.descricao" />
+      <CrosierInputText label="Marca" v-model="this.filters.marca" />
+      <CrosierDropdownEntity
+        v-model="this.filters.tipoInsumo"
+        id="tipoInsumo"
+        label="Tipo de Insumo"
+        optionLabel="descricaoMontada"
+        entityUri="/api/pcp/tipoInsumo"
+        orderBy="codigo"
+      />
     </template>
 
     <template v-slot:columns>
@@ -79,7 +62,7 @@
               role="button"
               class="btn btn-primary btn-sm"
               title="Editar registro"
-              :href="this.formUrl + '?id=' + r.data.id"
+              :href="'form?id=' + r.data.id"
               ><i class="fas fa-wrench" aria-hidden="true"></i
             ></a>
             <button
@@ -108,9 +91,8 @@
 
 <script>
 import { mapGetters, mapMutations } from "vuex";
-import { api, CrosierDropdownEntity, CrosierListS } from "crosier-vue";
+import { api, CrosierDropdownEntity, CrosierInputText, CrosierListS } from "crosier-vue";
 import Column from "primevue/column";
-import InputText from "primevue/inputtext";
 import Toast from "primevue/toast";
 import ConfirmDialog from "primevue/confirmdialog";
 import moment from "moment";
@@ -120,14 +102,13 @@ export default {
   components: {
     CrosierListS,
     Column,
-    InputText,
+    CrosierInputText,
     CrosierDropdownEntity,
     ConfirmDialog,
     Toast,
   },
   data() {
     return {
-      formUrl: "/pcp/insumo/form",
       dropdownOptions: {
         statusOptions: [
           { name: "Ativo", value: true },

@@ -1,11 +1,6 @@
 <template>
   <Toast class="mt-5" />
-  <CrosierFormS
-    listUrl="/pcp/insumo/list"
-    formUrl="/pcp/insumo/form"
-    @submitForm="this.submitForm"
-    titulo="Insumo"
-  >
+  <CrosierFormS @submitForm="this.submitForm" titulo="Insumo">
     <div class="form-row">
       <CrosierInputInt id="id" label="Id" v-model="this.insumo.id" :disabled="true" col="2" />
 
@@ -113,10 +108,6 @@ export default {
     });
 
     document.getElementById("descricao").focus();
-
-    document.getElementsByTagName("input").forEach(function doff(i) {
-      i.autocomplete = "off";
-    });
 
     this.setLoading(false);
   },
