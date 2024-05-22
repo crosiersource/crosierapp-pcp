@@ -78,7 +78,7 @@ WHERE uuid = '63594d0b-56ba-416c-9e10-858695bc98d0';
 INSERT INTO cfg_entmenu(uuid, label, icon, tipo, app_uuid, url, roles, pai_uuid, ordem, css_style, inserted, updated,
                         estabelecimento_id, user_inserted_id, user_updated_id)
 VALUES ('63594d0b-56ba-416c-9e10-858695bc98d0', 'Insumos', 'fas fa-kaaba', 'ENT',
-        'bfacf76d-2ff2-42c2-854c-bb5b10d78c92', '/pcp/insumo/list', 'ROLE_PCP_ADMIN',
+        'bfacf76d-2ff2-42c2-854c-bb5b10d78c92', '/v/insumo/list', 'ROLE_PCP_ADMIN',
         '90a155bf-0d77-499c-8465-330bc4ce1dd9', 1, null, now(), now(), 1, 1, 1);
 
 
