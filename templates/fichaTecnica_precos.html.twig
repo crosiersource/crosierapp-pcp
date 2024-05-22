@@ -47,4 +47,20 @@
 
 </table>
 
+<form action="{{ url('fichaTecnica_salvarObsPrecos', {'fichaTecnica': fichaTecnica.id}) }}" method="POST">
+
+    <div class="form-group row">
+        <label class="col-form-label col-sm-2" for="ficha_tecnica_obs_precos">Obs</label>
+        <div class="col-sm-8">
+            <textarea id="ficha_tecnica_obs_precos" name="obsPrecos" rows="15"
+                      class="form-control">{{ fichaTecnica.obsPrecos }}</textarea></div>
+        <div class="col-sm-2 text-right">
+            <button type="submit" class="btn btn-secondary btn-block" value="Salvar">
+                <i class="fas fa-save" aria-hidden="true"></i> Salvar Obs
+            </button>
+        </div>
+    </div>
+
+</form>
+
 

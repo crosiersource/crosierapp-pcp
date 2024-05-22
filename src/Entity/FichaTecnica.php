@@ -112,6 +112,15 @@ class FichaTecnica implements EntityId
      * @Groups("fichaTecnica")
      */
     public ?string $obs = null;
+    
+    
+    /**
+     * @var null|string
+     *
+     * @ORM\Column(name="obs_precos", type="string", length=5000, nullable=true)
+     * @Groups("fichaTecnica")
+     */
+    public ?string $obsPrecos = null;
 
 
     /**

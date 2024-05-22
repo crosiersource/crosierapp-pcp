@@ -270,6 +270,23 @@ class FichaTecnicaController extends FormListController
         $this->getEntityHandler()->save($fichaTecnica);
         return $this->redirectToRoute('fichaTecnica_builder', ['id' => $fichaTecnica->getId()]);
     }
+    
+    /**
+     *
+     * @Route("/fichaTecnica/salvarObsPrecos/{fichaTecnica}", name="fichaTecnica_salvarObsPrecos", defaults={"fichaTecnica"=null}, requirements={"fichaTecnica"="\d+"})
+     * @param Request $request
+     * @param FichaTecnica|null $fichaTecnica
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
+     * @throws \Exception
+     *
+     * @IsGranted("ROLE_PCP", statusCode=403)
+     */
+    public function salvarObsPrecos(Request $request, FichaTecnica $fichaTecnica)
+    {
+        $fichaTecnica->obsPrecos = ($request->get('obsPrecos'));
+        $this->getEntityHandler()->save($fichaTecnica);
+        return $this->redirectToRoute('fichaTecnica_builder', ['id' => $fichaTecnica->getId(), '_fragment' => 'precos']);
+    }
 
     /**
      *
