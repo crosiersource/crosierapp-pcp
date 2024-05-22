@@ -30,7 +30,6 @@ Encore
   .addEntry('tipoArtigoList', './assets/js/tipoArtigoList.js')
   
   
-  .addEntry('instituicaoList', './assets/js/instituicaoList.js')
   .addEntry('fichaTecnicaList', './assets/js/fichaTecnicaList.js')
   .addEntry('loteProducaoList', './assets/js/loteProducaoList.js')
   .addEntry('loteProducaoForm', './assets/js/loteProducaoForm.js')
@@ -38,6 +37,8 @@ Encore
   .addEntry('fichaTecnica_clonar', './assets/js/fichaTecnica_clonar.js')
   .addEntry('fichaTecnicaItemForm', './assets/js/fichaTecnicaItemForm.js')
 
+  .addEntry('cliente/list', './assets/js/Cliente/list.js')
+  .addEntry('cliente/form', './assets/js/Cliente/form.js')
 
   .addEntry('insumo/list', './assets/js/Insumo/list.js')
   .addEntry('insumo/form', './assets/js/Insumo/form.js')
@@ -56,6 +57,9 @@ Encore
   .configureBabelPresetEnv((config) => {
     config.useBuiltIns = 'usage';
     config.corejs = 3;
+  })
+  .configureBabel((config) => {
+    config.plugins.push('@babel/plugin-proposal-class-properties');
   })
   .enableVueLoader(function (options) {
     options.loaders = {

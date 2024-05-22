@@ -561,7 +561,7 @@ class FichaTecnicaBusiness
 
         $arrInstituicoes = $cache->get('buildInstituicoesSelect2', function (ItemInterface $item) {
             $conn = $this->doctrine->getConnection();
-            $rsInstituicoes = $conn->fetchAllAssociative('SELECT id, nome FROM crm_cliente WHERE json_data->>"$.cliente_pcp" = \'S\' ORDER BY nome');
+            $rsInstituicoes = $conn->fetchAllAssociative('SELECT id, nome FROM crm_cliente ORDER BY nome');
 
             $arrInstituicoes = [];
             $arrInstituicoes[] = ['id' => '', 'text' => '...'];

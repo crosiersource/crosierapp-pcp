@@ -30,6 +30,22 @@ VALUES ('90a155bf-0d77-499c-8465-330bc4ce1dd9', 'crosierapp-pcp (Menu Raíz)', '
         'bfacf76d-2ff2-42c2-854c-bb5b10d78c92', '', '', null, 0, null, now(), now(), 1, 1, 1);
 
 
+
+-- Clientes
+
+DELETE FROM cfg_entmenu where label = 'Instituições';
+
+DELETE
+FROM cfg_entmenu
+WHERE uuid = 'ebd21e2e-1841-11ef-82e5-8b1515a3248f';
+
+INSERT INTO cfg_entmenu(uuid, label, icon, tipo, app_uuid, url, roles, pai_uuid, ordem, css_style, inserted, updated,
+                        estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES ('ebd21e2e-1841-11ef-82e5-8b1515a3248f', 'Clientes', 'fas fa-industry', 'ENT',
+        'bfacf76d-2ff2-42c2-854c-bb5b10d78c92', '/v/cliente/list', 'ROLE_CRM',
+        '90a155bf-0d77-499c-8465-330bc4ce1dd9', 1, null, now(), now(), 1, 1, 1);
+
+
 -- Tipo de Insumo
 DELETE
 FROM cfg_entmenu
@@ -87,6 +103,19 @@ INSERT INTO cfg_entmenu(uuid, label, icon, tipo, app_uuid, url, roles, pai_uuid,
                         estabelecimento_id, user_inserted_id, user_updated_id)
 VALUES ('417b12af-4b62-47f2-8831-d5a548e641b3', 'Lotes de Produção', 'fas fa-industry', 'ENT',
         'bfacf76d-2ff2-42c2-854c-bb5b10d78c92', '/loteProducao/list', 'ROLE_PCP_ADMIN',
+        '90a155bf-0d77-499c-8465-330bc4ce1dd9', 1, null, now(), now(), 1, 1, 1);
+
+
+
+-- Limpar cachês
+DELETE
+FROM cfg_entmenu
+WHERE uuid = '09035b50-185d-11ef-806b-0fa1b0756d7f';
+
+INSERT INTO cfg_entmenu(uuid, label, icon, tipo, app_uuid, url, roles, pai_uuid, ordem, css_style, inserted, updated,
+                        estabelecimento_id, user_inserted_id, user_updated_id)
+VALUES ('09035b50-185d-11ef-806b-0fa1b0756d7f', 'Limpar Cachês', 'fas fa-sync-alt', 'ENT',
+        'bfacf76d-2ff2-42c2-854c-bb5b10d78c92', '/limparCaches', '',
         '90a155bf-0d77-499c-8465-330bc4ce1dd9', 1, null, now(), now(), 1, 1, 1);
 
 

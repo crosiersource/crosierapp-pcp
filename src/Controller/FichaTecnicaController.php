@@ -466,7 +466,6 @@ class FichaTecnicaController extends FormListController
                 $cliente = $repoCliente->find($cliente[0]['id']);
             }
             $cliente->nome = $pessoa['nome'] ?? '';
-            $cliente->jsonData['cliente_pcp'] = 'S';
             $clienteEntityHandler->save($cliente);
             /** @var FichaTecnica $fichaTecnica */
             $fichaTecnica = $repoFichaTecnica->find($ficha['id']);
@@ -486,11 +485,11 @@ class FichaTecnicaController extends FormListController
     {
         $conn = $this->fichaTecnicaItemEntityHandler->getDoctrine()->getConnection();
 
-        $clientes = $conn->fetchAllAssociative('select count(id) as qt, documento, nome from crm_cliente where nome IS NOT NULL AND json_data->>"$.cliente_pcp" = \'S\' GROUP BY documento, nome HAVING qt > 1');
+        $clientes = $conn->fetchAllAssociative('select count(id) as qt, documento, nome from crm_cliente where nome IS NOT NULL GROUP BY documento, nome HAVING qt > 1');
 
 
         foreach ($clientes as $cliente) {
-            $rsClientesIds = $conn->fetchAllAssociative('SELECT id FROM crm_cliente WHERE json_data->>"$.cliente_pcp" = \'S\' AND nome = :nome', ['nome' => $cliente['nome']]);
+            $rsClientesIds = $conn->fetchAllAssociative('SELECT id FROM crm_cliente WHERE nome = :nome', ['nome' => $cliente['nome']]);
             $primeiroId = $rsClientesIds[0]['id'];
             $ids = '(';
 

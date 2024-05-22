@@ -77,7 +77,7 @@ class FichaTecnicaType extends AbstractType
                 try {
                     /** @var ClienteRepository $repoCliente */
                     $repoCliente = $this->doctrine->getRepository(Cliente::class);
-                    $sql = 'SELECT id FROM crm_cliente WHERE json_data->>"$.cliente_pcp" = \'S\' ORDER BY nome';
+                    $sql = 'SELECT id FROM crm_cliente ORDER BY nome';
                     $rs = $this->doctrine->getConnection()->fetchAllAssociative($sql);
                     if (!$rs || count($rs) < 1) {
                         return null;

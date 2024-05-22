@@ -33,7 +33,6 @@ class InstituicaoController extends FormListController
     {
         return [
             new FilterData(['nome'], 'LIKE', 'str', $params),
-            new FilterData(['cliente_pcp'], 'EQ', 'cliente_pcp', $params, null, true)
         ];
     }
 
@@ -57,7 +56,6 @@ class InstituicaoController extends FormListController
         ];
 
         $fnHandleRequestOnValid = function (Request $request, /** @var Cliente $cliente */ $cliente): void {
-            $cliente->jsonData['cliente_pcp'] = 'S';
             $cache = new FilesystemAdapter($_SERVER['CROSIERAPP_ID'] . '.cache', 0, $_SERVER['CROSIER_SESSIONS_FOLDER']);
             $cache->clear();
         };
@@ -101,8 +99,7 @@ class InstituicaoController extends FormListController
      */
     public function datatablesJsList(Request $request): Response
     {
-        $defaultFilters['filter']['cliente_pcp'] = 'S';
-        return $this->doDatatablesJsList($request, $defaultFilters);
+        return $this->doDatatablesJsList($request, []);
     }
 
 

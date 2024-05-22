@@ -34,7 +34,8 @@ class DefaultController extends BaseController
     public function limparCaches(): \Symfony\Component\HttpFoundation\RedirectResponse
     {
         $cache = new FilesystemAdapter($_SERVER['CROSIERAPP_ID'] . '.cache', 0, $_SERVER['CROSIER_SESSIONS_FOLDER']);
-        $cache->clear();
+        $cache->delete("buildInstituicoesSelect2");
+        $cache->delete("buildInsumosSelect2");
         return $this->redirectToRoute('index');
     }
 
@@ -85,7 +86,7 @@ class DefaultController extends BaseController
      */
     public function vuePage($vuePage): Response
     {
-        $rURL = $this->getDoctrine()->getConnection()->fetchAssociative('SELECT valor FROM cfg_app_config WHERE app_uuid = :appUUID AND chave = :chave', [
+        $rURL = $this->doctrine->getConnection()->fetchAssociative('SELECT valor FROM cfg_app_config WHERE app_uuid = :appUUID AND chave = :chave', [
             'appUUID' => $_SERVER['CROSIERAPP_UUID'],
             'chave' => 'URL_' . $_SERVER['CROSIER_ENV']
         ]);
