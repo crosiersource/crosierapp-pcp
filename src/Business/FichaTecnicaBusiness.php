@@ -496,12 +496,12 @@ class FichaTecnicaBusiness
 
     /**
      * @param FichaTecnica $fichaTecnicaOrigem
-     * @param int $instituicaoId
+     * @param int $clienteId
      * @param string $novaDescricao
      * @return FichaTecnica
      * @throws \CrosierSource\CrosierLibBaseBundle\Exception\ViewException
      */
-    public function clonar(FichaTecnica $fichaTecnicaOrigem, int $instituicaoId, string $novaDescricao): FichaTecnica
+    public function clonar(FichaTecnica $fichaTecnicaOrigem, int $clienteId, string $novaDescricao): FichaTecnica
     {
 
         $this->fichaTecnicaEntityHandler->getDoctrine()->beginTransaction();
@@ -511,10 +511,10 @@ class FichaTecnicaBusiness
 
         /** @var ClienteRepository $repoCliente */
         $repoCliente = $this->doctrine->getRepository(Cliente::class);
-        /** @var Cliente $instituicao */
-        $instituicao = $repoCliente->find($instituicaoId);
+        /** @var Cliente $cliente */
+        $cliente = $repoCliente->find($clienteId);
 
-        $novaFichaTecnica->instituicao = ($instituicao);
+        $novaFichaTecnica->cliente = ($cliente);
 
         /** @var FichaTecnica $novaFichaTecnica */
         $novaFichaTecnica = $this->fichaTecnicaEntityHandler->save($novaFichaTecnica);
@@ -555,26 +555,26 @@ class FichaTecnicaBusiness
     }
 
 
-    public function buildInstituicoesSelect2()
+    public function buildClientesSelect2()
     {
         $cache = new FilesystemAdapter($_SERVER['CROSIERAPP_ID'] . '.cache', 0, $_SERVER['CROSIER_SESSIONS_FOLDER']);
 
-        $arrInstituicoes = $cache->get('buildInstituicoesSelect2', function (ItemInterface $item) {
+        $arrClientes = $cache->get('buildClientesSelect2', function (ItemInterface $item) {
             $conn = $this->doctrine->getConnection();
-            $rsInstituicoes = $conn->fetchAllAssociative('SELECT id, nome FROM crm_cliente ORDER BY nome');
+            $rsClientes = $conn->fetchAllAssociative('SELECT id, nome FROM crm_cliente ORDER BY nome');
 
-            $arrInstituicoes = [];
-            $arrInstituicoes[] = ['id' => '', 'text' => '...'];
-            foreach ($rsInstituicoes as $instituicao) {
-                $arrInstituicoes[] = [
-                    'id' => $instituicao['id'],
-                    'text' => $instituicao['nome']
+            $arrClientes = [];
+            $arrClientes[] = ['id' => '', 'text' => '...'];
+            foreach ($rsClientes as $cliente) {
+                $arrClientes[] = [
+                    'id' => $cliente['id'],
+                    'text' => $cliente['nome']
                 ];
             }
-            return $arrInstituicoes;
+            return $arrClientes;
         });
 
-        return json_encode($arrInstituicoes);
+        return json_encode($arrClientes);
     }
 
 

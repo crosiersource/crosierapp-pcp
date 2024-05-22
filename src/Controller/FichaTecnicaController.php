@@ -81,7 +81,7 @@ class FichaTecnicaController extends FormListController
     public function getFilterDatas(array $params): array
     {
         return [
-            new FilterData(['descricao', 'id', 'instituicao.nome'], 'LIKE', 'str', $params),
+            new FilterData(['descricao', 'id', 'cliente.nome'], 'LIKE', 'str', $params),
         ];
     }
 
@@ -183,17 +183,17 @@ class FichaTecnicaController extends FormListController
         if (!$fichaTecnica) {
             return $this->redirectToRoute('fichaTecnica_list');
         }
-        // Valores para o select de instituição
+        // Valores para o select de clientes
         $parameters = [];
-        $parameters['instituicoes'] = $this->fichaTecnicaBusiness->buildInstituicoesSelect2();
+        $parameters['clientes'] = $this->fichaTecnicaBusiness->buildClientesSelect2();
         $parameters['insumos'] = $this->buildInsumosSelect2();
 
-        $parameters['instituicaoId'] = $fichaTecnica->instituicao->getId();
+        $parameters['clienteId'] = $fichaTecnica->cliente->getId();
 
-        $parameters['tiposArtigos'] = $this->tipoArtigoController->findByInstituicao($parameters['instituicaoId'])->getContent();
+        $parameters['tiposArtigos'] = $this->tipoArtigoController->findByCliente($parameters['clienteId'])->getContent();
         $parameters['tipoArtigo'] = $fichaTecnica->tipoArtigo->getId();
 
-        $parameters['fichasTecnicas'] = $this->doFindByInstituicaoIdAndTipoArtigo($parameters['instituicaoId'], $parameters['tipoArtigo'])->getContent();
+        $parameters['fichasTecnicas'] = $this->doFindByClienteIdAndTipoArtigo($parameters['clienteId'], $parameters['tipoArtigo'])->getContent();
         $parameters['fichaTecnica'] = $fichaTecnica;
 
         $parameters['insumosArray'] = $this->fichaTecnicaBusiness->buildInsumosArray($fichaTecnica);
@@ -235,15 +235,15 @@ class FichaTecnicaController extends FormListController
     }
 
     /**
-     * @param int $instituicaoId
+     * @param int $clienteId
      * @param int $tipoArtigoId
      * @return JsonResponse
      *
      * @IsGranted("ROLE_PCP", statusCode=403)
      */
-    private function doFindByInstituicaoIdAndTipoArtigo(int $instituicaoId, int $tipoArtigoId): JsonResponse
+    private function doFindByClienteIdAndTipoArtigo(int $clienteId, int $tipoArtigoId): JsonResponse
     {
-        $fichasTecnicas = $this->getDoctrine()->getRepository(FichaTecnica::class)->findBy(['instituicao' => $instituicaoId, 'tipoArtigo' => $tipoArtigoId]);
+        $fichasTecnicas = $this->getDoctrine()->getRepository(FichaTecnica::class)->findBy(['cliente' => $clienteId, 'tipoArtigo' => $tipoArtigoId]);
         $rs = [];
         /** @var FichaTecnica $fichaTecnica */
         foreach ($fichasTecnicas as $fichaTecnica) {
@@ -290,17 +290,17 @@ class FichaTecnicaController extends FormListController
 
     /**
      *
-     * @Route("/fichaTecnica/findByInstituicaoIdAndTipoArtigo", name="fichaTecnica_findByInstituicaoIdAndTipoArtigo")
+     * @Route("/fichaTecnica/findByClienteIdAndTipoArtigo", name="fichaTecnica_findByClienteIdAndTipoArtigo")
      * @param Request $request
      * @return JsonResponse
      *
      * @IsGranted("ROLE_PCP", statusCode=403)
      */
-    public function findByInstituicaoIdAndTipoArtigo(Request $request): JsonResponse
+    public function findByClienteIdAndTipoArtigo(Request $request): JsonResponse
     {
-        $instituicaoId = $request->get('instituicaoId');
+        $clienteId = $request->get('clienteId');
         $tipoArtigoId = $request->get('tipoArtigo');
-        return $this->doFindByInstituicaoIdAndTipoArtigo($instituicaoId, $tipoArtigoId);
+        return $this->doFindByClienteIdAndTipoArtigo($clienteId, $tipoArtigoId);
     }
 
     /**
@@ -424,13 +424,13 @@ class FichaTecnicaController extends FormListController
     {
         $parameters = [];
 
-        if ($request->get('instituicao')) {
-            $novaFichaTecnica = $this->fichaTecnicaBusiness->clonar($fichaTecnica, (int)$request->get('instituicao'), $request->get('descricao'));
+        if ($request->get('cliente')) {
+            $novaFichaTecnica = $this->fichaTecnicaBusiness->clonar($fichaTecnica, (int)$request->get('cliente'), $request->get('descricao'));
             return $this->redirectToRoute('fichaTecnica_builder', ['id' => $novaFichaTecnica->getId()]);
         }
 
-        $parameters['instituicoes'] = $this->fichaTecnicaBusiness->buildInstituicoesSelect2();
-        $parameters['instituicaoId'] = $fichaTecnica->instituicao->getId();
+        $parameters['clientes'] = $this->fichaTecnicaBusiness->buildClientesSelect2();
+        $parameters['clienteId'] = $fichaTecnica->cliente->getId();
         $parameters['fichaTecnicaOrigem'] = $fichaTecnica;
         $parameters['descricaoSugerida'] = $fichaTecnica->descricao . ' (2)';
 
@@ -469,7 +469,7 @@ class FichaTecnicaController extends FormListController
             $clienteEntityHandler->save($cliente);
             /** @var FichaTecnica $fichaTecnica */
             $fichaTecnica = $repoFichaTecnica->find($ficha['id']);
-            $fichaTecnica->instituicao = ($cliente);
+            $fichaTecnica->cliente = ($cliente);
         }
         return new Response('ok');
 

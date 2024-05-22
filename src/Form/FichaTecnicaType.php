@@ -71,8 +71,8 @@ class FichaTecnicaType extends AbstractType
             ]);
 
 
-            if ($fichaTecnica->instituicao) {
-                $instituicaoChoices = [$fichaTecnica->instituicao];
+            if ($fichaTecnica->cliente) {
+                $clienteChoices = [$fichaTecnica->cliente];
             } else {
                 try {
                     /** @var ClienteRepository $repoCliente */
@@ -82,9 +82,9 @@ class FichaTecnicaType extends AbstractType
                     if (!$rs || count($rs) < 1) {
                         return null;
                     }
-                    $instituicaoChoices = [];
+                    $clienteChoices = [];
                     foreach ($rs as $r) {
-                        $instituicaoChoices[] = $repoCliente->find($r['id']);
+                        $clienteChoices[] = $repoCliente->find($r['id']);
                     }
 
                 } catch (\Throwable $e) {
@@ -93,10 +93,10 @@ class FichaTecnicaType extends AbstractType
                 }
 
             }
-            $form->add('instituicao', EntityType::class, [
-                'label' => 'Instituição',
+            $form->add('cliente', EntityType::class, [
+                'label' => 'Cliente',
                 'class' => Cliente::class,
-                'choices' => $instituicaoChoices,
+                'choices' => $clienteChoices,
                 'required' => false,
                 'choice_label' => function (?Cliente $cliente) {
                     return $cliente ? $cliente->nome : '';
@@ -204,19 +204,19 @@ class FichaTecnicaType extends AbstractType
                 /** @var FichaTecnica $fichaTecnica */
                 $fichaTecnica = $event->getData();
 
-                $form->remove('instituicao');
+                $form->remove('cliente');
 
-                $instituicaoChoices = [];
-                if ($fichaTecnica['instituicao']) {
+                $clienteChoices = [];
+                if ($fichaTecnica['cliente']) {
                     /** @var ClienteRepository $repoCliente */
                     $repoCliente = $this->doctrine->getRepository(Cliente::class);
-                    $instituicao = $repoCliente->find($fichaTecnica['instituicao']);
-                    $instituicaoChoices = [$instituicao];
+                    $cliente = $repoCliente->find($fichaTecnica['cliente']);
+                    $clienteChoices = [$cliente];
                 }
-                $form->add('instituicao', EntityType::class, [
+                $form->add('cliente', EntityType::class, [
                     'class' => Cliente::class,
-                    'choices' => $instituicaoChoices,
-                    'label' => 'Instituicao',
+                    'choices' => $clienteChoices,
+                    'label' => 'cliente',
                     'required' => false,
                     'choice_label' => function (?Cliente $cliente) {
                         return $cliente ? $cliente->nome : '';

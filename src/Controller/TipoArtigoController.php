@@ -115,15 +115,15 @@ class TipoArtigoController extends FormListController
 
     /**
      *
-     * @Route("/tipoArtigo/findByInstituicaoId/{instituicaoId}", name="tipoArtigo_findByInstituicaoId", requirements={"instituicaoId"="\d+"})
-     * @param int $instituicaoId
+     * @Route("/tipoArtigo/findByClienteId/{clienteId}", name="tipoArtigo_findByClienteId", requirements={"clienteId"="\d+"})
+     * @param int $clienteId
      * @return Response
      *
      * @IsGranted("ROLE_PCP_ADMIN", statusCode=403)
      */
-    public function findByInstituicao(int $instituicaoId): Response
+    public function findByCliente(int $clienteId): Response
     {
-        $itens = $this->getDoctrine()->getRepository(TipoArtigo::class)->findByInstituicao($instituicaoId);
+        $itens = $this->getDoctrine()->getRepository(TipoArtigo::class)->findByCliente($clienteId);
         $rs = [];
         /** @var TipoArtigo $tipoArtigo */
         foreach ($itens as $tipoArtigo) {

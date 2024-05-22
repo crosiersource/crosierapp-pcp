@@ -7,20 +7,20 @@ import Routing from "../../vendor/friendsofsymfony/jsrouting-bundle/Resources/pu
 Routing.setRoutingData(routes);
 
 $(document).ready(function () {
-  const $instituicao = $("#instituicao");
+  const $cliente = $("#cliente");
   const $tipoArtigo = $("#tipoArtigo");
   const $fichaTecnica = $("#fichaTecnica");
   const $divBtns = $("#divBtns");
 
   const $divInsumosPrecos = $("#divInsumosPrecos");
 
-  $instituicao.on("select2:select", function () {
+  $cliente.on("select2:select", function () {
     $.ajax({
-      url: `${Routing.generate("tipoArtigo_findByInstituicaoId")}/${$instituicao.val()}`,
+      url: `${Routing.generate("tipoArtigo_findByClienteId")}/${$cliente.val()}`,
       dataType: "json",
       async: false,
     }).done(function (result) {
-      console.log("change instituicao");
+      console.log("change cliente");
       result.unshift({ id: "", text: "..." });
 
       $tipoArtigo.empty().trigger("change");
@@ -39,8 +39,8 @@ $(document).ready(function () {
   $tipoArtigo.on("select2:select", function () {
     $.ajax({
       url: `${Routing.generate(
-        "fichaTecnica_findByInstituicaoIdAndTipoArtigo"
-      )}?instituicaoId=${$instituicao.val()}&tipoArtigo=${$tipoArtigo.val()}`,
+        "fichaTecnica_findByClienteIdAndTipoArtigo"
+      )}?clienteId=${$cliente.val()}&tipoArtigo=${$tipoArtigo.val()}`,
       dataType: "json",
       async: false,
     }).done(function (result) {
@@ -64,7 +64,7 @@ $(document).ready(function () {
   });
 
   function prepareForm() {
-    $tipoArtigo.prop("disabled", $instituicao.val() ? "" : true);
+    $tipoArtigo.prop("disabled", $cliente.val() ? "" : true);
     $fichaTecnica.prop("disabled", $tipoArtigo.val() ? "" : true);
     $divBtns.css("display", $fichaTecnica.val() ? "" : "none");
 

@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 
-use App\Form\InstituicaoType;
+use App\Form\clienteType;
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\FilterData;
 use CrosierSource\CrosierLibRadxBundle\Entity\CRM\Cliente;
@@ -17,7 +17,7 @@ use Symfony\Component\Routing\Annotation\Route;
 /**
  * @author Carlos Eduardo Pauluk
  */
-class InstituicaoController extends FormListController
+class ClienteController extends FormListController
 {
 
     /**
@@ -38,7 +38,7 @@ class InstituicaoController extends FormListController
 
     /**
      *
-     * @Route("/instituicao/form/{id}", name="instituicao_form", defaults={"id"=null}, requirements={"id"="\d+"})
+     * @Route("/cliente/form/{id}", name="cliente_form", defaults={"id"=null}, requirements={"id"="\d+"})
      * @param Request $request
      * @param Cliente|null $cliente
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
@@ -49,10 +49,10 @@ class InstituicaoController extends FormListController
     public function form(Request $request, Cliente $cliente = null)
     {
         $params = [
-            'typeClass' => InstituicaoType::class,
+            'typeClass' => ClienteType::class,
             'formView' => '@CrosierLibBase/form.html.twig',
-            'formRoute' => 'instituicao_form',
-            'formPageTitle' => 'Instituição',
+            'formRoute' => 'cliente_form',
+            'formPageTitle' => 'Cliente',
         ];
 
         $fnHandleRequestOnValid = function (Request $request, /** @var Cliente $cliente */ $cliente): void {
@@ -66,7 +66,7 @@ class InstituicaoController extends FormListController
 
     /**
      *
-     * @Route("/instituicao/list/", name="instituicao_list")
+     * @Route("/cliente/list/", name="cliente_list")
      * @param Request $request
      * @return Response
      * @throws \Exception
@@ -76,21 +76,21 @@ class InstituicaoController extends FormListController
     public function list(Request $request): Response
     {
         $params = [
-            'formRoute' => 'instituicao_form',
+            'formRoute' => 'cliente_form',
             'listView' => '@CrosierLibBase/list.html.twig',
-            'listRoute' => 'instituicao_list',
-            'listRouteAjax' => 'instituicao_datatablesJsList',
-            'listPageTitle' => 'Instituições',
-            'listId' => 'instituicaoList',
+            'listRoute' => 'cliente_list',
+            'listRouteAjax' => 'cliente_datatablesJsList',
+            'listPageTitle' => 'Clientes',
+            'listId' => 'clienteList',
             'list_PROGRAM_UUID' => null,
-            'listJS' => 'instituicaoList.js',
+            'listJS' => 'clienteList.js',
         ];
         return $this->doList($request, $params);
     }
 
     /**
      *
-     * @Route("/instituicao/datatablesJsList/", name="instituicao_datatablesJsList")
+     * @Route("/cliente/datatablesJsList/", name="cliente_datatablesJsList")
      * @param Request $request
      * @return Response
      * @throws \CrosierSource\CrosierLibBaseBundle\Exception\ViewException

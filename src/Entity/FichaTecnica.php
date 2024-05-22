@@ -185,7 +185,7 @@ class FichaTecnica implements EntityId
      * })
      * @Groups("entity","cliente")
      */
-    public ?Cliente $instituicao = null;
+    public ?Cliente $cliente = null;
 
 
     /**

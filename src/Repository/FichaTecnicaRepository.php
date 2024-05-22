@@ -27,7 +27,7 @@ class FichaTecnicaRepository extends FilterRepository
     {
         return $qb->from($this->getEntityClass(), 'e')
             ->leftJoin(TipoArtigo::class, 'ta', 'WITH', 'ta = e.tipoArtigo')
-            ->leftJoin(Cliente::class, 'instituicao', 'WITH', 'instituicao = e.instituicao');
+            ->leftJoin(Cliente::class, 'cliente', 'WITH', 'cliente = e.cliente');
     }
 
 

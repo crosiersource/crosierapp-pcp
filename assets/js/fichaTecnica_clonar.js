@@ -7,11 +7,11 @@ import Routing from "../../vendor/friendsofsymfony/jsrouting-bundle/Resources/pu
 Routing.setRoutingData(routes);
 
 $(document).ready(function () {
-  const $instituicao = $("#instituicao");
+  const $cliente = $("#cliente");
   const $tipoArtigo = $("#tipoArtigo");
   const $descricao = $("#descricao");
 
-  $instituicao.on("select2:select", function () {
-    $descricao.val(`${$tipoArtigo.val()} - ${$instituicao.select2("data")[0].text}`);
+  $cliente.on("select2:select", function () {
+    $descricao.val(`${$tipoArtigo.val()} - ${$cliente.select2("data")[0].text}`);
   });
 });
