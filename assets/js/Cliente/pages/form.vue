@@ -41,6 +41,7 @@
       <CrosierInputCpfCnpj
         col="4"
         id="documento"
+        :key="documento_key"
         v-model="this.fields.documento"
         :error="this.formErrors.documento"
       />
@@ -174,6 +175,7 @@ export default {
     return {
       criarVincularFields: false,
       schemaValidator: {},
+      documento_key: 0,
     };
   },
 
@@ -182,10 +184,7 @@ export default {
 
     await this.$store.dispatch("loadData");
 
-    console.log(this.pj);
-
     this.schemaValidator = yup.object().shape({
-      codigo: yup.string().required().typeError(),
       nome: yup.string().required().typeError(),
       ativo: yup.boolean().required().typeError(),
     });
@@ -208,9 +207,12 @@ export default {
         $toast: this.$toast,
         fnBeforeSave: (formData) => {
           // toString
-          formData.codigo = formData.codigo.toString();
+          if (formData?.codigo) {
+            formData.codigo = formData.codigo.toString();
+          }
         },
       });
+      this.documento_key++;
       this.setLoading(false);
     },
 

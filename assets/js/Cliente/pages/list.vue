@@ -5,7 +5,14 @@
         <CrosierInputText label="CPF/CNPJ" id="documento" v-model="this.filters.documento" />
       </div>
       <div class="form-row">
-        <CrosierInputText label="Nome" id="nome" v-model="this.filters.nome" />
+        <CrosierInputText label="Nome / Razão Social" id="nome" v-model="this.filters.nome" />
+      </div>
+      <div class="form-row">
+        <CrosierInputText
+          label="Nome Fantasia"
+          id="nomeFantasia"
+          v-model="this.filters.nomeFantasia"
+        />
       </div>
       <div class="form-row">
         <CrosierDropdownBoolean label="Ativo" col="4" id="ativo" v-model="this.filters.ativo" />
@@ -18,6 +25,8 @@
           {{ ("00000000" + r.data.id).slice(-8) }}
         </template>
       </Column>
+
+      <Column field="codigo" header="Código" sortable></Column>
 
       <Column field="documento" header="CPF/CNPJ" sortable>
         <template #body="r">
@@ -35,7 +44,9 @@
         </template>
       </Column>
 
-      <Column field="nome" header="Nome" sortable></Column>
+      <Column field="nome" header="Nome / Razão Social" sortable></Column>
+
+      <Column field="nomeFantasia" header="Nome Fantasia" sortable></Column>
 
       <Column field="updated" header="" sortable>
         <template #body="r">
