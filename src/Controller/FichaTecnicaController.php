@@ -579,7 +579,7 @@ class FichaTecnicaController extends FormListController
             $this->addFlash('error', 'Erro ao deletar imagem');
         }
 
-        return $this->redirectToRoute('est_fichaTecnica_form', ['id' => $fichaTecnicaImagem->getFichaTecnica()->getId(), '_fragment' => 'fotos']);
+        return $this->redirectToRoute('fichaTecnica_builder', ['id' => $fichaTecnicaImagem->getFichaTecnica()->getId(), '_fragment' => 'imagens']);
     }
 
 

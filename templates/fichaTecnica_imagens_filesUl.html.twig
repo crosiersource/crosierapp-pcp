@@ -7,10 +7,10 @@
                 <div>
                     <div class="form-inline d-flex flex-nowrap">
                         <label for="fichaTecnica_imagem_descricao_{{ imagem.id }}">#<span class="ordem">{{ imagem.ordem }}</span>) </label>
-                        <input type="text" class="form-control mr-1 ml-1 notuppercase fichaTecnica_imagem_descricao" data-fichaTecnicaimagemid="{{ imagem.id }}"
+                        <input style="display: none" type="text" class="form-control mr-1 ml-1 notuppercase fichaTecnica_imagem_descricao" data-fichaTecnicaimagemid="{{ imagem.id }}"
                                name="fichaTecnica_imagem[descricao][{{ imagem.id }}]" id="fichaTecnica_imagem_descricao_{{ imagem.id }}"
                                value="{{ imagem.descricao }}">
-                        <button type="button" class="btn btn-sm btn-outline-primary btnImagemEdit" data-fichaTecnicaimagemid="{{ imagem.id }}">
+                        <button style="display: none" type="button" class="btn btn-sm btn-outline-primary btnImagemEdit" data-fichaTecnicaimagemid="{{ imagem.id }}">
                             <i class="fas fa-save" aria-hidden="true"></i>
                         </button>
 

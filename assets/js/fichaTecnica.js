@@ -125,7 +125,7 @@ $(document).ready(function () {
             $.ajax({
                 dataType: "json",
                 data: {'ids': ids},
-                url: Routing.generate('prod_fichaTecnica_formImagemSaveOrdem'),
+                url: Routing.generate('prod_fichaTecnica_formImagemSaveOrdem', { fichaTecnica: $fichaTecnica.val() }),
                 type: 'POST'
               }
             ).done(function (data) {

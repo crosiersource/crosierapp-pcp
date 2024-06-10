@@ -1,11 +1,11 @@
 {% if fichaTecnica.id %}
 
-    <div id="fichaTecnica_imagem mt-4">
+    <div id="fichaTecnica_imagem" style="margin-top: 30px">
         <input type="hidden" id="fichaTecnica_imagem_id" name="fichaTecnica_imagem[id]">
-        <div class="form-group row">
-            <label class="col-form-label col-sm-2"
-                   for="fichaTecnica_imagem_imageFile">Imagens</label>
-            <div class="col-sm-10">
+        <div class="form-group row col-4">
+            <label class="col-form-label col-sm-4"
+                   for="fichaTecnica_imagem_imageFile">Inserir nova imagem:</label>
+            <div class="col-sm-6">
                 <div class="custom-file">
                     <input type="file" multiple id="fichaTecnica_imagem_imageFile"
                            name="fichaTecnica_imagem[imageFile][]"
