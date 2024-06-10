@@ -37,3 +37,6 @@ src/Entity/uppercaseFields.json
 ###> phpunit/phpunit ###
 .phpunit.result.cache
 ###< phpunit/phpunit ###
+
+
+/public/images/*

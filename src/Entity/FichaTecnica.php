@@ -12,6 +12,7 @@ use CrosierSource\CrosierLibBaseBundle\Entity\EntityIdTrait;
 use CrosierSource\CrosierLibRadxBundle\Entity\CRM\Cliente;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\PersistentCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
@@ -112,8 +113,8 @@ class FichaTecnica implements EntityId
      * @Groups("fichaTecnica")
      */
     public ?string $obs = null;
-    
-    
+
+
     /**
      * @var null|string
      *
@@ -201,6 +202,13 @@ class FichaTecnica implements EntityId
      */
     public $itens;
 
+    /**
+     * @ORM\OneToMany(targetEntity="FichaTecnicaImagem", mappedBy="fichaTecnica", cascade={"all"}, orphanRemoval=true)
+     * @var FichaTecnicaImagem[]|ArrayCollection|null
+     * @ORM\OrderBy({"ordem" = "ASC"})
+     */
+    public $imagens;
+
 
     /**
      *
@@ -273,7 +281,7 @@ class FichaTecnica implements EntityId
     {
         $this->gradesTamanhosByPosicaoArray = $gradesTamanhosByPosicaoArray;
     }
-    
+
 
     /**
      * @return void
@@ -322,6 +330,33 @@ class FichaTecnica implements EntityId
     public function getPrecos()
     {
         return $this->precos;
+    }
+
+
+    /**
+     * @return FichaTecnicaImagem[]|null
+     */
+    public function getImagens(): ?array
+    {
+        if ($this->imagens) {
+            if (is_array($this->imagens)) {
+                return $this->imagens;
+            }
+            if (($this->imagens instanceof ArrayCollection) || ($this->imagens instanceof PersistentCollection)) {
+                return $this->imagens->toArray();
+            }
+        }
+        return null;
+    }
+
+    /**
+     * @param FichaTecnicaImagem[]|ArrayCollection|null $imagens
+     * @return FichaTecnica
+     */
+    public function setImagens($imagens): FichaTecnica
+    {
+        $this->imagens = $imagens;
+        return $this;
     }
 
 

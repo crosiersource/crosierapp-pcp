@@ -101,6 +101,12 @@
                                 Preços
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="imagens-tab" data-toggle="tab" href="#imagens" role="tab"
+                               aria-controls="imagens" aria-selected="false">
+                                Imagens
+                            </a>
+                        </li>
                     </ul>
 
                     <div class="tab-content" id="myTabContent">
@@ -110,6 +116,9 @@
                         </div>
                         <div class="tab-pane fade" id="precos" role="tabpanel" aria-labelledby="precos-tab">
                             {% include 'fichaTecnica_precos.html.twig' %}
+                        </div>
+                        <div class="tab-pane fade" id="imagens" role="tabpanel" aria-labelledby="imagens-tab">
+                            {% include 'fichaTecnica_imagens.html.twig' %}
                         </div>
                     </div>
 

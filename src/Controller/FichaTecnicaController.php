@@ -5,11 +5,15 @@ namespace App\Controller;
 
 use App\Business\FichaTecnicaBusiness;
 use App\Entity\FichaTecnica;
+use App\Entity\FichaTecnicaImagem;
 use App\Entity\FichaTecnicaItem;
 use App\Entity\Insumo;
 use App\EntityHandler\FichaTecnicaEntityHandler;
+use App\EntityHandler\FichaTecnicaImagemEntityHandler;
 use App\EntityHandler\FichaTecnicaItemEntityHandler;
 use App\Form\FichaTecnicaType;
+use App\Repository\FichaTecnicaImagemRepository;
+use App\Repository\FichaTecnicaRepository;
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\FilterData;
@@ -19,7 +23,9 @@ use CrosierSource\CrosierLibRadxBundle\EntityHandler\CRM\ClienteEntityHandler;
 use CrosierSource\CrosierLibRadxBundle\Repository\Estoque\UnidadeRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -39,6 +45,8 @@ class FichaTecnicaController extends FormListController
     private FichaTecnicaBusiness $fichaTecnicaBusiness;
 
     private FichaTecnicaItemEntityHandler $fichaTecnicaItemEntityHandler;
+
+    private FichaTecnicaImagemEntityHandler $fichaTecnicaImagemEntityHandler;
 
 
     /**
@@ -77,6 +85,14 @@ class FichaTecnicaController extends FormListController
         $this->fichaTecnicaItemEntityHandler = $fichaTecnicaItemEntityHandler;
     }
 
+    /**
+     * @required
+     * @param FichaTecnicaImagemEntityHandler $fichaTecnicaImagemEntityHandler
+     */
+    public function setFichaTecnicaImagemEntityHandler(FichaTecnicaImagemEntityHandler $fichaTecnicaImagemEntityHandler): void
+    {
+        $this->fichaTecnicaImagemEntityHandler = $fichaTecnicaImagemEntityHandler;
+    }
 
     public function getFilterDatas(array $params): array
     {
@@ -166,7 +182,7 @@ class FichaTecnicaController extends FormListController
     public function datatablesJsList(Request $request): Response
     {
         return $this->doDatatablesJsList($request,
-            null, null, null, 
+            null, null, null,
             ['outrosGruposSerializ' => ['cliente', 'tipoArtigo']]);
     }
 
@@ -270,7 +286,7 @@ class FichaTecnicaController extends FormListController
         $this->getEntityHandler()->save($fichaTecnica);
         return $this->redirectToRoute('fichaTecnica_builder', ['id' => $fichaTecnica->getId()]);
     }
-    
+
     /**
      *
      * @Route("/fichaTecnica/salvarObsPrecos/{fichaTecnica}", name="fichaTecnica_salvarObsPrecos", defaults={"fichaTecnica"=null}, requirements={"fichaTecnica"="\d+"})
@@ -340,7 +356,7 @@ class FichaTecnicaController extends FormListController
         $parameters = [];
         $parameters['insumos'] = $this->buildInsumosSelect2();
         $parameters['fichaTecnicaItem'] = $fichaTecnicaItem;
-        $parameters['unidade'] = $repoUnidade->find($fichaTecnicaItem->insumo->unidadeProdutoId);
+        $parameters['unidade'] = $repoUnidade->find($fichaTecnicaItem->insumo->unidadeFichaTecnicaId);
 
         return $this->doRender('fichaTecnicaItemForm.html.twig', $parameters);
     }
@@ -506,7 +522,96 @@ class FichaTecnicaController extends FormListController
 
 
         return new Response('ok');
+    }
 
+
+    /**
+     *
+     * @Route("/prod/fichaTecnica/formImagemFileUpload/{fichaTecnica}", name="prod_fichaTecnica_formImagemFileUpload", requirements={"fichaTecnicaImagem"="\d+"})
+     * @param Request $request
+     * @return JsonResponse
+     * @IsGranted("ROLE_PCP", statusCode=403)
+     */
+    public function formImagemFileUpload(Request $request, FichaTecnica $fichaTecnica): JsonResponse
+    {
+        try {
+            $imageFiles = $request->files->get('fichaTecnica_imagem')['imageFile'];
+            /** @var UploadedFile $imageFile */
+            foreach ($imageFiles as $imageFile) {
+                $this->logger->info('Salvando ' . $imageFile->getFilename());
+                $fichaTecnicaImagem = new FichaTecnicaImagem();
+                $fichaTecnicaImagem->setImageName($imageFile->getClientOriginalName());
+                $fichaTecnicaImagem->setFichaTecnica($fichaTecnica);
+                $fichaTecnicaImagem->setImageFile($imageFile);
+                $this->fichaTecnicaImagemEntityHandler->save($fichaTecnicaImagem);
+                $this->logger->info('OK');
+            }
+            $r = [
+                'result' => 'OK',
+                'filesUl' => $this->renderView('fichaTecnica_imagens_filesUl.html.twig', ['fichaTecnica' => $fichaTecnica])
+            ];
+        } catch (\Exception $e) {
+            $this->logger->error('Erro no formImagemFileUpload() - ' . $e->getMessage());
+            $r = ['result' => 'ERRO'];
+        }
+        return new JsonResponse($r);
+    }
+
+
+    /**
+     *
+     * @Route("/prod/fichaTecnicaImagem/delete/{fichaTecnicaImagem}/", name="prod_fichaTecnicaImagem_delete", requirements={"fichaTecnicaImagem"="\d+"})
+     * @param FichaTecnicaImagem $fichaTecnicaImagem
+     * @return RedirectResponse
+     * @IsGranted("ROLE_ESTOQUE", statusCode=403)
+     */
+    public function fichaTecnicaImagemDelete(FichaTecnicaImagem $fichaTecnicaImagem): RedirectResponse
+    {
+        try {
+            $this->fichaTecnicaImagemEntityHandler->delete($fichaTecnicaImagem);
+            $this->fichaTecnicaImagemEntityHandler->reordenar($fichaTecnicaImagem->getFichaTecnica());
+            /** @var FichaTecnica $fichaTecnica */
+            $fichaTecnica = $this->entityHandler->getDoctrine()->getRepository(FichaTecnica::class)->findOneBy(['id' => $fichaTecnicaImagem->getFichaTecnica()->getId()]);
+            $this->entityHandler->save($fichaTecnica);
+        } catch (ViewException $e) {
+            $this->addFlash('error', $e->getMessage());
+        } catch (\Exception $e) {
+            $this->addFlash('error', 'Erro ao deletar imagem');
+        }
+
+        return $this->redirectToRoute('est_fichaTecnica_form', ['id' => $fichaTecnicaImagem->getFichaTecnica()->getId(), '_fragment' => 'fotos']);
+    }
+
+
+    /**
+     * @Route("/prod/fichaTecnica/formImagemSaveOrdem/{fichaTecnica}", name="prod_fichaTecnica_formImagemSaveOrdem",requirements={"fichaTecnica"="\d+"})
+     * @param Request $request
+     * @return RedirectResponse|Response
+     * @IsGranted("ROLE_ESTOQUE", statusCode=403)
+     */
+    public function formImagemSaveOrdem(Request $request, FichaTecnica $fichaTecnica)
+    {
+        try {
+            $ids = $request->get('ids');
+            $idsArr = explode(',', $ids);
+            $ordens = $this->fichaTecnicaImagemEntityHandler->salvarOrdens($idsArr);
+
+            /** @var FichaTecnicaImagemRepository $repoFichaTecnicaImagem */
+            $repoFichaTecnicaImagem = $this->doctrine->getRepository(FichaTecnicaImagem::class);
+            /** @var FichaTecnicaImagem $fichaTecnicaImagem */
+            $fichaTecnicaImagem = $repoFichaTecnicaImagem->find(array_key_first($ordens));
+
+            /** @var FichaTecnicaRepository $repoFichaTecnica */
+            $repoFichaTecnica = $this->doctrine->getRepository(FichaTecnica::class);
+            /** @var FichaTecnica $fichaTecnica */
+            $fichaTecnica = $repoFichaTecnica->findOneBy(['id' => $fichaTecnicaImagem->getFichaTecnica()->getId()]);
+
+            $this->entityHandler->save($fichaTecnica);
+            $r = ['result' => 'OK', 'ids' => $ordens];
+            return new JsonResponse($r);
+        } catch (ViewException $e) {
+            return new JsonResponse(['result' => 'FALHA']);
+        }
     }
 
 

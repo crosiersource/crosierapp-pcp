@@ -421,5 +421,35 @@ CREATE TABLE `prod_lote_producao_item_qtde`
 
 
 
+DROP TABLE IF EXISTS `prod_fichatecnica_imagem`;
 
+CREATE TABLE `prod_fichatecnica_imagem`
+(
+  `id`                 bigint(20)   NOT NULL AUTO_INCREMENT,
 
+  `fichatecnica_id`    bigint(20)   NOT NULL,
+  `image_name`         varchar(255) NOT NULL,
+  `descricao`          varchar(255),
+  `ordem`              integer,
+
+  UNIQUE KEY `UK_prod_fichatecnica_imagem` (`fichatecnica_id`, `ordem`),
+  UNIQUE KEY `UK_prod_fichatecnica_imagem_image_name` (`image_name`),
+  KEY `K_prod_fichatecnica_imagem_fichatecnica` (`fichatecnica_id`),
+  CONSTRAINT `FK_prod_fichatecnica_imagem_fichatecnica` FOREIGN KEY (`fichatecnica_id`) REFERENCES `prod_fichatecnica` (`id`),
+
+  -- campo de controle
+  PRIMARY KEY (`id`),
+  `inserted`           datetime     NOT NULL,
+  `updated`            datetime     NOT NULL,
+  `version`            int(11),
+  `estabelecimento_id` bigint(20)   NOT NULL,
+  `user_inserted_id`   bigint(20)   NOT NULL,
+  `user_updated_id`    bigint(20)   NOT NULL,
+  KEY `K_prod_fichatecnica_imagem_estabelecimento` (`estabelecimento_id`),
+  KEY `K_prod_fichatecnica_imagem_user_inserted` (`user_inserted_id`),
+  KEY `K_prod_fichatecnica_imagem_user_updated` (`user_updated_id`),
+  CONSTRAINT `FK_prod_fichatecnica_imagem_user_inserted` FOREIGN KEY (`user_inserted_id`) REFERENCES `sec_user` (`id`),
+  CONSTRAINT `FK_prod_fichatecnica_imagem_estabelecimento` FOREIGN KEY (`estabelecimento_id`) REFERENCES `cfg_estabelecimento` (`id`),
+  CONSTRAINT `FK_prod_fichatecnica_imagem_user_updated` FOREIGN KEY (`user_updated_id`) REFERENCES `sec_user` (`id`)
+
+) ENGINE = InnoDB;

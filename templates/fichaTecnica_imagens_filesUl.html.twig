@@ -1,0 +1,40 @@
+<div class="col-sm-12 overflow-auto">
+    <ul class="list-group list-group-horizontal" id="ulFotosSortable">
+        {% for imagem in fichaTecnica.imagens %}
+            <li data-id="{{ imagem.id }}"
+                class="list-group-item {{ imagemId is defined and imagemId == imagem.id ? 'active' : '' }}">
+
+                <div>
+                    <div class="form-inline d-flex flex-nowrap">
+                        <label for="fichaTecnica_imagem_descricao_{{ imagem.id }}">#<span class="ordem">{{ imagem.ordem }}</span>) </label>
+                        <input type="text" class="form-control mr-1 ml-1 notuppercase fichaTecnica_imagem_descricao" data-fichaTecnicaimagemid="{{ imagem.id }}"
+                               name="fichaTecnica_imagem[descricao][{{ imagem.id }}]" id="fichaTecnica_imagem_descricao_{{ imagem.id }}"
+                               value="{{ imagem.descricao }}">
+                        <button type="button" class="btn btn-sm btn-outline-primary btnImagemEdit" data-fichaTecnicaimagemid="{{ imagem.id }}">
+                            <i class="fas fa-save" aria-hidden="true"></i>
+                        </button>
+
+                        <button type="button" class="btn btn-sm btn-outline-danger"
+                                data-url="{{ url('prod_fichaTecnicaImagem_delete', {fichaTecnicaImagem: imagem.id}) }}"
+                                data-token="{{ csrf_token('deleteImagem') }}"
+                                data-target="#confirmationModal" data-toggle="modal">
+                            <i class="fa fa-trash" aria-hidden="true"></i>
+                        </button>
+                    </div>
+
+
+                </div>
+
+                <div class="pt-3">
+                    <a href="{{ vich_uploader_asset(imagem, 'imageFile') }}"
+                       data-lightbox="imagensDoFichaTecnica" data-title="{{ imagem.descricao }}">
+                        <img src="{{ vich_uploader_asset(imagem, 'imageFile') }}"
+                             alt="{{ imagem.descricao }}" style="border: 1px dashed lightblue"
+                             width="200px"/>
+                    </a>
+                </div>
+
+            </li>
+        {% endfor %}
+    </ul>
+</div>
