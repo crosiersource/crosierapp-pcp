@@ -356,7 +356,7 @@ class FichaTecnicaController extends FormListController
         $parameters = [];
         $parameters['insumos'] = $this->buildInsumosSelect2();
         $parameters['fichaTecnicaItem'] = $fichaTecnicaItem;
-        $parameters['unidade'] = $repoUnidade->find($fichaTecnicaItem->insumo->unidadeFichaTecnicaId);
+        $parameters['unidade'] = $repoUnidade->find($fichaTecnicaItem->insumo->unidadeProdutoId);
 
         return $this->doRender('fichaTecnicaItemForm.html.twig', $parameters);
     }
