@@ -1,9 +1,15 @@
 <template>
   <Toast class="mt-5" />
   <ConfirmDialog />
-  <CrosierListS titulo="Insumos" apiResource="/api/pcp/insumo" ref="crosierListS" filtrosNaSidebar>
+  <CrosierListS
+    titulo="Insumos"
+    apiResource="/api/pcp/insumo"
+    ref="crosierListS"
+    v-model:selection="this.selection"
+    filtrosNaSidebar
+  >
     <template v-slot:headerButtons>
-      <a role="button" class="ml-1 btn btn-success btn-sm" href="/pcp/insumo/alteracaoLote"
+      <a role="button" class="ml-1 btn btn-success btn-sm" href="/v/insumo/alteracaoLote"
         ><i class="fas fa-layer-group"></i> Alteração em Lote</a
       >
     </template>
@@ -109,6 +115,7 @@ export default {
   },
   data() {
     return {
+      selection: [],
       dropdownOptions: {
         statusOptions: [
           { name: "Ativo", value: true },

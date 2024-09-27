@@ -42,7 +42,7 @@ Encore
 
   .addEntry('insumo/list', './assets/js/Insumo/list.js')
   .addEntry('insumo/form', './assets/js/Insumo/form.js')
-  .addEntry('Insumo/alteracaoLote', './assets/js/Insumo/alteracaoLote.js')
+  .addEntry('insumo/alteracaoLote', './assets/js/Insumo/alteracaoLote.js')
   // --------------------------------------------
 
   .splitEntryChunks()

@@ -12,12 +12,7 @@
             <h6>Alteração em Lote</h6>
           </div>
           <div class="d-sm-flex flex-nowrap ml-auto">
-            <a
-              role="button"
-              class="btn btn-outline-secondary"
-              href="/pcp/insumo/list"
-              title="Listar"
-            >
+            <a role="button" class="btn btn-outline-secondary" href="/v/insumo/list" title="Listar">
               <i class="fas fa-list"></i>
             </a>
           </div>
@@ -144,15 +139,7 @@ export default {
 
   async mounted() {
     this.setLoading(true);
-
     this.loadRegistros();
-
-    // document.getElementById("nome").focus();
-
-    document.getElementsByTagName("input").forEach(function doff(i) {
-      i.autocomplete = "off";
-    });
-
     this.setLoading(false);
   },
 
@@ -164,11 +151,11 @@ export default {
     },
 
     loadRegistros() {
-      if (!localStorage.getItem("dt-state/api/pcp/insumo")) {
-        window.location = "/pcp/insumo/list?err=semRegistrosAlteracaoLote";
+      if (!localStorage.getItem("dt-state_/api/pcp/insumo")) {
+        window.location = "/v/insumo/list?err=semRegistrosAlteracaoLote";
       }
 
-      const ls = JSON.parse(localStorage.getItem("dt-state/api/pcp/insumo"));
+      const ls = JSON.parse(localStorage.getItem("dt-state_/api/pcp/insumo"));
 
       this.registros = ls.selection;
     },
@@ -202,8 +189,8 @@ export default {
               }
             })
           );
-          localStorage.removeItem("dt-state/api/pcp/insumo");
-          window.location = "/pcp/insumo/list";
+          localStorage.removeItem("dt-state_/api/pcp/insumo");
+          window.location = "/v/insumo/list";
           this.setLoading(false);
         },
       });
